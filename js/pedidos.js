@@ -1,8 +1,8 @@
-var año = document.getElementById('anio');
+var anio = document.getElementById('anio');
 var mes = document.getElementById('mes');
 var estatus = document.getElementById('status');
 
-año.addEventListener('change', renderTable)
+anio.addEventListener('change', renderTable)
 mes.addEventListener('change', renderTable)
 estatus.addEventListener('change', renderTable)
 // Función para renderizar la tabla
@@ -11,7 +11,7 @@ estatus.addEventListener('change', renderTable)
 
         var formData = new FormData;
         formData.append("opcion", "1");
-        formData.append('anio', año.value)
+        formData.append('anio', anio.value)
         formData.append('mes', mes.value)
         formData.append('status', estatus.value)
     
@@ -36,7 +36,7 @@ estatus.addEventListener('change', renderTable)
                                         { "data": "fecha_creacion" },
                                         { "data": "pedido_estado" },
                                         { "data": "nombre" }, 
-                                        { "data": "acciones" }, 
+                                        { "data": "nombre" }, 
                                     ], 
                                     columnDefs: [
                                         {
@@ -59,29 +59,7 @@ estatus.addEventListener('change', renderTable)
                                             targets : [0,1,3,,4,5],
                                             className: 'text-center'
                                         }
-                                    ], 
-                                    "drawCallback": function(settings) { //Captura el evento para cuando el datatable se redibuja, por ejemplo al cambiar de pagina
-                                        let btnVer = document.querySelectorAll(".btnVer");
-                                        let btnImprimir = document.querySelectorAll(".btnImprimir");
-
-                                        //Evento para el bton de ver pedidos
-                                        btnVer.forEach(boton => {
-                                            boton.removeEventListener("click", abrirVerPedidoModal);
-                                            boton.addEventListener("click", abrirVerPedidoModal);
-                                          });
-
-                                          //Evento para el boton de imprimir pedidos
-                                          btnImprimir.forEach(boton => {
-                                            boton.removeEventListener("click", abrirVerPedidoModal);
-                                            boton.addEventListener("click", abrirVerPedidoModal);
-                                          });
-
-                                          //Evento para el bton de canvelar pedido
-                                          btnCancelar.forEach(boton => {
-                                                boton.removeEventListener("click", abrirCancelarPedidoModal);
-                                                boton.addEventListener("click", abrirCancelarPedidoModal);
-                                          });
-                                    }
+                                    ]
                                 });
             })
             .catch((error) => {

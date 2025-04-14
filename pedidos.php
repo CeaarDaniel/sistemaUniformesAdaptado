@@ -34,7 +34,7 @@
 
                 <!-- Mes -->
                 <div class="col-md-2">
-                    <select class="form-select" id="mes" onchange="selectOnChange()">
+                    <select class="form-select" id="mes">
                         <option value="0">Todos</option>
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
@@ -53,7 +53,7 @@
 
                 <!-- Año -->
                 <div class="col-md-2">
-                    <select class="form-select" id="anio" onchange="selectOnChange()">
+                    <select class="form-select" id="anio">
                         <option value="0">Todos</option>
                             <?php
                                 while($year = $years->fetch(PDO::FETCH_ASSOC))
@@ -64,7 +64,7 @@
 
                 <!-- Estado -->
                 <div class="col-md-2">
-                    <select class="form-select" id="status" onchange="selectOnChange()">
+                    <select class="form-select" id="status">
                             <?php
                                 while($estado = $estadoPedido->fetch(PDO::FETCH_ASSOC))
                                 echo '<option value="'.$estado['id_estado'].'">'.$estado['pedido_estado'].'</option>';
