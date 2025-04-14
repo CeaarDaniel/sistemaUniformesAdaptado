@@ -1,0 +1,411 @@
+.navbar-font {
+    font-size:
+     16px;
+}
+
+.img-logo {
+    width: 160px;
+    height: 50px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 5px;
+    left: 25px;
+    background-color: red;
+    color: white;
+    border-radius: 15px;
+    padding: 2px 4px;
+    font-size: 12px;
+}
+
+.padding-header {
+    padding-top: 67px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.card-shortcut {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: transform 0.2s;
+    background-color: white;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+.card-shortcut:hover {
+    transform: scale(1.1);
+}
+.title-dash {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: #204191; 
+    font-weight: bold;
+}
+
+/*ESTILO PARA LAS TABLAS DE DASHBOARD*/
+.card-dash {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 5px 5px 8px #888888;
+    transition: transform 0.3s;
+    background-color: white;
+}
+
+.card-dash:hover {
+    transform: scale(1.05);
+}
+
+.header-table {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+.q-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+}
+.bg-blue-10 {
+    background: rgb(13, 71, 161);
+}
+
+.bg-blue-10:hover {
+    background: rgb(9, 50, 112);
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-link{
+    color: black;
+    font-size:16px;
+    font-weight: 500;
+    transition: ease .3s;
+}
+
+.nav-link:hover{
+        color: #1e3d90;
+        background-color:rgb(30, 61, 144, 0.1);
+}
+
+/*ESTILO DE altasArticulos*/
+.form-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.75rem;
+    color: #333;
+}
+.form-container .form-label {
+    font-weight: bold;
+}
+.form-container .btn-submit {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+}
+.nombre-input {
+    border-color: red;
+}
+
+/*ESTILOS DE altasCategorias.php*/
+
+.form-container h4 {
+    margin-bottom: 20px;
+    font-size: 1.75rem;
+    color: #333;
+}
+
+.chip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.chip {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+.chip .remove-icon {
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+/*ESTILOS catalogo (ALMACENES)*/
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+} 
+
+.btn-action {
+    margin: 0 2px;
+}
+.btn-action i {
+    font-size: 1rem;
+}
+
+/*Entradas pedido*/
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #204191;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #0A0A85;
+    color: white;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.checked {
+    background-color: #ffd966;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background-color: #0A0A85;
+    color: white;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    justify-content: flex-end;
+}
+
+
+/*ESTILOS DE LA SECCION DE CAMBIO Y CONSULTA SALIDAS*/
+/*
+    .table-container {
+        max-height: 63vh;
+        overflow-y: auto;
+    }
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 1;
+    }
+    .btn-action {
+        margin: 0 2px;
+    }
+    .btn-action i {
+        font-size: 1rem;
+    }
+    .text-disabled {
+        color: #ccc;
+    }
+    .text-line-through {
+        text-decoration: line-through;
+    } 
+*/
+
+/*Estilo de la seccion consultas->reportes*/
+.title-content {
+    font-size: 24px;
+    color: #757779;
+}
+
+.table-content {
+    font-size: 17px;
+    color: black;
+}
+
+.table-subtitle {
+    font-size: 17px;
+    color: #757779;
+}
+
+.top-dashed-line {
+    border-top: 1px dashed #757779;
+    padding-bottom: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.reporte-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.btn-custom {
+    background-color: green;
+    color: white;
+}
+
+tbody .editColum {
+    background-color: #fcdfff;
+    font-weight: bold;
+    margin: 10px;
+}
+
+/*Estilos de consultas de ventas*/
+    /*
+        .padding-header {
+            padding-top: 80px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #204191;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0A0A85;
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .checked {
+            background-color: #ffd966;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            background-color: #0A0A85;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            justify-content: flex-end;
+        }
+    */
+
+/*Estilos para entradasManuales*/
+.remarcado-font { font-weight: 600; }
+.fixed-alert { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+
+/*Estilos para entradasdSalidas*/
+.padding-side { padding: 0 40px; }
+/*.table-hover tbody tr:hover { background-color: #f8f9fa; } */
+
+
+/*ESTILOS DE reportesExistencias*/
+.table-wrapper { overflow-x: auto; }
+.table-wrapper table { white-space: nowrap; }
+
+
+.row-reporte td {
+    padding: 10px 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.row-reporte:hover { background-color: #f5f4f7; }
+
+.filter-transition {
+    transition: all 0.3s;
+    overflow: hidden;
+    max-height: 0;
+}
+.filter-transition.visible { max-height: 500px; }
+
+.empty-state { color: #8F98A0; font-size: 20px; }
+
+
+/*ESTILOS DE reportesSalidas*/
+.row-venta-articulos { background-color: #e6e6e6; }
+
+
+/**/
+.report-header { padding: 20px; background: #f8f9fa; }
+.filter-section { transition: all 0.3s ease; }
+/*.table-container { max-height: 65vh; overflow-y: auto; }*/
+.sticky-header { position: sticky; top: 0; background: #0d6efd; color: white; z-index: 1; }
+.hover-row:hover { background-color: #f1f1f1 !important; }
+.sub-row { background-color: #f8f9fa; }
+
+
+/*Estilos de salidasReposicion*/
+.cursor-pointer { cursor: pointer; }
+.border-red { border: 1px solid #dc3545 !important; }
+.border-green { border: 1px solid #28a745 !important; }
+.article-img { height: 70px; }
+
+.unset{
+    all: unset
+  }
+
+  /*
+    @keyframes fadeIn {
+        0% {
+        opacity: 0;
+        }
+        100% {
+        opacity: 1;
+        }
+    }
+    
+    td {
+        animation: fadeIn 7s ease-out;
+    }
+*/
