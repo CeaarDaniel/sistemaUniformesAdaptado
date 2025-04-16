@@ -409,3 +409,7 @@ tbody .editColum {
         animation: fadeIn 7s ease-out;
     }
 */
+
+.btnVer:hover, .btnConcretar:hover, .btnCancelar:hover {
+    background: #d1d1d1;
+}

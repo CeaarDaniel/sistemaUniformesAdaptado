@@ -70,10 +70,9 @@
                             <i class="fas fa-file-excel"></i> Exportar Excel
                         </button>
                       -->
-                        <button class="btn btn-danger" onclick="exportToPDF()">
-                            <i class="fas fa-file-pdf"></i> Exportar PDF
-                        </button> 
-                  
+                      <button class="btn bg-blue-10" style="color: white;">
+                        <i class="fas fa-print"></i> IMPRIMIR
+                      </button>
                 </div>
             </div>
         </div>

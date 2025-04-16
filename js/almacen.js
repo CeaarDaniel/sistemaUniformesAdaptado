@@ -76,7 +76,7 @@
                                             {
                                                 extend: 'pdf',
                                                 className: 'unset',
-                                                text: '<button class="btn bg-blue-10" style="color: white;" ><i class="fas fa-print"></i> IMPRIMIR</button>',
+                                                text: '<button class="btn btn-danger" style="color: white;" ><i class="fas fa-file-pdf"></i> Exportar PDF</button>',
                                                 title: 'Reporte de Inventario',
                                                 filename: 'Reporte de Inventario',
                                                 customize: function(doc) {
@@ -173,7 +173,7 @@
                                                                                                 <label for="costo" class="form-label">Costo</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="costo" value="${data.costo}">
+                                                                                                    <input min=0 type="number" class="form-control" id="costo" step="0.01" value="${data.costo}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -182,7 +182,7 @@
                                                                                                 <label for="precio" class="form-label">Precio</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="precio" value="${data.precio}">
+                                                                                                    <input min=0 type="number" class="form-control" id="precio" setp="0.01" value="${data.precio}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -190,7 +190,7 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_max" class="form-label">Stock máximo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" step="1" value="${data.stock_max}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>
@@ -199,7 +199,7 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_min" class="form-label">Stock mínimo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" step="1" value="${data.stock_max}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>

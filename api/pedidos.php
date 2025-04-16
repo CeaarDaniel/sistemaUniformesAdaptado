@@ -49,17 +49,22 @@ $opcion = $_POST['opcion'];
                                       'fecha_creacion' => $pedido['fecha_creacion'],
                                       'pedido_estado' => $pedido['pedido_estado'],
                                       'nombre' => $pedido['nombre'], 
-                                      'acciones' => '<button class="btn btn-success btnConcretar"
+                                      'acciones' => '<button class="btn btnConcretar"
                                                                     data-id="'.$pedido['id_pedido'].'">
-                                                        <i class="fas fa-check"></i>
+                                                        <i class="fas fa-check" style="font-size:20px; color:#198754; background-color:none"></i>
                                                     </button>
-                                                     <button class="btn btn-danger btnCancelar"
+                                                     <button class="btn btnCancelar"
                                                              data-id="'.$pedido['id_pedido'].'">
-                                                        <i class="fas fa-times"></i>
+                                                        <i class="fas fa-times" style="font-size:20px; color:red; background-color:none"></i>
                                                     </button>
-                                                    <button class="btn btn-primary btnVer"
-                                                            data-id="'.$pedido['id_pedido'].'">
-                                                        <i class="fas fa-eye"></i>
+                                                    <button class="btn btnVer"
+                                                            data-id="'.$pedido['id_pedido'].'"
+                                                            data-numPedido="'.$pedido['num_pedido'].'"
+                                                            data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                            data-estado="'.$pedido['pedido_estado'].'"
+                                                            data-nombre="'.$pedido['nombre'].'"
+                                                            >
+                                                        <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
                                                     </button>
                                                     <button class="btn btnImprimir p-0 my-0 mx-1" 
                                                             data-id="'.$pedido['id_pedido'].'">
@@ -74,72 +79,27 @@ $opcion = $_POST['opcion'];
         echo json_encode($response);
     }
 
-    //Obtener los datos de los articulos con los valores asociados en las demas tablas
     else 
-        if ($opcion == '2'){
-            $genero = isset($_POST['genero']) ? $_POST['genero'] : '';
-            $categoria = isset($_POST['categoriaCat']) ? $_POST['categoriaCat'] : 0;
-            $estado = isset($_POST['estado']) ? $_POST['estado'] : 0;
-            $genero = isset($_POST['generoCat']) ? $_POST['generoCat'] : 0;
+        if($opcion == '2'){
+            $id_pedido= (isset($_POST['id_pedido']) && !$_POST['id_pedido']=='') ? $_POST['id_pedido'] : NULL;
 
-            //Cadenas con la condicion de filtrado para generar la consulta
-            if($categoria != 0) 
-                    $filtroCategoria= 'and a.id_categoria = '.$categoria;
-            else 
-                $filtroCategoria=' ';
+            $detallePedido= "SELECT a.id_articulo as clave, a.nombre as Articulo, dp.Cantidad, dp.costo, (dp.cantidad* dp.costo) as total 
+                    from uni_pedido_articulo as dp 
+                        inner join uni_articulos as a on dp.id_articulo= a.id_articulo 
+                where id_pedido = :id_pedido";
+                
+                $pedido = $conn->prepare($detallePedido); 
 
-            if($estado != 0) 
-                    $filtroEstado= 'and e.id_estado = '.$estado;
-    
-            else
-                $filtroEstado=' ';
+                $pedido->bindparam(':id_pedido', $id_pedido);
 
-            if($genero != 0) 
-                    $filtroGenero= 'and g.id_genero = '.$genero;
-            
-            else 
-                $filtroGenero=' ';                                                
-
-            $sql='SELECT p.id_pedido, p.num_pedido, p.fecha_creacion, e.pedido_estado, d.nombre from uni_pedido as p 
-                        inner join DIRECTORIO_0 AS d on p.id_usuario = d.ID
-                        inner join uni_pedido_estado as e on p.status = e.id_estado
-                    order by id_pedido';
-
-            $articulosAlmacen = $conn->prepare($sql);
-
-            if($articulosAlmacen->execute()) {
-                while ($articulo = $articulosAlmacen->fetch(PDO::FETCH_ASSOC)) {
-                        $articulos[] = array ( 'id_articulo' => $articulo['id_articulo'],
-                        'nombre' => $articulo['nombre'],
-                        'talla' => $articulo['talla'],
-                        'genero' => $articulo['genero'],
-                        'cant_fisica' => $articulo['cant. fisica'],
-                        'estado' => $articulo['estado'],
-                        'costo'=> $articulo['costo'],
-                        'precio' => $articulo['precio'],
-                        'stock_max' => $articulo['stock_max'],
-                        'stock_min' => $articulo['stock_min'],
-                        'acciones' =>   '<div class="d-flex flex-row">
-                                            <button class="btn btn-action btn-editar"
-                                                    data-bs-toggle="modal" 
-                                                    data-id="'.$articulo['id_articulo'].'" 
-                                                    style="color:green; background:none; font-size:20px;"
-                                                    ><i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-action  btn-eliminar" 
-                                                            data-id="'.$articulo['id_articulo'].'"
-                                                            data-bs-toggle="modal" 
-                                                        style="color:rgb(193, 0, 21); background-color:none; font-size:20px;">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>');
+                if($pedido->execute()){
+                    while($p = $pedido->fetch(PDO::FETCH_ASSOC))
+                     $response[]= $p;
                 }
-            }
 
-            else 
-                $articulos = array('error'=> $articulosAlmacen->errorInfo()[2] );
+                else 
+                    $response = array('error' => $pedido->errorInfo()[2]);
 
-            
-            echo json_encode($articulos);
+            echo json_encode($response);
         }
 ?>

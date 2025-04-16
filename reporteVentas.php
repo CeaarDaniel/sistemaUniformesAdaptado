@@ -5,8 +5,12 @@
                 <h2 class="mb-0">Reporte de ventas</h2>
             </div>
             <div class="col-md-4 text-end">
-                <button class="btn btn-success" id="generateReport">
-                    <i class="bi bi-file-earmark-pdf"></i> Generar
+                <button id="generateReport" class="btn btn-success">
+                        <i class="bi bi-file-earmark-pdf"></i> Generar
+                </button>    
+
+                <button class="btn bg-blue-10" style="color: white;">
+                    <i class="fas fa-print"></i> IMPRIMIR
                 </button>
             </div>
         </div>

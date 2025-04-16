@@ -11,9 +11,6 @@
 ?>    
 
     <div id="pedidos">
-        <!-- Barra de progreso (simulada) -->
-        <div class="progress-bar" style="height: 8px; background-color: #6c757d;"></div>
-
         <!-- Título -->
         <div class="container mt-4">
             <h1 class="title">Pedidos</h1>
@@ -95,22 +92,67 @@
 
         <!-- Modal de Ver Pedido -->
         <div class="modal fade" id="verPedidoModal" tabindex="-1" aria-labelledby="verPedidoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="verPedidoModalLabel">Ver Pedido</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
                     <div class="modal-body">
+                        <div class="mx-5 d-flex justify-content-between">
+                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                            <table>
+                                <tbody>
+                                    <tr style="background-color: #0A0A85;
+                                               color: white;">
+                                        <td class="p-0 border border-dark"><b>NUM PEDIDO</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0 border border-dark"><b id="modalVernumPedido"></b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                         <!-- Detalles del pedido -->
-                        <p><strong>ID:</strong> <span id="pedidoId"></span></p>
-                        <p><strong>Núm. Pedido:</strong> <span id="pedidoNum"></span></p>
-                        <p><strong>Fecha:</strong> <span id="pedidoFecha"></span></p>
-                        <p><strong>Estado:</strong> <span id="pedidoEstado"></span></p>
-                        <p><strong>Realizado por:</strong> <span id="pedidoRealizadoPor"></span></p>
+                        <div class="row mt-5">
+                            <div class="my-1 col-3"><b>Fecha de elaboración:</b></div>
+                            <div class="my-1 col-auto"><label class="mx-0 px-0 text-uppercase" id="modalVerfechaCreacion"></label></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Realizado por:</b></div>
+                            <div class="my-1 col-auto"><label id="modalVerNombre"></label></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Estado:</b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="modalVerEstado"></label></div>
+                         </div>
+
+                         <hr class="my-5" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+                            <!--TABLA DE PRODUCTOS -->
+                            <p class="text-center fs-7"><b> PRODUCTOS </b></p>
+                            <div style="overflow: auto scroll; max-height: 400px;">
+                                <table id="" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Clave</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Articulo</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio Unitario</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyDetallePedido">
+                                        <!-- Filas de la tabla se llenarán dinámicamente -->
+                                    </tbody>
+                                </table>
+
+                                <div class="mx-3 d-flex justify-content-end">
+                                    <b>Total:</b> &nbsp; &nbsp; <label id='totalCostoPedido'></label>
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><b>Cerrar</b></button>
                     </div>
                 </div>
             </div>
@@ -122,7 +164,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="cancelarPedidoModalLabel">Cancelar Pedido</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de cancelar este pedido?
@@ -141,7 +183,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="concretarPedidoModalLabel">Concretar Pedido</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de concretar este pedido?
@@ -154,5 +196,3 @@
             </div>
         </div>
     </div>
-
- 
