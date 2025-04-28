@@ -1,41 +1,28 @@
 
     // Estado inicial
-    let state = {
-        filterVisible: false,
-        reporte_existencias: [],
-        optCategorias: [],
-        optGeneros: [],
-        optEstados: []
-    };
+    let state = {filterVisible: false};
 
-    var btngenerarReporte= document.getElementById('btngenerarReporte');
+    var btngenerarReporte = document.getElementById('btngenerarReporte');
+
     btngenerarReporte.addEventListener('click', generarReporte);
-
-    async function getCategorias() {
-        // Simular llamada API
-        state.optCategorias = [{value: 1, label: 'Categoría 1'}, {value: 2, label: 'Categoría 2'}];
-        populateSelect('valCategoria', state.optCategorias);
-    }
-
-    async function getGeneros() {
-        // Simular llamada API
-        state.optGeneros = [{value: 1, label: 'Género 1'}, {value: 2, label: 'Género 2'}];
-        populateSelect('valGenero', state.optGeneros);
-    }
-
-    async function getEstados() {
-        // Simular llamada API
-        state.optEstados = [{value: 1, label: 'Estado 1'}, {value: 2, label: 'Estado 2'}];
-        populateSelect('valEstado', state.optEstados);
-    }
 
     function setupFilters() {
         // Manejar checkboxes
+        /*
         document.querySelectorAll('[id^="ftr"]').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 const targetId = e.target.id.replace('ftr', 'val').replace('os', 'o');
                 document.getElementById(targetId).disabled = e.target.checked;
             });
+        }); */
+
+        $('[id^="ftr"]').on('change', function() {
+            const targetId = this.id.replace('ftr', 'val').replace('os', 'o');
+            if (this.checked) $('#' + targetId).val('0');
+            $('#' + targetId).prop('disabled', this.checked);
+
+            //console.log(this.checked); 
+            //console.log($('#' + targetId + 'option:selected').text())
         });
     }
 
@@ -50,8 +37,8 @@
         });
     }
 
-    async function generarReporte() {
-        // Construir query
+    function generarReporte() {
+        /* Construir query
         const query = new URLSearchParams({
             tipoReporte: document.querySelector('input[name="rbnExistencia"]:checked').value,
             categoria: document.getElementById('ftrCategorias').checked ? '' : document.getElementById('valCategoria').value,
@@ -73,50 +60,73 @@
             {id_articulo: 7, nombre: 'Artículo 7', stock_min: 5, stock_max: 19, cantidad: 1},
             {id_articulo: 8, nombre: 'Artículo 8', stock_min: 4, stock_max: 10, cantidad: 9},
             {id_articulo: 9, nombre: 'Artículo 9', stock_min: 7, stock_max: 10, cantidad: 6},
-        ];
+        ]; 
         
         updateTable(mockData);
-        showNotification('Busqueda finalizada', 'positive');
-    }
+        showNotification('Busqueda finalizada', 'positive'); */
+        var columnasTabla = document.getElementById("tableHeader");
+        const reportType = document.querySelector('input[name="rbnExistencia"]:checked'); 
+        var reporteExistencias = new FormData();
+        reporteExistencias.append('opcion',3);
+        reporteExistencias.append('existencia', reportType.value);
 
-    function updateTable(data) {
-        const tbody = document.getElementById('reporteBody');
-        tbody.innerHTML = '';
-        
-        if(data.length === 0) {
-            document.getElementById('emptyState').classList.remove('d-none');
-            document.getElementById('tableContent').classList.add('d-none');
-            return;
+        reporteExistencias.append('categoria', document.getElementById('valCategorio').value);
+        reporteExistencias.append('genero', document.getElementById('valGenero').value);
+        reporteExistencias.append('estado',  document.getElementById('valEstado').value);
+
+        fetch("./api/reportes.php", {
+            method: "POST",
+            body: reporteExistencias,
         }
-        
-        data.forEach(item => {
-            tbody.innerHTML += `
-                <tr class="row-reporte">
-                    <td>${item.id_articulo}</td>
-                    <td>${item.nombre}</td>
-                    <td>${item.stock_min}</td>
-                    <td>${item.stock_max}</td>
-                    <td>${item.cantidad}</td>
-                </tr>
-            `;
-        });
-        
-        document.getElementById('emptyState').classList.add('d-none');
-        document.getElementById('tableContent').classList.remove('d-none');
+        ).then((response) => response.json())
+        .then((data) => {
+                ancho = window.innerWidth - 100;
+                document.getElementById('emptyState').classList.add('d-none');
+                document.getElementById('reportExistencias').classList.remove('d-none');
+
+                $('#reportExistencias').DataTable().destroy(); //Restaurar la tablas
+
+                // Crear la configuración de las columnas para DataTables
+                var columnas = Object.keys(data[0]);
+                var columnasConfig = columnas.map(function (columna) { return { "data": columna }; });
+
+                //Restear las columnas de la tabla
+                while (columnasTabla.firstChild)
+                    columnasTabla.removeChild(columnasTabla.firstChild);
+
+                //Agregar las nuevas columnas a la tabla
+                columnas.forEach(columna => {
+                    const fila = document.createElement("th");
+                    fila.textContent = columna.replaceAll("_", " ").toUpperCase();
+                    columnasTabla.appendChild(fila);
+                });
+
+                //Crear el dataTable con las nuevas configuraciones
+                $('#reportExistencias').DataTable({
+                    responsive: true,
+                    scrollX: ancho,
+                    scrollY: 320,
+                    scrollCollapse: true,
+                    data: data,
+                    columns: columnasConfig,
+                    columnDefs: [
+                        {
+                            targets: Array.from({ length: columnasConfig.length }, (_, i) => i),
+                            className: 'text-center'
+                        },
+                    ],
+                });
+            })
+        .catch((error) => { 
+            console.log(error); 
+            $('#reportExistencias').DataTable().clear();
+            $('#reportExistencias').DataTable().destroy();
+            document.getElementById('emptyState').classList.remove('d-none');
+            document.getElementById('reportExistencias').classList.add('d-none');
+        })
     }
 
-    function populateSelect(selectId, options) {
-        const select = document.getElementById(selectId);
-        select.innerHTML = options.map(opt => 
-            `<option value="${opt.value}">${opt.label}</option>`
-        ).join('');
-    }
-
-    function showNotification(message, type) {
-        // Implementar lógica de notificación con Bootstrap Toast
-        console.log(message, type);
-    }
-
-    //await Promise.all([getCategorias(), getGeneros(), getEstados()]);
     setupFilters();
     setupToggleFilter();
+
+    generarReporte();

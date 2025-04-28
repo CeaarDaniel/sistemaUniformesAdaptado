@@ -169,7 +169,7 @@ estatus.addEventListener('change', renderTable)
                   }); 
 
                   document.getElementById('totalCostoPedido').textContent = `       $ ${ parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US') }`;
-        new bootstrap.Modal(document.getElementById('verPedidoModal')).show();
+                  new bootstrap.Modal(document.getElementById('verPedidoModal')).show();
     })
         .catch((error) => {
         console.log(error);

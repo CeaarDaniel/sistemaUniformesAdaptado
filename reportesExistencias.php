@@ -1,7 +1,22 @@
+<?php
+include('./api/conexion.php');
+
+ //CATEGORIAS DE ARTICULO
+ $categorias = $conn->prepare("SELECT* from uni_categoria"); 
+ $categorias->execute();
+
+ //EMPLEADO
+ $generos = $conn->prepare("SELECT* from uni_genero"); 
+ $generos->execute();
+
+ //Estado
+ $estados = $conn->prepare("SELECT* from uni_estado"); 
+ $estados->execute();
+?>
+
     <div id="reportesExistencias">
         <!-- Header Section -->
-        <div class="padding-header">
-            <div class="row mt-3 justify-content-between">
+            <div class="row my-4 justify-content-between">
                 <div class="col-3 align-self-center">
                     <div  class="title" style="font-size: 1.5rem; font-weight: 500;">Reporte de existencias</div>
                 </div>
@@ -12,7 +27,7 @@
                 </div>
             </div>
 
-            <!-- Radio Buttons -->
+        <!-- Radio Buttons -->
             <div class="row mt-2 mb-2">
                 <div class="col-auto ms-3">
                     <div class="form-check form-check-inline">
@@ -35,20 +50,25 @@
                 </div>
             </div>
 
-            <!-- Filters Section -->
+
+        <!-- Filters Section -->
             <div class="filter-transition" id="filterSection">
                 <hr>
                 <!-- Categorías -->
                 <div class="row mt-2">
                     <div class="col-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="ftrCategorias" checked>
+                            <input class="form-check-input" type="checkbox" id="ftrCategorios" checked>
                             <label class="form-check-label">Todas las categorías</label>
                         </div>
                     </div>
                     <div class="col-4 ms-3">
-                        <select class="form-select" id="valCategoria" disabled>
-                            <option value="1">Seleccione categoría</option>
+                        <select class="form-select" id="valCategorio" disabled>
+                            <option value="0">Seleccione una categoría</option>
+                                <?php
+                                    while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
+                                    echo '<option value="'.$categoria['id_categoria'].'">'.$categoria['categoria'].'</option>';
+                                ?>
                         </select>
                     </div>
                 </div>
@@ -63,7 +83,11 @@
                     </div>
                     <div class="col-4 ms-3">
                         <select class="form-select" id="valGenero" disabled>
-                            <option value="1">Seleccione género</option>
+                            <option value="0">Seleccione un género</option>
+                                <?php
+                                    while($genero = $generos->fetch(PDO::FETCH_ASSOC))
+                                    echo '<option value="'.$genero['id_genero'].'">'.$genero['genero'].'</option>';
+                                ?>
                         </select>
                     </div>
                 </div>
@@ -78,61 +102,38 @@
                     </div>
                     <div class="col-4 ms-3">
                         <select class="form-select" id="valEstado" disabled>
-                            <option value="1">Seleccione estado</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr>
-
-                <!-- Ordenar -->
-                <div class="row mt-2">
-                    <div class="col-2 align-self-center">Ordenar por:</div>
-                    <div class="col-2">
-                        <select class="form-select" id="valTipoOrden">
-                            <option>ID</option>
-                            <option>Existencia</option>
-                            <option>Categoria</option>
-                        </select>
-                    </div>
-                    <div class="col-2 ms-3">
-                        <select class="form-select" id="valAscDescOrden">
-                            <option>ASC</option>
-                            <option>DESC</option>
+                            <option value="0">Seleccione un estado</option>
+                                <?php
+                                    while($estado = $estados->fetch(PDO::FETCH_ASSOC))
+                                    echo '<option value="'.$estado['id_estado'].'">'.$estado['estado'].'</option>';
+                                ?>
                         </select>
                     </div>
                 </div>
             </div>
-        </div>
+
 
         <!-- Table Section -->
         <div class="padding-side">
             <div class="row justify-content-center">
-                <div class="col-11">
-                    <div class="card mt-3" style="height: 350;">
-                        <div id="emptyState" class="card-body text-center d-none">
-                            <i class="far fa-meh-blank mb-3" style="font-size: 7em; color: #E7E9EC"></i>
-                            <p class="empty-state">No se encontraron resultados :(</p>
-                        </div>
-                        
-                        <div id="tableContent" class="card-body p-0">
-                            <div class="table-wrapper" style="height:350px;  overflow-y:auto">
-                                <table style="width: 100%;  border-spacing: 0;">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Stock min.</th>
-                                            <th>Stock max.</th>
-                                            <th>Existencia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="reporteBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                <div id="emptyState" class="text-center flex-wrap align-content-center py-5 d-none" style="width:100%; height:100%;">
+                    <i class="bi bi-emoji-neutral display-4 text-muted"></i>
+                    <p class="text-muted fs-5 mt-3">No se encontraron resultados</p>
                 </div>
+
+                
+                <table id="reportExistencias">
+                    <thead>
+                        <tr id="tableHeader">
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Stock min.</th>
+                            <th>Stock max.</th>
+                            <th>Existencia</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>   
             </div>
         </div>
     </div>

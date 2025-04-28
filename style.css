@@ -280,6 +280,11 @@ tbody .editColum {
     margin: 10px;
 }
 
+#tableHeader th {
+    background-color: rgb(13, 71, 161);
+    color: white;
+}
+
 /*Estilos de consultas de ventas*/
     /*
         .padding-header {
@@ -413,3 +418,9 @@ tbody .editColum {
 .btnVer:hover, .btnConcretar:hover, .btnCancelar:hover {
     background: #d1d1d1;
 }
+
+
+
+.cursor-mano {
+    cursor: pointer;
+  }
