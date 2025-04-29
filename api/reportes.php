@@ -169,5 +169,88 @@ if ($opcion=='1'){
         echo json_encode($response);
     }
 
+    //Reporte de existencia, traer las salidas y articulos de cada salida
+    else 
+        if($opcion == '4'){  
+            $reportType = (isset($_POST['reportType']) && !$_POST['reportType']=='') ? $_POST['reportType'] : 0;
 
+            $tipoSalida = (isset($_POST['valTipoSalido']) && !$_POST['valTipoSalido']=='') ? $_POST['valTipoSalido'] : 0;
+            $empleado = (isset($_POST['valEmpleado']) && !$_POST['valEmpleado']=='') ? $_POST['valEmpleado'] : 0;
+            $usuario = (isset($_POST['valUsuario']) && !$_POST['valUsuario']=='') ? $_POST['valUsuario'] : 0;
+
+
+            $startDate = (isset($_POST['startDate']) && !$_POST['startDate']=='') ? (new DateTime($_POST['startDate']))->format('Y-m-d') : 0;
+            $endDate = (isset($_POST['endDate']) && !$_POST['endDate']=='') ? (new DateTime($_POST['endDate']))->format('Y-m-d') : 0;
+            
+            $filtrotipoSalida = ($tipoSalida != 0) ? ' AND us.tipo_salida= :tipoSalida ' : ' ';
+            $filtroempleado = ($empleado != 0) ? ' AND us.id_empleado= :empleado ' : ' ';
+            $filtrousuario = ($usuario != 0) ? ' AND us.id_usuario = :usuario ' : ' ';
+
+            $filtroFecha = ($startDate != 0 && $endDate != 0) 
+                                ? $filtroFecha = ' AND fecha between :startDate and :endDate ' 
+                                : $filtroFecha = '';
+
+            //SOLO SALIDAS
+            if($reportType == 1) $sql= "SELECT us.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, e.usuario as empleado, d.Nombre as usuario, ts.tipo_salida 
+                                                FROM uni_salida as us 
+                                            left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
+                                            left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
+                                            inner join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida WHERE 1=1 ".$filtrotipoSalida." ".$filtroempleado. " ".$filtrousuario." ".$filtroFecha;
+
+            //SOLO ARTICULOS
+            else 
+             if($reportType == 2)
+                $sql= "SELECT usa.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') as fecha, a.nombre as articulo, usa.cantidad
+                                from uni_salida_articulo as usa 
+                            left join uni_articulos as a on usa.id_articulo = a.id_articulo
+                            inner join uni_salida as us on usa.id_salida = us.id_salida ".$filtrotipoSalida." ".$filtroempleado. " ".$filtrousuario." ".$filtroFecha;
+
+            $salidas = $conn->prepare($sql);
+
+            ($tipoSalida != 0) ? $salidas->bindparam(':tipoSalida', $tipoSalida) : '';
+            ($empleado != 0) ? $salidas->bindparam(':empleado', $empleado) : '';
+            ($usuario != 0) ? $salidas->bindparam(':usuario', $usuario) : '';
+
+            if ($startDate != 0 && $endDate != 0){
+                $salidas->bindparam(':startDate', $startDate);
+                $salidas->bindparam(':endDate', $endDate);
+            }
+
+            
+            $response = array();
+
+                if($salidas->execute()){
+                    while($salida = $salidas->fetch(PDO::FETCH_ASSOC))
+                        $response[] = $salida;
+                }
+
+                else 
+                 $response = $salidas->errorInfo()[2];
+
+            echo json_encode($response);
+        }
+
+
+        else 
+            if($opcion == '5'){
+                $idSalida = (isset($_POST['idSalida']) && !$_POST['idSalida']=='') ? $_POST['idSalida'] : NULL;
+
+                $sql = 'SELECT usa.id_salida, usa.id_articulo, ua.nombre, usa.cantidad, usa.precio 
+                                    from uni_salida_articulo as usa 
+                                inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo WHERE usa.id_salida = :id_salida';
+
+                $articulos = $conn->prepare($sql);
+                $articulos->bindparam(':id_salida', $idSalida);
+                $response = array();
+
+                    if($articulos->execute()){
+                        while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                            $response[] = $articulo;
+                    }
+
+                    else 
+                    $response = $articulos->errorInfo()[2];
+
+                echo json_encode($response);
+            }
 ?>

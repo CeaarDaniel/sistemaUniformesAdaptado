@@ -5,10 +5,6 @@ include('./api/conexion.php');
  $categorias = $conn->prepare("SELECT* from uni_categoria"); 
  $categorias->execute();
 
- //EMPLEADO
- $empleados = $conn->prepare("SELECT* from empleado"); 
- $empleados->execute();
-
  //USUARIOS
  $usuarios = $conn->prepare("SELECT rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID "); 
  $usuarios->execute();

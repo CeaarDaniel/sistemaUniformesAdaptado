@@ -1,34 +1,15 @@
-    let state = {
-        reporte_salidas: [],
-        optTipoSalidas: [],
-        optUsuarios: [],
-        currentHeaders: []
-    };
-
     var btngenerarReporte = document.getElementById('btngenerarReporte');
-    btngenerarReporte.addEventListener('click', generarReporte)
+    btngenerarReporte.addEventListener('click', updateTable)
 
-    async function getTipoSalidas() {
-        // Simular carga de tipos de salida
-        state.optTipoSalidas = [{value: 1, label: 'Tipo 1'}, {value: 2, label: 'Tipo 2'}];
-        populateSelect('valTipoSalida', state.optTipoSalidas);
-    }
-
-    async function getEmpleados() {
-        // Simular carga de usuarios
-        state.optUsuarios = [
-            {ID: 1, Nombre: 'Usuario 1'},
-            {ID: 2, Nombre: 'Usuario 2'},
-            {ID: 3, Nombre: 'Usuario 3'}
-        ];
-        populateSelect('valUsuario', state.optUsuarios);
-    }
 
     function setupFilters() {
         document.querySelectorAll('[id^="ftr"]').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 const targetId = e.target.id.replace('ftr', 'val').replace('os', 'o');
                 document.getElementById(targetId).disabled = e.target.checked;
+
+                if(e.target.checked)
+                    document.getElementById(targetId).value='';
             });
         });
     }
@@ -43,131 +24,149 @@
         });
     }
 
-    function setupReportTypeChange() {
-        document.querySelectorAll('input[name="rbnSalida"]').forEach(radio => {
-            radio.addEventListener('change', updateTableHeaders);
-        });
-    }
 
-    function updateTableHeaders() {
-        const reportType = document.querySelector('input[name="rbnSalida"]:checked').value;
-        const headers = reportType === '3' 
-            ? ['ID', 'Cantidad', 'Artículo'] 
-            : ['Cant.', 'ID', 'Fecha', 'Empleado', 'Usuario', 'Tipo salida'];
+    function updateTable() {
+        var reportType = document.querySelector('input[name="rbnSalida"]:checked');
+        var columnasTabla = document.getElementById("tableHeader");
         
-        state.currentHeaders = headers;
-        renderTableHeaders();
-    }
+        var formDataFiltros = new FormData;
+        formDataFiltros.append('opcion', 4);
+        formDataFiltros.append('reportType', reportType.value);
 
-    function renderTableHeaders() {
-        const thead = document.getElementById('tableHeader');
-        thead.innerHTML = `<tr>${state.currentHeaders.map(h => `<th>${h}</th>`).join('')}</tr>`;
-    }
+        formDataFiltros.append('valTipoSalido', document.getElementById('valTipoSalido').value);
+        formDataFiltros.append('valEmpleado', document.getElementById('valEmpleado').value);
+        formDataFiltros.append('valUsuario',  document.getElementById('valUsuario').value);
 
-    async function generarReporte() {
-        const queryParams = new URLSearchParams({
-            primerFecha: document.getElementById('fechaDesde').value,
-            segundaFecha: document.getElementById('fechaHasta').value,
-            tipoReporte: document.querySelector('input[name="rbnSalida"]:checked').value,
-            tipoSalida: document.getElementById('ftrTipoSalidas').checked ? '' : document.getElementById('valTipoSalida').value,
-            empleado: document.getElementById('ftrEmpleados').checked ? '' : document.getElementById('iptEmpleado').value,
-            usuario: document.getElementById('ftrUsuarios').checked ? '' : document.getElementById('valUsuario').value,
-            ordenTipo: document.getElementById('valTipoOrden').value,
-            ordenAscDesc: document.getElementById('valAscDecOrden').value
-        });
+        formDataFiltros.append('startDate',  document.getElementById('startDate').value);
+        formDataFiltros.append('endDate',  document.getElementById('endDate').value);
 
-        // Simular datos
-        const mockData = [
-            { id_salida: 1, fecha: '2023-08-01', empleado: 'Juan', usuario: 'admin', tipo_salida: 'Tipo 1', articulos: [
-                { nombre: 'Artículo 1', piezas: 5 },
-                { nombre: 'Artículo 2', piezas: 3 }
-            ]}
-        ];
-
-        updateTable(mockData);
-        showNotification('Búsqueda finalizada', 'success');
-    }
-
-    function updateTable(data) {
-        const tbody = document.getElementById('reporteBody');
-        tbody.innerHTML = '';
-        
-        if(data.length === 0) {
-            document.getElementById('emptyState').classList.remove('d-none');
-            document.getElementById('tableContent').classList.add('d-none');
-            return;
-        }
-
-        data.forEach(item => {
-            // Fila principal
-            tbody.innerHTML += `
-                <tr class="row-reporte">
-                    ${generateMainRow(item)}
-                </tr>
-            `;
-
-            // Filas de artículos
-            if(item.articulos) {
-                item.articulos.forEach(articulo => {
-                    tbody.innerHTML += `
-                        <tr class="row-articulos">
-                            <td colspan="2"></td>
-                            <td style="text-align: right; padding-right: 60px">${articulo.piezas}</td>
-                            <td colspan="3">${articulo.nombre}</td>
-                        </tr>
-                    `;
+        fetch("./api/reportes.php", {
+            method: "POST",
+            body: formDataFiltros,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+    
+                ancho= window.innerWidth - 100;
+                document.getElementById('emptyState').classList.add('d-none');
+                document.getElementById('reporteTable').classList.remove('d-none');
+    
+                $('#reporteTable').DataTable().clear();
+                $('#reporteTable').DataTable().destroy();
+                // Crear la configuración de las columnas para DataTables
+                var columnas = Object.keys(data[0]);
+                var columnasConfig = columnas.map(function (columna) { return { "data": columna }; });
+    
+                //Restear las columnas de la tabla
+                while (columnasTabla.firstChild) 
+                    columnasTabla.removeChild(columnasTabla.firstChild);
+    
+                //$('#reporteTable thead tr:nth-child(2)').remove(); //Se elimina la fila clonada (2)
+                        
+    
+                //Agregar las nuevas columnas a la tabla
+                columnas.forEach(columna => {
+                    const fila = document.createElement("th");
+                    fila.textContent = columna.replaceAll("_", " ").toUpperCase();
+                    columnasTabla.appendChild(fila);
                 });
+    
+                //Crear el dataTable con las nuevas configuraciones
+                $('#reporteTable').DataTable({
+                    responsive: true,
+                    scrollX: ancho,
+                    scrollY: 400,
+                    scrollCollapse: true,
+                    data: data,
+                    columns: columnasConfig, 
+                    columnDefs: [
+                        {
+                            targets: Array.from({ length: columnasConfig.length }, (_, i) => i),
+                            className: 'text-center'
+                        },
+                    ], 
+                    "initComplete": function(settings, json) {
+
+                        $('#reporteTable').off('click', 'tr');
+    
+                        //SOLO PARA LA TABLA DE VENTAS
+                        if (reportType.value == '1') {
+                            // Asignar el evento a las celdas de la tabla
+                            $('#reporteTable').on('click', 'tr', function() {
+                                var ID= $(this).find('td').eq(0).text();
+                                var fecha= $(this).find('td').eq(1).text();
+                                var empleado= $(this).find('td').eq(2).text();
+                                var usuario= $(this).find('td').eq(3).text();
+                                var tipoSalidaM= $(this).find('td').eq(4).text();
+    
+                                detallVenta(ID, fecha, empleado, usuario, tipoSalidaM);
+                            })
+                        }
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                $('#reporteTable').DataTable().clear();
+                $('#reporteTable').DataTable().destroy();
+                document.getElementById('emptyState').classList.remove('d-none');
+                document.getElementById('reporteTable').classList.add('d-none');
             }
-        });
-
-        document.getElementById('emptyState').classList.add('d-none');
-        document.getElementById('tableContent').classList.remove('d-none');
+        )
     }
 
-    function generateMainRow(item) {
-        const reportType = document.querySelector('input[name="rbnSalida"]:checked').value;
-        
-        if(reportType === '3') {
-            return `
-                <td>${item.id_articulo || ''}</td>
-                <td>${item.piezas || ''}</td>
-                <td>${item.nombre || ''}</td>
-            `;
-        }
-        
-        return `
-            <td>${item.cantidad || ''}</td>
-            <td>${item.id_salida || ''}</td>
-            <td>${item.fecha || ''}</td>
-            <td style="font-weight: bold">${item.empleado || ''}</td>
-            <td>${item.usuario || ''}</td>
-            <td>${item.tipo_salida || ''}</td>
-        `;
+
+    function  detallVenta(ID, fecha, empleado, usuario, tipoSalida) {   
+
+        $('#modalfecha').text(fecha)
+        $('#modalusuario').text(usuario);
+        $('#modalEmpleado').text(empleado);
+        $('#modaltipoSalida').text(tipoSalida);
+
+    const fromDataArticulos = new FormData();
+    fromDataArticulos.append('opcion', 5);
+    fromDataArticulos.append('idSalida', ID);
+
+    fetch("./api/reportes.php", {
+        method: "POST",
+        body: fromDataArticulos,
+    }
+    ).then((response) => response.json())
+    .then((data) => {
+        let t= document.getElementById('tableDetalleSalida');
+
+        t.innerHTML = '';
+
+        if(data.length <= 0) t.innerHTML='<tr><td><b class="text-center" style="width:100%">ESTA SALIDA NO CUENTA CON ARTICULOS<td></tr></b>'
+
+        else {
+                // Iterar sobre los datos y crear una fila para cada artículo
+                data.forEach(dato => {
+                    const fila = document.createElement("tr");
+                    fila.innerHTML =
+                    `<td>${dato.id_salida}</td>
+                    <td>${dato.id_articulo}</td>
+                    <td>${dato.nombre}</td>
+                    <td>${dato.cantidad}</td>
+                    <td>${ (dato.precio == null) ? '' : dato.precio}</td>`;
+                    t.appendChild(fila);
+                }); 
+            } 
+        })
+    .catch((error) => { console.log(error); })
+
+        new bootstrap.Modal(document.getElementById('modalDetalleSalida')).show();
     }
 
-    // Funciones auxiliares
+
+    /* Funciones auxiliares
     function populateSelect(selectId, options) {
         const select = document.getElementById(selectId);
         select.innerHTML = options.map(opt => 
             `<option value="${opt.value || opt.ID}">${opt.label || opt.Nombre}</option>`
         ).join('');
-    }
+    } */
 
-    function showNotification(message, type) {
-        const toast = document.createElement('div');
-        toast.className = `toast align-items-center text-white bg-${type} border-0`;
-        toast.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">${message}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        `;
-        document.body.appendChild(toast);
-        new bootstrap.Toast(toast).show();
-    }
-    
-
-    //await Promise.all([getTipoSalidas(), getEmpleados()]);
+    updateTable();
     setupFilters();
     setupToggleFilter();
-    setupReportTypeChange();
