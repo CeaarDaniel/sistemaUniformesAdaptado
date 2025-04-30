@@ -424,3 +424,15 @@ tbody .editColum {
 .cursor-mano {
     cursor: pointer;
   }
+
+
+  .animacion{
+    transition: transform 0.4s ease-in-out;
+  }
+
+    /*Transicion al cambiar de pagina con ajax*/
+    .ocultar-mostrar{
+      transform: translateY(-100%);
+      transition: transform 0.4s ease-in-out;
+    }
+  /*fin efecto para la transicion*/ 

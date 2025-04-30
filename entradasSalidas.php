@@ -1,4 +1,3 @@
-
     <div id="entradasSalidas">
         <div class="padding-header">
             <div class="row align-items-center mb-4">

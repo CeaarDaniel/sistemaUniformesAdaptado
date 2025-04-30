@@ -8,7 +8,7 @@
         <div class="row px-5 mx-0 mx-md-4">
             <!-- Tarjeta 2: Venta de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2" >
-                <a href="#/uniformes/salidasPlanta" class="text-decoration-none" onclick="navegar('salidasPlanta','0','mainContent')">
+                <a class="text-decoration-none" onclick="cargarRuta('salidasPlanta')">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -24,7 +24,7 @@
 
             <!-- Tarjeta 3: Entrega de uniforme usado -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasVenta" class="text-decoration-none" onclick="navegar('salidasVenta','0','mainContent')">
+                <a  class="text-decoration-none"  onclick="cargarRuta('salidasVenta')">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -40,7 +40,7 @@
 
             <!-- Tarjeta 4: Reposición de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasUsado" class="text-decoration-none" onclick="navegar('salidasUsado','0','mainContent')">
+                <a class="text-decoration-none" onclick="cargarRuta('salidasUsado')">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -56,7 +56,7 @@
 
             <!-- Tarjeta 5: Consulta de salidas -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasReposicion" class="text-decoration-none" onclick="navegar('salidasReposicion','0','mainContent')">
+                <a class="text-decoration-none"  onclick="cargarRuta('salidasReposicion')">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -72,7 +72,7 @@
 
             <!-- Tarjeta 5: Consulta de salidas -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasRenovacion" class="text-decoration-none" onclick="navegar('salidasRenovacion','0','mainContent')">
+                <a class="text-decoration-none"  onclick="cargarRuta('salidasRenovacion')">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">

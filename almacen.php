@@ -20,7 +20,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="title">Almacén</h1>
                 <div>
-                    <button class="btn" onclick="navegar('editarAlmacen','0','mainContent')"  style="background: #26a69a; color:white;">
+                    <button class="btn" onclick="cargarRuta('editarAlmacen')"  style="background: #26a69a; color:white;">
                         <i class="fas fa-edit"></i> Editar almacén
                     </button>
                     <button id='btnactualizartabla' class="btn btn-primary" style="background: #1976d2">
@@ -114,7 +114,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn " data-bs-dismiss="modal" style="background-color:  none;">Cancelar</button>
-                        <button type="button" class="btn" onclick="eliminarArticulo()" style="background-color:  none;">Eliminar</button>
+                        <button type="button" class="btn" style="background-color:  none;">Eliminar</button>
                     </div>
                 </div>
             </div>

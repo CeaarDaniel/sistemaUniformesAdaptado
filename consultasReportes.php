@@ -6,12 +6,12 @@
 
                 <ul>
                     <li>De ventas</li>
-                    <li><a href="#/ReportesInventario" onclick="navegar('consultasReportesInventario','0','mainContent')">De inventario</a></li>
+                    <li><a onclick="cargarRuta('consultasReportesInventario')">De inventario</a></li>
                     <li>De entradas</li>
                 </ul>
                     <select class="form-selet" id="categoriaCat">
                         <option value="0">De ventas</option>
-                        <option value="1"><a href="#/ReportesInventario" onclick="navegar('consultasReportesInventario','0','mainContent')">De inventario</a></option>
+                        <option value="1"><a onclick="cargarRuta('consultasReportesInventario')">De inventario</a></option>
                         <option value="2">De entradas</option>
                     </select>
             </div>

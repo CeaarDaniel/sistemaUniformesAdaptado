@@ -7,7 +7,7 @@
         <div class="row table-container">
             <!-- Tarjeta 1: Entrega de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasPlanta" class="text-decoration-none">
+                <a href="#/salidasPlanta" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -23,7 +23,7 @@
 
             <!-- Tarjeta 2: Venta de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasVenta" class="text-decoration-none">
+                <a href="#/salidasVenta" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -39,7 +39,7 @@
 
             <!-- Tarjeta 3: Entrega de uniforme usado -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasUsado" class="text-decoration-none">
+                <a href="#/salidasUsado" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -55,7 +55,7 @@
 
             <!-- Tarjeta 4: Reposición de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasReposicion" class="text-decoration-none">
+                <a href="#/salidasReposicion" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -71,7 +71,7 @@
 
             <!-- Tarjeta 5: Consulta de salidas -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/consultaSalidas" class="text-decoration-none">
+                <a href="#/consultaSalidas" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -87,7 +87,7 @@
 
             <!-- Tarjeta 6: Pedidos -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/pedidos" class="text-decoration-none">
+                <a href="#/pedidos" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -103,7 +103,7 @@
 
             <!-- Tarjeta 7: Renovación de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/salidasRenovacion" class="text-decoration-none">
+                <a href="#/salidasRenovacion" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">

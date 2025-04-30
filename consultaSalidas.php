@@ -102,5 +102,5 @@
         </div>
     </div>
 
-    <a href="#/cambios" onclick="navegar('cambios','0','mainContent')">CAMBIOS</a>
+    <a href="#/cambios" onclick="cargarRuta('cambios')">CAMBIOS</a>
       <!-- Script personalizado -->

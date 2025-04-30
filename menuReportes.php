@@ -6,7 +6,7 @@
         <div class="row px-5 mx-0 mx-md-4 justify-content-center">
             <!-- Tarjeta 2: Venta de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2" >
-                <a href="#/uniformes/reporteVentas" class="text-decoration-none"  onclick="navegar('reporteVentas','0','mainContent')">
+                <a href="#/reporteVentas" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -23,7 +23,7 @@
 
             <!-- Tarjeta 3: Entrega de uniforme usado -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/reportesExistencias" class="text-decoration-none" onclick="navegar('reportesExistencias','0','mainContent')">
+                <a href="#/reportesExistencias" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">
@@ -40,7 +40,7 @@
 
             <!-- Tarjeta 4: Reposición de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/uniformes/reportesSalidas" class="text-decoration-none" onclick="navegar('reportesSalidas','0','mainContent')">
+                <a href="#/reportesSalidas" class="text-decoration-none">
                     <div class="card-shortcut text-center q-card p-4">
                         <div class="">
                             <div class="q-avatar bg-blue-10 text-white">

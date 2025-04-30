@@ -93,7 +93,7 @@ $categorias->execute();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="agregarCategoria()">Ok</button>
+                    <button type="button" class="btn btn-primary">Ok</button>
                 </div>
             </div>
         </div>

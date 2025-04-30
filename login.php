@@ -100,112 +100,112 @@
 </div>
 
 <script>
-let state = {
-    empleados: [],
-    selectedUser: null,
-    isLoading: false
-};
+    let state = {
+        empleados: [],
+        selectedUser: null,
+        isLoading: false
+    };
 
-// Configuración inicial
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadEmployees();
-    setupUserSearch();
-});
+    // Configuración inicial
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadEmployees();
+        setupUserSearch();
+    });
 
-async function loadEmployees() {
-    // Simular carga de empleados
-    state.empleados = [
-        { ID: 1, Nombre: "Juan Pérez" },
-        { ID: 2, Nombre: "María García" },
-        { ID: 3, Nombre: "Pedro López" }
-    ];
-    updateDatalist();
-}
+    async function loadEmployees() {
+        // Simular carga de empleados
+        state.empleados = [
+            { ID: 1, Nombre: "Juan Pérez" },
+            { ID: 2, Nombre: "María García" },
+            { ID: 3, Nombre: "Pedro López" }
+        ];
+        updateDatalist();
+    }
 
-function setupUserSearch() {
-    const usuarioInput = document.getElementById('usuarioInput');
-    const datalist = document.getElementById('empleadosList');
-    
-    usuarioInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filtered = state.empleados.filter(emp => 
-            emp.Nombre.toLowerCase().includes(searchTerm)
-        );
+    function setupUserSearch() {
+        const usuarioInput = document.getElementById('usuarioInput');
+        const datalist = document.getElementById('empleadosList');
         
-        datalist.innerHTML = filtered.map(emp => 
+        usuarioInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = state.empleados.filter(emp => 
+                emp.Nombre.toLowerCase().includes(searchTerm)
+            );
+            
+            datalist.innerHTML = filtered.map(emp => 
+                `<option value="${emp.Nombre}" data-id="${emp.ID}">`
+            ).join('');
+            
+            // Autocompletar si hay una coincidencia exacta
+            const exactMatch = filtered.find(emp => 
+                emp.Nombre.toLowerCase() === searchTerm
+            );
+            
+            if(exactMatch) {
+                state.selectedUser = exactMatch;
+                document.getElementById('passwordInput').focus();
+            }
+        });
+    }
+
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('passwordInput');
+        const toggleIcon = document.getElementById('togglePassword');
+        
+        if(passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        }
+    }
+
+    async function login() {
+        const loginButton = document.getElementById('loginButton');
+        const errorBanner = document.getElementById('errorBanner');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Validación básica
+        if(!state.selectedUser || !document.getElementById('passwordInput').value) {
+            errorMessage.textContent = "Seleccione un usuario y escriba su contraseña";
+            errorBanner.classList.remove('d-none');
+            return;
+        }
+
+        // Mostrar loading
+        loginButton.innerHTML = `
+            <span class="spinner-border spinner-border-sm" 
+                role="status" 
+                aria-hidden="true"></span>
+            Verificando...
+        `;
+        loginButton.disabled = true;
+
+        // Simular llamada API
+        setTimeout(async () => {
+            // Aquí iría la llamada real al servidor
+            const success = Math.random() > 0.5; // Simular éxito/fallo
+            
+            if(success) {
+                window.location.href = '/dashboard'; // Redirección
+            } else {
+                errorMessage.textContent = "Credenciales incorrectas";
+                errorBanner.classList.remove('d-none');
+            }
+            
+            // Restaurar botón
+            loginButton.innerHTML = "Iniciar sesión";
+            loginButton.disabled = false;
+        }, 700);
+    }
+
+    function updateDatalist() {
+        const datalist = document.getElementById('empleadosList');
+        datalist.innerHTML = state.empleados.map(emp => 
             `<option value="${emp.Nombre}" data-id="${emp.ID}">`
         ).join('');
-        
-        // Autocompletar si hay una coincidencia exacta
-        const exactMatch = filtered.find(emp => 
-            emp.Nombre.toLowerCase() === searchTerm
-        );
-        
-        if(exactMatch) {
-            state.selectedUser = exactMatch;
-            document.getElementById('passwordInput').focus();
-        }
-    });
-}
-
-function togglePasswordVisibility() {
-    const passwordInput = document.getElementById('passwordInput');
-    const toggleIcon = document.getElementById('togglePassword');
-    
-    if(passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
-    } else {
-        passwordInput.type = 'password';
-        toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
     }
-}
-
-async function login() {
-    const loginButton = document.getElementById('loginButton');
-    const errorBanner = document.getElementById('errorBanner');
-    const errorMessage = document.getElementById('errorMessage');
-    
-    // Validación básica
-    if(!state.selectedUser || !document.getElementById('passwordInput').value) {
-        errorMessage.textContent = "Seleccione un usuario y escriba su contraseña";
-        errorBanner.classList.remove('d-none');
-        return;
-    }
-
-    // Mostrar loading
-    loginButton.innerHTML = `
-        <span class="spinner-border spinner-border-sm" 
-              role="status" 
-              aria-hidden="true"></span>
-        Verificando...
-    `;
-    loginButton.disabled = true;
-
-    // Simular llamada API
-    setTimeout(async () => {
-        // Aquí iría la llamada real al servidor
-        const success = Math.random() > 0.5; // Simular éxito/fallo
-        
-        if(success) {
-            window.location.href = '/dashboard'; // Redirección
-        } else {
-            errorMessage.textContent = "Credenciales incorrectas";
-            errorBanner.classList.remove('d-none');
-        }
-        
-        // Restaurar botón
-        loginButton.innerHTML = "Iniciar sesión";
-        loginButton.disabled = false;
-    }, 700);
-}
-
-function updateDatalist() {
-    const datalist = document.getElementById('empleadosList');
-    datalist.innerHTML = state.empleados.map(emp => 
-        `<option value="${emp.Nombre}" data-id="${emp.ID}">`
-    ).join('');
-}
 </script>
 </body>
 </html>

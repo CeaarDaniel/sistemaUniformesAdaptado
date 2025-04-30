@@ -47,7 +47,7 @@ $estado->execute();
                         </select>
 
                         <!--BOTON ALTA DE CATEGORIA -->
-                        <button class="btn border rounded mx-1" style="color:white; background-color:rgb(25, 118, 210); font-size:18px;" onclick="navegar('altasCategorias','0','mainContent')">
+                        <button class="btn border rounded mx-1" style="color:white; background-color:rgb(25, 118, 210); font-size:18px;" onclick="cargarRuta('altasCategorias')">
                             <span class="fas fa-plus"></span>
                         </button>
                     </div>
@@ -162,7 +162,7 @@ $estado->execute();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarArticulo()">Ok</button>
+                    <button type="button" class="btn btn-primary">Ok</button>
                 </div>
             </div>
         </div>

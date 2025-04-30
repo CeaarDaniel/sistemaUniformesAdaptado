@@ -15,7 +15,7 @@
                 <div class="col-md-4">
                     <div class="input-group">
                         <input type="text" class="form-control" id="numSalida" placeholder="Núm. Salida">
-                        <button class="btn btn-warning" onclick="buscarArticulos()">
+                        <button class="btn btn-warning">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -86,7 +86,7 @@
 
         <!-- Botón de Realizar Cambio -->
         <div class="container mt-4 text-end">
-            <button class="btn btn-success" onclick="abrirModalConfirmacion()">Realizar Cambio</button>
+            <button class="btn btn-success">Realizar Cambio</button>
         </div>
 
         <!-- Modal de Confirmación -->
@@ -102,7 +102,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="realizarCambio()">Aceptar</button>
+                        <button type="button" class="btn btn-primary">Aceptar</button>
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" onclick="seleccionarArticulo()">Seleccionar</button>
+                        <button type="button" class="btn btn-primary">Seleccionar</button>
                     </div>
                 </div>
             </div>

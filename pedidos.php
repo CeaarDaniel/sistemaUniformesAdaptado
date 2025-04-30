@@ -23,7 +23,7 @@
                 <div class="col-md-6">
                     <div class="input-group">
                         <input type="text" class="form-control" id="busqueda" placeholder="Buscar" style="max-width:200px">
-                        <button class="btn btn-warning" onclick="navegar()">
+                        <button class="btn btn-warning">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -171,7 +171,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-danger" onclick="cancelarPedido()">Sí, cancelar</button>
+                        <button type="button" class="btn btn-danger">Sí, cancelar</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-success" onclick="concretarPedido()">Sí, concretar</button>
+                        <button type="button" class="btn btn-success">Sí, concretar</button>
                     </div>
                 </div>
             </div>

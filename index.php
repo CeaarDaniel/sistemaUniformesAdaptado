@@ -49,11 +49,7 @@
         <?php include('navBar.php') ?>
 
             <!-- Contenido principal -->
-            <div id="mainContent" class="q-page-container padding-header">
-                <div id="dashboard">
-                    <?php include('dashboard.php') ?>
-                </div>
-            </div>
+            <div id="mainContent" class="padding-header animacion"></div>
     </div>
 
     <!-- Bootstrap JS y dependencias -->
@@ -77,13 +73,15 @@
       
 
         function navegar(pagina, id, pagsus) {
+            
             var contenido = document.getElementById(pagsus);
             var xhttp = new XMLHttpRequest();
+            
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         window.scroll(0, 0);
-                        contenido.innerHTML = this.responseText;
-                        
+                                    contenido.innerHTML = this.responseText;
+                              
                         // Eliminar el script anterior si existe
                         var oldScript = document.getElementById('jsDinamico');
                         if (oldScript) oldScript.remove();
@@ -112,6 +110,7 @@
                             .catch(error => {
                                 console.log(`Script no encontrado: ${scriptUrl}`);
                             });
+                       
                     }
                 };
                 xhttp.open('POST', pagina + '.php', true);
@@ -119,43 +118,55 @@
                 xhttp.send('id=' + id);
         }
 
-        /*
-            function navegar(pagina, id, pagsus) {
-            var contenido = document.getElementById(pagsus);
-            //var animacion = document.querySelector("#"+pagsus);
 
-            //animacion.classList.toggle("ocultar-prestamos"); //agrega la opacidad en 0 al cambiar de pagina
+    //Funcion para obtener la pagina actual
+    function obtenerSeccionActual() {
+      const hash = location.hash.split('/');
 
+        if(hash[hash.length - 1] == '' || hash[hash.length - 1] == null || hash[hash.length - 1]==' ')
+            hash[hash.length - 1] ='dashboard';
 
-            var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            window.scroll(0, 0);
-                            // Esperar un breve tiempo antes de cambiar el contenido para visualizar la transicion
-                            //setTimeout(function() {
-                                contenido.innerHTML = this.responseText;
-                                //animacion.classList.toggle("ocultar-prestamos"); //cambia la opacidad en 1  al cambiar de pagina
-                            //}.bind(this), 400);  //tiempo del setTime
+      return hash[hash.length - 1]; 
+    }
 
-                            if(document.getElementById('jsDinamico')) 
-                                document.getElementById('jsDinamico').remove();
-                                
-                                var script = document.createElement('script');
-                                script.id = 'jsDinamico';
-                                script.src = './js/'+pagina+'.js';
-                                script.type = 'text/javascript';
-                                document.body.appendChild(script);
-                        }
-                    };
+    // Función que carga contenido y cambia la URL
+    function cargarRuta(pagina) {
+        const seccionActual = obtenerSeccionActual();
 
+            if (seccionActual === pagina) 
+                return;
+            
 
-                xhttp.open('POST', pagina + '.php', true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send('id='+id);
-            }  
-        */
+      // Cambiar la URL (sin recargar)
+      history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
 
+      var animacion = document.querySelector("#mainContent");
+      animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
 
+        setTimeout(function () {
+            navegar(pagina,'0','mainContent')
+            animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+        }.bind(this), 400);
+    }
+
+    // Detectar el botón "atrás" o "adelante" del navegador
+    window.addEventListener("popstate", (event) => {
+        const nuevaSeccion = obtenerSeccionActual();
+        var animacion = document.querySelector("#mainContent");
+
+        animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+        setTimeout(function () {
+            navegar(nuevaSeccion,'0','mainContent')
+            animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+        }.bind(this), 400);
+    });
+
+    // Cargar la página correcta al cargar la SPA
+    window.addEventListener("DOMContentLoaded", () => {
+        //const ruta = location.pathname.slice(1) || "inicio";
+        const seccion = obtenerSeccionActual();
+        navegar(seccion,'0','mainContent')
+    });
     </script>
 </body>
 </html>
