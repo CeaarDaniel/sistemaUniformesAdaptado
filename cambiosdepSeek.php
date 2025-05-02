@@ -37,9 +37,6 @@
 </head>
 <body class="desktop no-touch body--light">
     <div id="cambios">
-        <!-- Barra de progreso (simulada) -->
-        <div class="progress-bar" style="height: 8px; background-color: #6c757d;"></div>
-
         <!-- Título -->
         <div class="container mt-4">
             <h1 class="title text-center">Cambio de Artículos</h1>

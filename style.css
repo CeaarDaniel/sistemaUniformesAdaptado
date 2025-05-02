@@ -432,7 +432,7 @@ tbody .editColum {
 
     /*Transicion al cambiar de pagina con ajax*/
     .ocultar-mostrar{
-      transform: translateY(-100%);
+      transform: scale(0);
       transition: transform 0.4s ease-in-out;
     }
   /*fin efecto para la transicion*/ 

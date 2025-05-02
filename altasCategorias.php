@@ -13,9 +13,6 @@ $categorias->execute();
 ?>
 
 <div id="altaCategoriaModal">
-    <!-- Barra de progreso (simulada) -->
-    <div class="progress-bar" style="height: 8px; background-color: #6c757d;"></div>
-
     <!-- Formulario -->
     <div class="form-container">
 

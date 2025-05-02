@@ -1,8 +1,4 @@
     <div id="salidasPlanta">
-        <!-- Barra de progreso -->
-        <div id="progressBar" class="progress fixed-bottom d-none" style="height: 8px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary" style="width: 100%"></div>
-        </div>
 
         <div class="padding-header">
             <div class="row mb-4">

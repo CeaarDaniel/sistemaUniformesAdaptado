@@ -1,7 +1,18 @@
-<div id="consultaSalidas">
-        <!-- Barra de progreso (simulada) -->
-        <div class="progress-bar" style="height: 8px; background-color: #6c757d;"></div>
+<?php
+    include('./api/conexion.php');
 
+    //TIPOS DE SALIDAS
+    $tipoSalida = $conn->prepare("select* from uni_tipo_salida"); 
+    $tipoSalida->execute();
+
+    //GENERO
+    $years = $conn->prepare("select DISTINCT YEAR(fecha_creacion) as año from uni_pedido"); 
+    $years->execute();
+?>    
+
+
+
+<div id="consultaSalidas">
         <!-- Título -->
         <div class="container mt-4">
             <h1 class="title text-center">Consultas de Salidas</h1>
@@ -12,16 +23,17 @@
             <div class="row g-3 align-items-center">
                 <!-- Tipo de Salida -->
                 <div class="col-md-4">
-                    <select class="form-select" id="tipo" onchange="fechaOnChange()">
-                        <option value="1">Tipo 1</option>
-                        <option value="2">Tipo 2</option>
-                        <option value="3">Tipo 3</option>
+                    <select class="form-select filtroBusqueda" id="tipo">
+                        <?php
+                            while($salida = $tipoSalida->fetch(PDO::FETCH_ASSOC))
+                                echo '<option value="'.$salida['id_tipo_salida'].'">'.$salida['tipo_salida'].'</option>';
+                        ?>
                     </select>
                 </div>
 
                 <!-- Mes -->
                 <div class="col-md-2">
-                    <select class="form-select" id="mes" onchange="fechaOnChange()">
+                    <select class="form-select filtroBusqueda" id="mes">
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
                         <option value="3">Marzo</option>
@@ -39,19 +51,19 @@
 
                 <!-- Año -->
                 <div class="col-md-2">
-                    <select class="form-select" id="anio" onchange="fechaOnChange()">
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
+                    <select class="form-select filtroBusqueda" id="anio">
+                        <option value="0">Todos</option>
+                            <?php
+                                while($year = $years->fetch(PDO::FETCH_ASSOC))
+                                echo '<option value="'.$year['año'].'">'.$year['año'].'</option>';
+                            ?>
                     </select>
                 </div>
 
                 <!-- Búsqueda -->
                 <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="busquedaEmp" placeholder="Buscar empleado" oninput="filtrarPorBusqueda()">
+                    <div class="input-group"> 
+                        <input type="number" class="form-control filtroBusqueda" id="busquedaEmp" min="2" step="1" placeholder="Buscar empleado">
                     </div>
                 </div>
             </div>
@@ -59,19 +71,18 @@
 
         <!-- Tabla de Salidas -->
         <div class="container mt-4 table-container">
-            <table class="table table-striped">
-                <thead>
+            <table id="tablaSalidas" class="table table-striped">
+                <thead class="sticky-header">
                     <tr>
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Realizado por</th>
-                        <th>Empleado</th>
-                        <th>Vale</th>
-                        <th>Acciones</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">ID</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Fecha</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Tipo</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Realizado por</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Empleado</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tablaSalidas">
+                <tbody>
                     <!-- Filas de la tabla se llenarán dinámicamente -->
                 </tbody>
             </table>
@@ -101,6 +112,3 @@
             </div>
         </div>
     </div>
-
-    <a href="#/cambios" onclick="cargarRuta('cambios')">CAMBIOS</a>
-      <!-- Script personalizado -->

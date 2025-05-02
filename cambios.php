@@ -1,12 +1,20 @@
+<?php
+    session_start();
+   
+
+    if (!empty($_POST['id'])) {
+        $_SESSION['idCambios'] = $_POST['id'];
+    }
+?>
 
     <div id="cambios">
-        <!-- Barra de progreso (simulada) -->
-        <div class="progress-bar" style="height: 8px; background-color: #6c757d;"></div>
-
         <!-- Título -->
         <div class="container mt-4">
             <h1 class="title text-center">Cambio de Artículos</h1>
         </div>
+
+
+        <b class="fs-1"> <?php echo $_SESSION['idCambios']?> </b>
 
         <!-- Filtros y Búsqueda -->
         <div class="container mt-4">

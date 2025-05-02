@@ -1,9 +1,4 @@
     <div id="entradasUsado">
-        <!-- Barra de progreso -->
-        <div id="progressBar" class="progress fixed-bottom d-none" style="height: 8px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-        </div>
-
         <div class="padding-header">
             <div class="row align-items-center mb-4">
                 <div class="col">

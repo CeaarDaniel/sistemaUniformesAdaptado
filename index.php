@@ -130,9 +130,12 @@
     }
 
     // Función que carga contenido y cambia la URL
-    function cargarRuta(pagina) {
-        const seccionActual = obtenerSeccionActual();
+    function cargarRuta(pagina, id) {
 
+        if (!id) id = 0;
+        
+
+        const seccionActual = obtenerSeccionActual();
             if (seccionActual === pagina) 
                 return;
             
@@ -144,7 +147,7 @@
       animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
 
         setTimeout(function () {
-            navegar(pagina,'0','mainContent')
+            navegar(pagina, id,'mainContent')
             animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
         }.bind(this), 400);
     }
