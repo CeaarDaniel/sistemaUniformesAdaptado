@@ -11,37 +11,48 @@
             cargarRuta(categoriaCat.value)
         })
 
-        // Datos de ejemplo
-        const inventario = [
-            { id: 1, nombre: "PLAYERA ML-Hombre T XS", costo: 243.00, precioVenta: 243.00, existencia: 3, stockMin: 10, stockMax: 6 },
-            { id: 2, nombre: "PLAYERA ML-Hombre T S", costo: 243.00, precioVenta: 243.00, existencia: 22, stockMin: 30, stockMax: 20 },
-            { id: 3, nombre: "PLAYERA ML-Hombre T M", costo: 243.00, precioVenta: 243.00, existencia: 13, stockMin: 30, stockMax: 20 },
-            { id: 4, nombre: "PLAYERA ML-Hombre T L", costo: 243.00, precioVenta: 243.00, existencia: 17, stockMin: 30, stockMax: 20 },
-            { id: 5, nombre: "PLAYERA ML-Hombre T XL", costo: 243.00, precioVenta: 243.00, existencia: 22, stockMin: 20, stockMax: 16 },
-            { id: 6, nombre: "PLAYERA ML-Hombre T 2XL", costo: 243.00, precioVenta: 243.00, existencia: 18, stockMin: 20, stockMax: 16 },
-            { id: 7, nombre: "PLAYERA ML-Mujer T XS", costo: 243.00, precioVenta: 243.00, existencia: 0, stockMin: 20, stockMax: 10 },
-            { id: 8, nombre: "PLAYERA ML-Mujer T S", costo: 243.00, precioVenta: 243.00, existencia: 23, stockMin: 30, stockMax: 20 },
-            { id: 9, nombre: "PLAYERA ML-Mujer T M", costo: 243.00, precioVenta: 243.00, existencia: 19, stockMin: 30, stockMax: 20 },
-            { id: 10, nombre: "PLAYERA ML-Mujer T L", costo: 243.00, precioVenta: 243.00, existencia: 16, stockMin: 30, stockMax: 20 },
-            { id: 11, nombre: "PLAYERA ML-Mujer T XL", costo: 243.00, precioVenta: 243.00, existencia: 17, stockMin: 20, stockMax: 16 },
-            { id: 12, nombre: "PLAYERA ML-Mujer T 2XL", costo: 243.00, precioVenta: 243.00, existencia: 22, stockMin: 20, stockMax: 16 }
-        ];
-
         function renderizarInventario() {
-            tablaInventario.innerHTML = "";
-            inventario.forEach(item => {
-                const fila = document.createElement("tr");
-                fila.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.nombre}</td>
-                    <td>$${item.costo.toFixed(2)}</td>
-                    <td>$${item.precioVenta.toFixed(2)}</td>
-                    <td>${item.existencia}</td>
-                    <td>${item.stockMin}</td>
-                    <td>${item.stockMax}</td>
-                `;
-                tablaInventario.appendChild(fila);
-            });
+            const fromDataReportes = new FormData();
+            fromDataReportes.append('opcion', '8')
+            var ancho = document.getElementById('tableContainer').offsetWidth;
+
+            fetch("./api/consultas.php", {
+                method: "POST",
+                body: fromDataReportes,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+
+                    //$('#ventasTotales').text('$ ' + parseFloat(data.promedio.ventasTotales).toLocaleString('en-US', {minimumFractionDigits: 2,
+                    //maximumFractionDigits: 2}));
+
+                    $('#tablaInventario').DataTable().destroy(); //Restaurar la tablas
+                    const table = $('#tablaInventario').DataTable({
+                        responsive: true,
+                        scrollX: ancho- 20,
+                        scrollY: 500,
+                        scrollCollapse: true,
+                        data: data,
+                        columns: [
+                            { "data": "id_articulo" },
+                            { "data": "nombre" },
+                            { "data": "costo" },
+                            { "data": "precio" },
+                            { "data": "cantidad" },
+                            { "data": "stock_min" },
+                            { "data": "stock_max" },
+                        ],
+                        columnDefs: [
+                            {
+                                targets: [0, 1, 2, 3, 4, 5, 6],
+                                className: 'text-center'
+                            }
+                        ]
+                    })
+                })
+        .catch((error) => {
+            console.log(error);
+        });
         }
 
         generarReporteBtn.addEventListener("click", renderizarInventario);

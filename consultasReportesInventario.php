@@ -16,14 +16,14 @@
 
     <!-- Contenido principal --> 
             <div class="row mx-5 px-3">
-                <div class="col-sm-3 my-1">
+                <div class="col-12 col-md-6 col-lg-3 my-1">
                         <label for="categoriaCat"><b>TIPO DE REPORTE</b></label>
                         <select class="form-select" id="categoriaCat">
                             <option value="consultasReportes">De ventas</option>
                             <option value="consultasReportesInventario" selected>De inventario</option>
                         </select>
                 </div>
-                <div class="col-sm-3 my-1">
+                <div class="col-12 col-md-6 col-lg-3 my-1">
                     <label for="categoriaCat"><b>FILTROS</b></label>
                     <div class="input-group">
                         <select class="form-select" id="categoria">
@@ -46,23 +46,23 @@
                         <!-- Ventas generales -->
                         <div class="row px-5 top-dashed-line">
                             <div class="col-md-4">
-                                <span class="title">Categoria: </span>
-                                <span class="title-content" id="ventasTotales">Todos</span>
+                                <span class="fs-5 text-success"><b>Categoria:</b></span>
+                                <span class="fs-5" id="ventasTotales">Todos</span>
                             </div>
                             <div class="col-md-4">
-                                <span class="title">Costo del inventario: </span>
-                                <span class="title-content" id="numVentas">$503,342.00</span>
+                                <span class="fs-5 text-success"><b>Costo del inventario:</b></span>
+                                <span class="fs-5" id="numVentas">$503,342.00</span>
                             </div>
                             <div class="col-md-4">
-                                <span class="title">Cantidad de productos:</span>
-                                <span class="title-content" id="ventaPromedio">5523</span>
+                                <span class="fs-5 text-success"><b>Cantidad de productos:</b></span>
+                                <span class="fs-5" id="ventaPromedio">5523</span>
                             </div>
                         </div>
-                        <div class="row p-0 m-0" style="border-top: 1px dashed #757779;">
+                        <div id="tableContainer" class="row p-0 m-0" style="border-top: 1px dashed #757779;">
                             <div class="col-12 py-3">
-                                <div class="p-0" style="overflow: auto scroll; height: 300px;">
-                                    <table class="table">
-                                        <thead class="header-table">
+                                <!--TABLA DE INVENTARIO-->
+                                    <table id="tablaInventario" class="table-striped responsive">
+                                        <thead>
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Nombre</th>
@@ -74,119 +74,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Ejemplo de fila de inventario -->
-                                            <tr>
-                                                <td>1</td>
-                                                <td>PLAYERA ML-Hombre T XS</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>3</td>
-                                                <td>10</td>
-                                                <td>6</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>PLAYERA ML-Hombre T S</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>22</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>PLAYERA ML-Hombre T M</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>13</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>PLAYERA ML-Hombre T L</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>17</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td>PLAYERA ML-Hombre T XL</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>22</td>
-                                                <td>20</td>
-                                                <td>16</td>
-                                            </tr>
-                                            <tr>
-                                                <td>6</td>
-                                                <td>PLAYERA ML-Hombre T 2XL</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>18</td>
-                                                <td>20</td>
-                                                <td>16</td>
-                                            </tr>
-                                            <tr>
-                                                <td>7</td>
-                                                <td>PLAYERA ML-Mujer T XS</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>0</td>
-                                                <td>20</td>
-                                                <td>10</td>
-                                            </tr>
-                                            <tr>
-                                                <td>8</td>
-                                                <td>PLAYERA ML-Mujer T S</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>23</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>9</td>
-                                                <td>PLAYERA ML-Mujer T M</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>19</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10</td>
-                                                <td>PLAYERA ML-Mujer T L</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>16</td>
-                                                <td>30</td>
-                                                <td>20</td>
-                                            </tr>
-                                            <tr>
-                                                <td>11</td>
-                                                <td>PLAYERA ML-Mujer T XL</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>17</td>
-                                                <td>20</td>
-                                                <td>16</td>
-                                            </tr>
-                                            <tr>
-                                                <td>12</td>
-                                                <td>PLAYERA ML-Mujer T 2XL</td>
-                                                <td>$243.00</td>
-                                                <td>$243.00</td>
-                                                <td>22</td>
-                                                <td>20</td>
-                                                <td>16</td>
-                                            </tr>
-                                            <!-- Más filas de inventario se pueden agregar dinámicamente -->
                                         </tbody>
                                     </table>
-                                </div>
                             </div>
                         </div>
                     </div>

@@ -264,8 +264,17 @@ $opcion = $_POST['opcion'];
                          AVG(isNULL(pago_total,0)) AS ventasPromeio 
                     from uni_venta";
 
-             $ventas = $conn->prepare($sql);
+            $ventasSql = "SELECT FORMAT(uv.fecha, 'yyyy/MM/dd HH:mm')  as fecha, SUM(pago_total) as ventaTotal, SUM( SUM(pago_total)) over () AS ventasTotales
+                                from uni_venta as uv 
+                            group by  FORMAT(uv.fecha, 'yyyy/MM/dd HH:mm'), id_venta
+                        order by fecha";
 
+             $ventas = $conn->prepare($sql);
+             $listaVEntas = $conn->prepare($ventasSql);
+             $listaVEntasResponse;
+
+
+             
              //$updateVenta->bindparam(':id_venta', $id_venta);
              //$updateVenta->bindparam(':fecha', $fecha_valor);
 
@@ -277,6 +286,40 @@ $opcion = $_POST['opcion'];
                 else 
                     $response = array( 'error' => $ventas->errorInfo()[2]);
 
+                if($listaVEntas->execute()){
+                    while($venta = $listaVEntas->fetch(PDO::FETCH_ASSOC)) {
+                        $listaVEntasResponse[] = $venta;
+                    }
+
+                    $response['ventas'] = $listaVEntasResponse;
+                }
+
+                else 
+                    $response = array( 'error' => $listaVEntasResponse->errorInfo()[2]);
+
             echo json_encode($response);
         }
+
+        //CONSULTA PARA LA SECCION DE INVENTARIOS
+    else 
+        if($opcion=='8'){
+             $sql= "SELECT ua.id_articulo, ua.nombre, ua.costo, ua.precio, ua.cantidad, ua.stock_min, ua.stock_max 
+					        from uni_articulos ua 
+                        inner join uni_categoria as uc 
+                    on ua.id_categoria = uc.id_categoria";
+
+            $inventario = $conn->prepare($sql);
+            $response= array();
+
+            if($inventario->execute()){
+                    while($inv = $inventario->fetch(PDO::FETCH_ASSOC)) {
+                        $response[] = $inv;
+                    }
+                }
+
+            else 
+                $response = array( 'error' => $inventario->errorInfo()[2]);
+
+            echo json_encode($response);
+    }
 ?>

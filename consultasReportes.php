@@ -76,33 +76,57 @@
                     <!-- Ventas generales -->
                     <div class="row top-dashed-line">
                         <div class="col-md-4">
-                            <span class="fs-5"><b>Ventas totales:</b></span>
-                            <span class="title-content" id="ventasTotales"></span>
+                            <span class="fs-5 text-success"><b>Ventas totales:</b></span>
+                            <span class="fs-6" id="ventasTotales"></span>
                         </div>
                         <div class="col-md-4">
-                            <span class="fs-5"><b>Número de ventas:</b></span>
-                            <span class="title-content" id="numVentas"></span>
+                            <span class="fs-5 text-success"><b>Número de ventas:</b></span>
+                            <span class="fs-6" id="numVentas"></span>
                         </div>
                         <div class="col-md-4">
-                            <span class="fs-5"><b>Venta promedio:</b></span>
-                            <span class="title-content" id="ventaPromedio"></span>
+                            <span class="fs-5 text-success"><b>Venta promedio:</b></span>
+                            <span class="fs-6" id="ventaPromedio"></span>
                         </div>
                     </div>
 
                     <!-- Ventas diarias -->
-                    <div class="row top-dashed-line">
-                        <div class="col-md-6">
+                    <div id="ventasDiariasPadre" class="top-dashed-line">
+                        <div class="d-flex justify-content-center" id="ventasDiarias" style="width:100%">
                             <div class="fs-5"><b>Ventas</b></div>
-                            <div class="striped-list" id="ventasDiarias">
                                 <!-- Las ventas diarias se llenarán dinámicamente -->
+                                 <div id="tableContainer" style="width:500px;">
+                                    <table id="ventasDiariasTabla" class="table-striped responsive">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Venta total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Ganancias por categoría -->
                     <div class="row top-dashed-line p-0 m-0"  style="width:100%;">
+                        <!-- Ganancia total -->
+                        <div class="fs-4 text-center my-3"><b> Ganancias y ventas por categoría</b></div>
+                        <div class="col-md-6 my-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="fs-5"><b>Ganancia total:</b></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="fs-5 text-danger" id="gananciaTotal"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--TABLA DE GANANCIAS POR CATEGORIA -->
                         <div class="col-md-12 p-0 m-0"  style="width:100%;">
-                            <div class="fs-4 text-center my-3"><b> Ganancias y ventas por categoría</b></div>
                             <div class="p-0 m-0" id="gananciasCategoria" style="width:100%;">
                                 <!-- Las ganancias por categoría se llenarán dinámicamente -->
                                  <table id="tablaGanVenCategorias" class="table-striped" style="width:100%;">
@@ -118,18 +142,6 @@
                                     <tbody>
                                     </tbody>
                                  </table>
-                            </div>
-                        </div>
-
-                        <!-- Ganancia total -->
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="fs-5"><b>Ganancia total:</b></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="title-content" id="gananciaTotal"></div>
-                                </div>
                             </div>
                         </div>
                     </div>

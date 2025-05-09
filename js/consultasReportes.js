@@ -13,6 +13,10 @@
     const anio = document.getElementById('anio') 
     const mes = document.getElementById('mes')
 
+    $(window).on('resize', function () {
+        renderizarReporte();
+    });
+
     categoriaCat.addEventListener('change', function () {
         //history.pushState(null, '', `#/${categoriaCat.value}`);
         cargarRuta(categoriaCat.value)
@@ -26,7 +30,7 @@
         fromDataReportes.append('anio', anio.value)
         fromDataReportes.append('mes', mes.value)
         fromDataReportes.append('grupoFecha', grupoFecha.value)
-        fromDataReportes.append('opcion', '6')
+        fromDataReportes.append('opcion', '7')
 
         /*
          // Iterar sobre los datos y crear una fila para cada artículo
@@ -57,11 +61,40 @@
         })
         .then((response) => response.json())
         .then((data) => {                
+            console.log(data.promedio.ventasTotales)
+            console.log(data.ventas);
+            $('#ventasTotales').text('$ ' + parseFloat(data.promedio.ventasTotales).toLocaleString('en-US', {minimumFractionDigits: 2,
+                                                                                maximumFractionDigits: 2}));
+            $('#numVentas').text('$ ' + parseFloat(data.promedio.numVentas).toLocaleString('en-US', {minimumFractionDigits: 2,
+                                                                                maximumFractionDigits: 2}));
+            $('#ventaPromedio').text('$ ' + parseFloat(data.promedio.ventasPromeio).toLocaleString('en-US', {minimumFractionDigits: 2,
+                                                                                maximumFractionDigits: 2}));
 
+            $('#ventasDiariasTabla').DataTable().destroy(); //Restaurar la tablas
+            const table = $('#ventasDiariasTabla').DataTable({
+                 responsive: true,
+                 scrollX: (document.getElementById('tableContainer').offsetWidth),
+                 scrollY: 500,
+                 scrollCollapse: true,
+                 data: data.ventas,
+                 columns: [
+                     { "data": "fecha" },  
+                     { "data": "ventaTotal" },
+                 ], 
+                 columnDefs: [
+                    {
+                        targets: [0,1],
+                        className: 'text-center'
+                    }
+                ]
+                })
         })
         .catch((error) => {
             console.log(error);
         });
+
+
+           fromDataReportes.append('opcion', '6')
 
         //TABLA DE GANANCIAS Y VENTAS POR CATEGORIA
         fetch("./api/consultas.php", {
@@ -70,10 +103,10 @@
         })
         .then((response) => response.json())
         .then((data) => {   
-            $('#gananciaTotal').text(parseFloat((data[0].gananciaTotal)).toLocaleString('en-US', {minimumFractionDigits: 2,
+            $('#gananciaTotal').text("$ "+parseFloat((data[0].gananciaTotal)).toLocaleString('en-US', {minimumFractionDigits: 2,
                                                                                 maximumFractionDigits: 2}));             
             const ancho = gananciasCategoria.offsetWidth;
-            console.log(ancho)
+
              $('#tablaGanVenCategorias').DataTable().destroy(); //Restaurar la tablas
 
              //Crear el dataTable con las nuevas configuraciones
