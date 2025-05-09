@@ -1,17 +1,15 @@
-        
-        
-        
-        //LAS FUNCIONES DE ESTE CODIGO AUN NO FUNCIONAN
-
-
-
-
-
-        
-
+     //LAS FUNCIONES DE ESTE CODIGO AUN NO FUNCIONAN
         const categoriaSelect = document.getElementById("categoria");
         const generarReporteBtn = document.getElementById("generarReporte");
         const tablaInventario = document.getElementById("tablaInventario");
+
+
+        const categoriaCat = document.getElementById('categoriaCat');
+
+        categoriaCat.addEventListener('change', function () {
+            //history.pushState(null, '', `#/${categoriaCat.value}`);
+            cargarRuta(categoriaCat.value)
+        })
 
         // Datos de ejemplo
         const inventario = [
@@ -30,7 +28,6 @@
         ];
 
         function renderizarInventario() {
-            alert("Se ha cargado la tabla")
             tablaInventario.innerHTML = "";
             inventario.forEach(item => {
                 const fila = document.createElement("tr");
@@ -50,4 +47,4 @@
         generarReporteBtn.addEventListener("click", renderizarInventario);
 
         // Renderizar el inventario al cargar la página
-        renderizarInventario();
+       renderizarInventario();

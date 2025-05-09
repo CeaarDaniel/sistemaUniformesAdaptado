@@ -32,6 +32,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
 
+    <!--Libreria PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <!-- 
     <link href="css/vendor.df1fcf64.css" rel="stylesheet">
     <link href="css/app.0ed4cc44.css" rel="stylesheet">

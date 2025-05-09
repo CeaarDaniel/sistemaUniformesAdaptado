@@ -1,16 +1,25 @@
+<?php 
+    include('./api/conexion.php');
+    $sql = "SELECT distinct(YEAR(fecha)) AS año from uni_venta order by año";
 
+    $years = $conn->prepare($sql); 
+    $years->execute();
+?>
     <!-- Contenido principal -->
-    <div class="padding-header">
+    <div class="p-0 my-3 mx-2">
         <div class="row">
             <div class="col-12">
                 <h1 class="title">Consultas de ventas</h1>
             </div>
         </div>
+    </div>
 
         <!-- Filtros -->
         <div class="row mt-3">
+            <!-- FILTRO DE AÑO -->
             <div class="col-md-3">
                 <select class="form-select" id="mes">
+                    <option value="0">Todos</option>
                     <option value="1">Enero</option>
                     <option value="2">Febrero</option>
                     <option value="3">Marzo</option>
@@ -25,114 +34,102 @@
                     <option value="12">Diciembre</option>
                 </select>
             </div>
+
+            <!-- FILTRO DE MES -->
             <div class="col-md-3">
                 <select class="form-select" id="anio">
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
+                    <option value="0">Todos</option>
+                        <?php
+                            while($year = $years->fetch(PDO::FETCH_ASSOC))
+                            echo '<option value="'.$year['año'].'">'.$year['año'].'</option>';
+                        ?>
                 </select>
             </div>
-            <div class="col-md-3">
-                <select class="form-select" id="orden">
-                    <option value="ASC">Ascendente</option>
-                    <option value="DESC">Descendente</option>
-                </select>
-            </div>
+
             <div class="col-md-3 text-end">
-                <h4>Total: <span id="totalVentas">$1,209.00</span></h4>
+                <h4>Total: <span id="totalVentas"></span></h4>
             </div>
         </div>
 
         <!-- Tabla de ventas -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="table-wrapper">
-                    <table id="tablaVentas">
-                        <thead>
-                            <tr>
-                                <th colspan="4">VENTA</th>
-                                <th colspan="12">CANT. DE DESCUENTOS</th>
-                                <th rowspan="2">TOTAL DESC.</th>
-                                <th rowspan="2">FIRMA</th>
-                            </tr>
-                            <tr>
-                                <th colspan="3">1 de 1</th>
-                                <th colspan="3">2 de 1</th>
-                                <th colspan="3">3 de 1</th>
-                                <th colspan="3">4 de 1</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Empleado</th>
-                                <th>Costo total</th>
-                                <th></th>
-                                <th>Descuento</th>
-                                <th>Fecha</th>
-                                <th></th>
-                                <th>Descuento</th>
-                                <th>Fecha</th>
-                                <th></th>
-                                <th>Descuento</th>
-                                <th>Fecha</th>
-                                <th></th>
-                                <th>Descuento</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Ejemplo de fila de venta -->
-                            <tr class="row-venta">
-                                <td>2411</td>
-                                <td>06/03/2025 08:51:20 AM</td>
-                                <td><b>1109-HERNANDEZ CARDONA VICTOR EDUARDO</b></td>
-                                <td>$79.00</td>
-                                <td class="desc-1">
-                                    <input type="checkbox">
-                                </td>
-                                <td class="desc-1" style="font-weight: bold;">$19.75</td>
-                                <td class="desc-1">
-                                    <input type="text" value="06/03/2025" disabled>
-                                </td>
-                                <td class="desc-2">
-                                    <input type="checkbox">
-                                </td>
-                                <td class="desc-2" style="font-weight: bold;">$19.75</td>
-                                <td class="desc-2">
-                                    <input type="text" value="06/03/2025" disabled>
-                                </td>
-                                <td class="desc-3">
-                                    <input type="checkbox">
-                                </td>
-                                <td class="desc-3" style="font-weight: bold;">$19.75</td>
-                                <td class="desc-3">
-                                    <input type="text" value="06/03/2025" disabled>
-                                </td>
-                                <td class="desc-4">
-                                    <input type="checkbox">
-                                </td>
-                                <td class="desc-4" style="font-weight: bold;">$19.75</td>
-                                <td class="desc-4">
-                                    <input type="text" value="06/03/2025" disabled>
-                                </td>
-                                <td><b>$0.00</b></td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary">
-                                        <i class="fas fa-signature"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Más filas de ventas se pueden agregar dinámicamente -->
-                        </tbody>
-                    </table>
+            <div class="mt-4 p-0" style="height: 250px; width:100%;">
+                <table id="tablaVentas" class="table table-striped" style="width:100%;">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th style="background-color:#0A0A85; color:white;">ID</th>
+                            <th style="background-color:#0A0A85; color:white;">FECHA</th>
+                            <th style="background-color:#0A0A85; color:white;">EMPLEADO</th>
+                            <th style="background-color:#0A0A85; color:white;">COSTO TOTAL</th>
+                            <th style="background-color:#0A0A85; color:white;">DESCUENTOS</th>
+                            <th style="background-color:#0A0A85; color:white;">DESC. APLICADOS</th>
+                            <th style="background-color:#0A0A85; color:white;">CONCRETAR</th>
+                            <th style="background-color:#0A0A85; color:white;">FIRMAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+        <!-- Modal de Ver Salida -->
+           <div class="modal fade" id="detalleVentadaModal" tabindex="-1" aria-labelledby="detalleVentadaModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleVentadaModalLabel">REGISTRAR DESCUENTOS</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Detalles de la salida -->
+                        <div class="mx-5 d-flex justify-content-between">
+                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                            <table>
+                                <tbody>
+                                    <tr style="background-color: #0A0A85;
+                                               color: white;">
+                                        <td class="p-0 border border-dark"><b>NUM SALIDA</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0 border border-dark"><b id="ventaId"></b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Detalles del pedido -->
+                        <div class="row mt-5">
+                            <div class="my-1 col-3"><b>Fecha:</b></div>
+                            <div class="my-1 col-auto"><label class="mx-0 px-0 text-uppercase" id="ventaFecha"></label></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Empleado: </b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="ventaEmpleado"></label></div>
+                         </div>
+
+                         <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Costo total:</b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="ventaCosto"></label></div>
+                         </div>
+
+                         <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Descuentos:</b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="ventaDescuentos"></label></div>
+                         </div>
+
+                         <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+                            <!--SECCION DE DECUENTOS -->
+                                <div class="form-card my-0">                                    
+                                    <form>
+                                        <p class="text-center fs-7 my-0 p-0 textlabelVentas"><b> DESCUENTOS</b></p>
+                                        
+                                        <!--LISTADO DE DESCUENTOS -->
+                                        <div id="descuentosModal">
+                                        </div>
+                                    </form>
+                                </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>

@@ -24,6 +24,7 @@
                 <!-- Tipo de Salida -->
                 <div class="col-md-4">
                     <select class="form-select filtroBusqueda" id="tipo">
+                        <option value="0">Todos</option>
                         <?php
                             while($salida = $tipoSalida->fetch(PDO::FETCH_ASSOC))
                                 echo '<option value="'.$salida['id_tipo_salida'].'">'.$salida['tipo_salida'].'</option>';
@@ -34,6 +35,7 @@
                 <!-- Mes -->
                 <div class="col-md-2">
                     <select class="form-select filtroBusqueda" id="mes">
+                        <option value="0">Todos</option>
                         <option value="1">Enero</option>
                         <option value="2">Febrero</option>
                         <option value="3">Marzo</option>
@@ -90,20 +92,74 @@
 
         <!-- Modal de Ver Salida -->
         <div class="modal fade" id="verSalidaModal" tabindex="-1" aria-labelledby="verSalidaModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="verSalidaModalLabel">Ver Salida</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="verSalidaModalLabel">DETALLE DE SALIDA</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
                         <!-- Detalles de la salida -->
-                        <p><strong>ID:</strong> <span id="salidaId"></span></p>
-                        <p><strong>Fecha:</strong> <span id="salidaFecha"></span></p>
-                        <p><strong>Tipo:</strong> <span id="salidaTipo"></span></p>
-                        <p><strong>Realizado por:</strong> <span id="salidaRealizadoPor"></span></p>
-                        <p><strong>Empleado:</strong> <span id="salidaEmpleado"></span></p>
-                        <p><strong>Vale:</strong> <span id="salidaVale"></span></p>
+                        <div class="mx-5 d-flex justify-content-between">
+                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                            <table>
+                                <tbody>
+                                    <tr style="background-color: #0A0A85;
+                                               color: white;">
+                                        <td class="p-0 border border-dark"><b>NUM SALIDA</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-0 border border-dark"><b id="salidaId"></b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Detalles del pedido -->
+                        <div class="row mt-5">
+                            <div class="my-1 col-3"><b>Fecha de elaboración:</b></div>
+                            <div class="my-1 col-auto"><label class="mx-0 px-0 text-uppercase" id="salidaFecha"></label></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Realizado por:</b></div>
+                            <div class="my-1 col-auto"><label id="salidaRealizadoPor"></label></div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Entregado a:</b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="salidaEmpleado"></label></div>
+                         </div>
+
+                         <div class="row mt-1">
+                            <div class="my-1 col-3"><b>Tipo de salida:</b></div>
+                            <div class="my-1 col-auto text-uppercase"><label id ="salidaTipo"></label></div>
+                         </div>
+
+                         <hr class="my-5" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+                            <!--TABLA DE PRODUCTOS -->
+                            <p class="text-center fs-7"><b> PRODUCTOS </b></p>
+                            <div style="overflow: auto scroll; max-height: 400px;">
+                                <table id="" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">ID Artículo</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Artículo</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio Unitario</th>
+                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyDetallePedido">
+                                        <!-- Filas de la tabla se llenarán dinámicamente -->
+                                    </tbody>
+                                </table>
+
+                                <div class="mx-3 d-flex justify-content-end">
+                                    <b>Total:</b> &nbsp; &nbsp; <label id='totalCostoSalida'></label>
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

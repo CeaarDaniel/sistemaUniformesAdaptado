@@ -7,66 +7,112 @@
     const ventasCategoria = document.getElementById("ventasCategoria");
     const gananciasCategoria = document.getElementById("gananciasCategoria");
     const gananciaTotal = document.getElementById("gananciaTotal");
+    const categoriaCat = document.getElementById('categoriaCat');
 
-    // Datos de ejemplo
-    const reporteVentas = {
-        ventasTotales: {
-            venta_total: 10000.00,
-            num_ventas: 50,
-            promedio_ventas: 200.00
-        },
-        ventasDiarias: [
-            { dia: 1, mes: 10, anio: 2023, venta_total: 500.00 },
-            { dia: 2, mes: 10, anio: 2023, venta_total: 600.00 }
-        ],
-        ventasCategoria: [
-            { categoria: "Uniforme", total_venta: 4000.00 },
-            { categoria: "Calzado", total_venta: 3000.00 }
-        ],
-        gananciasCategoria: [
-            { categoria: "Uniforme", total_venta: 2000.00 },
-            { categoria: "Calzado", total_venta: 1500.00 }
-        ],
-        ganancias: {
-            ganancia: 5000.00
-        }
-    };
+    const grupoFecha = document.getElementById('grupoFecha')
+    const anio = document.getElementById('anio') 
+    const mes = document.getElementById('mes')
+
+    categoriaCat.addEventListener('change', function () {
+        //history.pushState(null, '', `#/${categoriaCat.value}`);
+        cargarRuta(categoriaCat.value)
+    })
 
     function renderizarReporte() {
         // Actualizar título
         tituloReporte.textContent = "Ventas de Octubre del 2023";
 
-        // Actualizar ventas generales
-        ventasTotales.textContent = `$${reporteVentas.ventasTotales.venta_total.toFixed(2)}`;
-        numVentas.textContent = reporteVentas.ventasTotales.num_ventas;
-        ventaPromedio.textContent = `$${reporteVentas.ventasTotales.promedio_ventas.toFixed(2)}`;
+        const fromDataReportes = new FormData();
+        fromDataReportes.append('anio', anio.value)
+        fromDataReportes.append('mes', mes.value)
+        fromDataReportes.append('grupoFecha', grupoFecha.value)
+        fromDataReportes.append('opcion', '6')
 
-        // Actualizar ventas diarias
-        ventasDiarias.innerHTML = reporteVentas.ventasDiarias.map(v => `
-            <div class="row justify-between">
-                <div class="col-3 table-subtitle">${v.dia}/${v.mes}/${v.anio}</div>
-                <div class="col-3 table-content">$${v.venta_total.toFixed(2)}</div>
-            </div>
-        `).join("");
+        /*
+         // Iterar sobre los datos y crear una fila para cada artículo
+                data.forEach(dato => {
+                    const fila = document.createElement("tr");
+                    
+                    //var costo = parseFloat(parseFloat(dato.costo).toFixed(2));
+                    //var costoFormateado = costo.toLocaleString('en-US');
+                    fila.innerHTML =
+                    `<td>${dato.id_articulo}</td>
+                     <td>${dato.cantidad}</td>
+                     <td>${ (dato.nombre == null) ? 'N/A' : dato.nombre}</td>
+                     <td>${ (dato.precio == null) ? 'N/A' : `$ ${(parseFloat(dato.precio)).toFixed(2)}` }</td>
+                     <td>${ (dato.total == null) ? 'N/A' : `$ ${(parseFloat(dato.total)).toFixed(2)}` }</td>`;
+                    t.appendChild(fila);
 
-        // Actualizar ventas por categoría
-        ventasCategoria.innerHTML = reporteVentas.ventasCategoria.map(vc => `
-            <div class="row justify-between">
-                <div class="col-5 table-subtitle">${vc.categoria}</div>
-                <div class="col-3 table-content">$${vc.total_venta.toFixed(2)}</div>
-            </div>
-        `).join("");
+                    total = total +  parseFloat( (dato.total == null) ? 0 : dato.total);
+                }); 
 
-        // Actualizar ganancias por categoría
-        gananciasCategoria.innerHTML = reporteVentas.gananciasCategoria.map(gc => `
-            <div class="row justify-between">
-                <div class="col-5 table-subtitle">${gc.categoria}</div>
-                <div class="col-3 table-content">$${gc.total_venta.toFixed(2)}</div>
-            </div>
-        `).join("");
+                document.getElementById('totalCostoSalida').textContent = `       $ ${ parseFloat(total.toFixed(2)).toLocaleString('en-US') }`;
+                new bootstrap.Modal(document.getElementById('verSalidaModal')).show();
+        */
 
-        // Actualizar ganancia total
-        gananciaTotal.textContent = `$${reporteVentas.ganancias.ganancia.toFixed(2)}`;
+
+        fetch("./api/consultas.php", {
+            method: "POST",
+            body: fromDataReportes,
+        })
+        .then((response) => response.json())
+        .then((data) => {                
+
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+        //TABLA DE GANANCIAS Y VENTAS POR CATEGORIA
+        fetch("./api/consultas.php", {
+            method: "POST",
+            body: fromDataReportes,
+        })
+        .then((response) => response.json())
+        .then((data) => {   
+            $('#gananciaTotal').text(parseFloat((data[0].gananciaTotal)).toLocaleString('en-US', {minimumFractionDigits: 2,
+                                                                                maximumFractionDigits: 2}));             
+            const ancho = gananciasCategoria.offsetWidth;
+            console.log(ancho)
+             $('#tablaGanVenCategorias').DataTable().destroy(); //Restaurar la tablas
+
+             //Crear el dataTable con las nuevas configuraciones
+             $('#tablaGanVenCategorias').DataTable({
+                 responsive: true,
+                 scrollX: ancho,
+                 scrollY: 500,
+                 scrollCollapse: true,
+                 data: data,
+                 columns: [
+                     { "data": "categoria" },  
+                     { "data": "costoPromedio" },
+                     { "data": "costoVenta" },
+                     { "data": "costoCompra" },
+                     { "data": "gananciaPorCategoria" }, 
+                 ], 
+                 columnDefs: [
+                     {
+                         targets: [0,1,2,3,4],
+                         className: 'text-center'
+                     },
+                     {
+                        targets:[1,2,3,4], 
+                        render: function(dato, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return (parseFloat(dato).toLocaleString('en-US', {minimumFractionDigits: 2,
+                                                                                maximumFractionDigits: 2}));
+                            }
+                            return dato;  // Si no es para mostrar, devuelve la fecha tal cual
+                        }
+                     }
+                 ],
+                 
+             });
+            })
+        .catch((error) => {
+            console.log(error);
+        });
+        
     }
 
     generarReporteBtn.addEventListener("click", renderizarReporte);

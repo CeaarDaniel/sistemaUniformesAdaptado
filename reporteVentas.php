@@ -132,7 +132,7 @@ include('./api/conexion.php');
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modal">EDITAR ARTICULO</h5>
+                        <h5 class="modal-title" id="modal">DETALLE DE VENTA</h5>
                         <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body py-1" id='modalBodyDetalleVenta'>

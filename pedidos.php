@@ -5,7 +5,7 @@
     $estadoPedido = $conn->prepare("select* from uni_pedido_estado order by id_estado desc"); 
     $estadoPedido->execute();
 
-    //GENERO
+    //AÑOS
     $years = $conn->prepare("select DISTINCT YEAR(fecha_creacion) as año from uni_pedido"); 
     $years->execute();
 ?>    

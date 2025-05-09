@@ -1,96 +1,123 @@
+<?php
+    include('./api/conexion.php');
+
+    //AÑOS
+    $years = $conn->prepare("SELECT distinct(YEAR(fecha)) as fecha from uni_venta order by fecha"); 
+    $years->execute();
+?>    
     <!-- Contenido principal -->
-    <div class="padding-header">
-        <div class="row">
-            <label for="">Reportes</label>
-            <div class="col-md-3">
-
-                <ul>
-                    <li>De ventas</li>
-                    <li><a onclick="cargarRuta('consultasReportesInventario')">De inventario</a></li>
-                    <li>De entradas</li>
-                </ul>
-                    <select class="form-selet" id="categoriaCat">
-                        <option value="0">De ventas</option>
-                        <option value="1"><a onclick="cargarRuta('consultasReportesInventario')">De inventario</a></option>
-                        <option value="2">De entradas</option>
-                    </select>
-            </div>
-            <div class="col-12">
-                <h1 class="title">Reporte de Ventas</h1>
-            </div>
+    <div class="my-4 mx-3">
+        <div class="col-12">
+            <h1 class="title"> Reporte de ventas</h1>
         </div>
+    </div>
 
-        <!-- Filtros -->
-        <div class="row mt-3">
-            <div class="col-md-8">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="opcion_ventas" id="mesActual" value="0" checked>
-                    <label class="form-check-label" for="mesActual">Mes actual</label>
+       
+        <div class="row mx-5 px-3">
+                <div class="col-md-12 col-lg-3 my-1">
+                        <label for="categoriaCat"><b>TIPO DE REPORTE</b></label>
+                        <select class="form-select" id="categoriaCat">
+                            <option value="consultasReportes">De ventas</option>
+                            <option value="consultasReportesInventario">De inventario</option>
+                        </select>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="opcion_ventas" id="mesAnterior" value="1">
-                    <label class="form-check-label" for="mesAnterior">Mes anterior</label>
+                
+                <!-- Filtros -->
+                <div class="col-md-12 col-lg-5 my-1">
+                        <label for="categoriaCat"><b>FILTROS</b></label>
+                        <div class="d-flex column">
+                            <select class="form-select mx-1" id="mes">
+                                <option value="0">Todos</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                            <div class="input-group">
+                                <select class="form-select" id="anio">
+                                    <option value="0">Todos</option>
+                                        <?php
+                                            while($year = $years->fetch(PDO::FETCH_ASSOC))
+                                            echo '<option value="'.$year['fecha'].'">'.$year['fecha'].'</option>';
+                                        ?>
+                                </select>
+                            </div>
+                        </div>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="opcion_ventas" id="anioActual" value="2">
-                    <label class="form-check-label" for="anioActual">Año actual</label>
+
+                <div class="col-md-12 col-lg-3 my-1">
+                    <label for="categoriaCat"><b>AGRUPAR POR</b></label>
+                    <div class="input-group">
+                        <select class="form-select" id="grupoFecha">
+                            <option value="0">Todos</option>
+                            <OPTion value="yyyy">año</OPTion>
+                            <OPTion value="'yyyy/MM">año y mes</OPTion>
+                            <option value="yyyy/MM/dd">año, mes y día</option>
+                        </select>
+                        <button class="btn btn-success" id="generarReporte">Generar</button>
+                    </div>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="opcion_ventas" id="periodo" value="3">
-                    <label class="form-check-label" for="periodo">Periodo...</label>
-                </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-custom" id="generarReporte">Generar</button>
-            </div>
         </div>
 
         <!-- Reporte de ventas -->
-        <div class="row mt-4">
-            <div class="col-12">
+        <div class="row mt-4 mx-5 px-5">
+            <div class="col-12 p-0">
                 <div class="reporte-card">
-                    <h2 class="text-center" id="tituloReporte">Ventas de Octubre del 2023</h2>
+                    <h3 class="text-center" id="tituloReporte"></h3>
 
                     <!-- Ventas generales -->
                     <div class="row top-dashed-line">
                         <div class="col-md-4">
-                            <span class="title">Ventas totales: </span>
-                            <span class="title-content" id="ventasTotales">$10,000.00</span>
+                            <span class="fs-5"><b>Ventas totales:</b></span>
+                            <span class="title-content" id="ventasTotales"></span>
                         </div>
                         <div class="col-md-4">
-                            <span class="title">Número de ventas: </span>
-                            <span class="title-content" id="numVentas">50</span>
+                            <span class="fs-5"><b>Número de ventas:</b></span>
+                            <span class="title-content" id="numVentas"></span>
                         </div>
                         <div class="col-md-4">
-                            <span class="title">Venta promedio: </span>
-                            <span class="title-content" id="ventaPromedio">$200.00</span>
+                            <span class="fs-5"><b>Venta promedio:</b></span>
+                            <span class="title-content" id="ventaPromedio"></span>
                         </div>
                     </div>
 
                     <!-- Ventas diarias -->
                     <div class="row top-dashed-line">
                         <div class="col-md-6">
-                            <div class="title">Ventas</div>
+                            <div class="fs-5"><b>Ventas</b></div>
                             <div class="striped-list" id="ventasDiarias">
                                 <!-- Las ventas diarias se llenarán dinámicamente -->
-                            </div>
-                        </div>
-
-                        <!-- Ventas por categoría -->
-                        <div class="col-md-6">
-                            <div class="title">Ventas por categoría</div>
-                            <div class="striped-list" id="ventasCategoria">
-                                <!-- Las ventas por categoría se llenarán dinámicamente -->
                             </div>
                         </div>
                     </div>
 
                     <!-- Ganancias por categoría -->
-                    <div class="row top-dashed-line">
-                        <div class="col-md-6">
-                            <div class="title">Ganancias por categoría</div>
-                            <div class="striped-list" id="gananciasCategoria">
+                    <div class="row top-dashed-line p-0 m-0"  style="width:100%;">
+                        <div class="col-md-12 p-0 m-0"  style="width:100%;">
+                            <div class="fs-4 text-center my-3"><b> Ganancias y ventas por categoría</b></div>
+                            <div class="p-0 m-0" id="gananciasCategoria" style="width:100%;">
                                 <!-- Las ganancias por categoría se llenarán dinámicamente -->
+                                 <table id="tablaGanVenCategorias" class="table-striped" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Costo promedio por venta</th>
+                                            <th>Costo de venta</th>
+                                            <th>Costo de compra</th>
+                                            <th>Ganancia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                 </table>
                             </div>
                         </div>
 
@@ -98,10 +125,10 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="title">Ganancia total:</div>
+                                    <div class="fs-5"><b>Ganancia total:</b></div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="title-content" id="gananciaTotal">$5,000.00</div>
+                                    <div class="title-content" id="gananciaTotal"></div>
                                 </div>
                             </div>
                         </div>
@@ -109,4 +136,3 @@
                 </div>
             </div>
         </div>
-    </div>

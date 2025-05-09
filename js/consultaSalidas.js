@@ -2,18 +2,19 @@
 var filtroBusqueda =  document.querySelectorAll(".filtroBusqueda");
 
 filtroBusqueda.forEach(filtro => {
-    filtro.addEventListener("change", filtrarPorBusqueda)
+    filtro.addEventListener("change", renderTable)
   });
 
         function renderTable() {
             var ancho = window.innerWidth;
-    
             var formData = new FormData;
             formData.append("opcion", "1");
             formData.append('tipo', $("#tipo").val())
             formData.append('anio', $("#anio").val())
             formData.append('mes', $("#mes").val())
             formData.append('busquedaEmp', $("#busquedaEmp").val())
+
+            formData.append("opcion", "1");
         
             fetch("./api/consultas.php", {
                     method: "POST",
@@ -77,24 +78,57 @@ filtroBusqueda.forEach(filtro => {
         function abrirVerSalidaModal(event) {
 
             const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
-            var dataId = boton.getAttribute('data-id');
+            var Id = boton.getAttribute('data-id');
+            var salidaTipo = boton.getAttribute('data-salidaTipo');
+            var salidaFecha = boton.getAttribute('data-salidaFecha');
+            var salidaRealizadoPor = boton.getAttribute('data-salidaRealizadoPor');
+            var salidaEmpleado = boton.getAttribute('data-salidaEmpleado');
+            var total= 0;
 
-            document.getElementById('salidaId').textContent = dataId;
-            //document.getElementById('salidaFecha').textContent = salida.fecha;
-            //document.getElementById('salidaTipo').textContent = salida.tipo_salida;
-            //document.getElementById('salidaRealizadoPor').textContent = salida.nombre_usuario;
-            //document.getElementById('salidaEmpleado').textContent = salida.nombre_empleado;
-            //document.getElementById('salidaVale').textContent = salida.vale;
-            new bootstrap.Modal(document.getElementById('verSalidaModal')).show();
-        }
+            document.getElementById('salidaId').textContent = `# ${Id}`;
+            document.getElementById('salidaFecha').textContent = salidaFecha;
+            document.getElementById('salidaTipo').textContent = salidaTipo;
+            document.getElementById('salidaRealizadoPor').textContent = salidaRealizadoPor;
+            document.getElementById('salidaEmpleado').textContent = salidaEmpleado;
+ 
 
-        // Función para filtrar por búsqueda
-        function filtrarPorBusqueda() {
-            //const busqueda = document.getElementById('busquedaEmp').value.toLowerCase();
-            //onst tbody = document.getElementById('tablaSalidas');
-            //tbody.innerHTML = salidas .filter(s => s.nombre_empleado.toLowerCase().includes(busqueda)).map(salida => {}).join('');
+            var formData = new FormData;
+            formData.append("opcion", "2");
+            formData.append("id_salida", Id);
 
-            alert('se han aplicado los filtros');
+            //Creacion de la tabla del modal
+            fetch("./api/consultas.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => {                
+                        let t= document.getElementById('tbodyDetallePedido');
+
+                        t.innerHTML = '';
+
+                        // Iterar sobre los datos y crear una fila para cada artículo
+                        data.forEach(dato => {
+                            const fila = document.createElement("tr");
+                            
+                            //var costo = parseFloat(parseFloat(dato.costo).toFixed(2));
+                            //var costoFormateado = costo.toLocaleString('en-US');
+                            fila.innerHTML =
+                            `<td>${dato.id_articulo}</td>
+                             <td>${dato.cantidad}</td>
+                             <td>${ (dato.nombre == null) ? 'N/A' : dato.nombre}</td>
+                             <td>${ (dato.precio == null) ? 'N/A' : `$ ${(parseFloat(dato.precio)).toFixed(2)}` }</td>
+                             <td>${ (dato.total == null) ? 'N/A' : `$ ${(parseFloat(dato.total)).toFixed(2)}` }</td>`;
+                            t.appendChild(fila);
+
+                            total = total +  parseFloat( (dato.total == null) ? 0 : dato.total);
+                        }); 
+
+                        document.getElementById('totalCostoSalida').textContent = `       $ ${ parseFloat(total.toFixed(2)).toLocaleString('en-US') }`;
+                        new bootstrap.Modal(document.getElementById('verSalidaModal')).show();
+            }).catch((error) => {
+                console.log(error);
+            });
         }
 
         function imprimirPedido(){

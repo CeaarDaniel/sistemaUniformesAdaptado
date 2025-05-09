@@ -436,3 +436,62 @@ tbody .editColum {
       transition: transform 0.4s ease-in-out;
     }
   /*fin efecto para la transicion*/ 
+
+
+  :root {
+    --dark-purple: #1e3d90;
+    --pastel-blue: #a7c5eb;
+    --soft-purple: #c8a2c8;
+}
+
+.animated-border {
+    position: relative;
+}
+
+.animated-border::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--dark-purple);
+    transition: width 0.3s ease;
+}
+
+.animated-border:hover::before {
+    width: 100%;
+}
+
+.form-card {
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: rgba(230, 230, 250, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.form-section::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(167, 197, 235, 0.3);
+    border-radius: 30% 70% 67% 33% / 30% 30% 70% 70%;
+}
+
+
+.form-check-input{
+    border: 2px solid var(--pastel-blue);
+}

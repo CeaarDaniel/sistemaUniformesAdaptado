@@ -5,6 +5,9 @@
     if (!empty($_POST['id'])) {
         $_SESSION['idCambios'] = $_POST['id'];
     }
+
+    if(empty($_SESSION['idCambios'])) 
+        $_SESSION['idCambios'] = '';
 ?>
 
     <div id="cambios">

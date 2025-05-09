@@ -1,72 +1,37 @@
+<?php 
+    include('./api/conexion.php');
+
+    //CATEGORIAS DE ARTICULO
+    $categorias = $conn->prepare("SELECT* from uni_categoria"); 
+    $categorias->execute();
+?>
 
 
-    <style>
-        .title {
-            font-size: 24px;
-            color: #3f7aaa;
-        }
+<!-- Contenido principal -->
+    <div class="my-4 mx-3">
+        <div class="col-12">
+            <h1 class="title"> Reporte de inventarios</h1>
+        </div>
+    </div>
 
-        .title-content {
-            font-size: 24px;
-            color: #757779;
-        }
-
-        .table-content {
-            font-size: 17px;
-            color: black;
-        }
-
-        .table-subtitle {
-            font-size: 17px;
-            color: #757779;
-        }
-
-        .top-dashed-line {
-            border-top: 1px dashed #757779;
-            padding-bottom: 1.5rem;
-            padding-top: 1.5rem;
-        }
-
-        .reporte-card {
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .striped-list .row:nth-of-type(odd) {
-            background-color: #f2f1ff;
-        }
-
-        .btn-custom {
-            background-color: green;
-            color: white;
-        }
-    </style>
-
-
-    <!-- Contenido principal -->
-        <div class="padding-header mx-5">
-            <div class="row">
+    <!-- Contenido principal --> 
+            <div class="row mx-5 px-3">
                 <div class="col-sm-3 my-1">
-                        <label for="">Reportes</label>
+                        <label for="categoriaCat"><b>TIPO DE REPORTE</b></label>
                         <select class="form-select" id="categoriaCat">
-                            <option value="0">De ventas</option>
-                            <option value="1">De inventario</option>
-                            <option value="2">De entradas</option>
+                            <option value="consultasReportes">De ventas</option>
+                            <option value="consultasReportesInventario" selected>De inventario</option>
                         </select>
                 </div>
                 <div class="col-sm-3 my-1">
-                    <label for="">De inventarios</label>
+                    <label for="categoriaCat"><b>FILTROS</b></label>
                     <div class="input-group">
                         <select class="form-select" id="categoria">
                             <option value="todos">Todos</option>
-                            <option value="playera">Playera</option>
-                            <option value="camisa">Camisa</option>
-                            <option value="pantalon">Pantalón</option>
-                            <option value="zapatos">Zapatos</option>
-                            <option value="gorra">Gorra</option>
-                            <option value="guantes">Guantes</option>
+                                <?php
+                                    while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
+                                    echo '<option value="'.$categoria['id_categoria'].'">'.$categoria['categoria'].'</option>';
+                                ?>
                         </select>
                         <button class="btn btn-success" id="generarReporte">Generar</button>
                     </div>
@@ -227,4 +192,3 @@
                     </div>
                 </div>
             </div>
-        </div>
