@@ -14,6 +14,7 @@
         function renderizarInventario() {
             const fromDataReportes = new FormData();
             fromDataReportes.append('opcion', '8')
+            fromDataReportes.append('categoria', categoriaSelect.value)
             var ancho = document.getElementById('tableContainer').offsetWidth;
 
             fetch("./api/consultas.php", {

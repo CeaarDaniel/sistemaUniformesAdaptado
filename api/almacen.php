@@ -33,13 +33,17 @@ $opcion = $_POST['opcion'];
         else 
             $filtroGenero=' ';                                                
 
-        $sql='SELECT a.id_articulo, a.nombre, u.talla, g.genero, a.cantidad as [cant. fisica], 
-                    e.estado, a.costo, a.precio,  a.stock_max, a.stock_min  
+        $sql="SELECT a.id_articulo, a.nombre, u.talla, g.genero, a.cantidad as [cant. fisica], 
+                     isNULL(cantTran, 0) as cantTran, (isNULL ((a.cantidad + cantTran), 0)) as total,
+                     a.costo, a.precio,  a.stock_max, a.stock_min
                     from uni_articulos as a 
                         inner join uni_talla as u on a.id_talla = u.id_talla 
                         inner join uni_estado as e on a.id_estado = e.id_estado
                         inner join uni_genero as g on a.genero = g.id_genero
-                    where 1=1 '.$filtroCategoria.' '.$filtroEstado.' '.$filtroGenero;
+                        left join ( select distinct(id_articulo) as id_articulo, SUM(cantidad) as cantTran from uni_pedido as up 
+										inner join uni_pedido_articulo as upa on up.id_pedido = upa.id_pedido 
+									where status='2' group by id_articulo) as atr on a.id_articulo= atr.id_articulo
+                    where 1=1 ".$filtroCategoria." ".$filtroEstado." ".$filtroGenero;
 
         $articulosAlmacen = $conn->prepare($sql);
 
@@ -49,8 +53,9 @@ $opcion = $_POST['opcion'];
                     'nombre' => $articulo['nombre'],
                     'talla' => $articulo['talla'],
                     'genero' => $articulo['genero'],
-                    'cant_fisica' => $articulo['cant. fisica'],
-                    'estado' => $articulo['estado'],
+                    'cantFisica' => $articulo['cant. fisica'],
+                    'cantTran' => $articulo['cantTran'],
+                    'total' => $articulo['total'],
                     'costo'=> $articulo['costo'],
                     'precio' => $articulo['precio'],
                     'stock_max' => $articulo['stock_max'],

@@ -57,9 +57,9 @@
                     <label for="categoriaCat"><b>AGRUPAR POR</b></label>
                     <div class="input-group">
                         <select class="form-select" id="grupoFecha">
-                            <option value="0">Todos</option>
+                            <option value="yyyy/MM/dd HH:mm:ss">Todos</option>
                             <OPTion value="yyyy">año</OPTion>
-                            <OPTion value="'yyyy/MM">año y mes</OPTion>
+                            <OPTion value="yyyy/MM">año y mes</OPTion>
                             <option value="yyyy/MM/dd">año, mes y día</option>
                         </select>
                         <button class="btn btn-success" id="generarReporte">Generar</button>
@@ -92,9 +92,12 @@
                     <!-- Ventas diarias -->
                     <div id="ventasDiariasPadre" class="top-dashed-line">
                         <div class="d-flex justify-content-center" id="ventasDiarias" style="width:100%">
-                            <div class="fs-5"><b>Ventas</b></div>
                                 <!-- Las ventas diarias se llenarán dinámicamente -->
-                                 <div id="tableContainer" style="width:500px;">
+                                 <div id="tableContainer" style="width:650px;">
+                                    <div id="emptyState" class="text-center flex-wrap align-content-center py-5 d-none" style="width:100%; height:100%;">
+                                        <i class="bi bi-emoji-neutral display-4 text-muted"></i>
+                                        <p class="text-muted fs-5 mt-3">No se encontraron resultados</p>
+                                    </div>
                                     <table id="ventasDiariasTabla" class="table-striped responsive">
                                         <thead>
                                             <tr>
@@ -129,6 +132,10 @@
                         <div class="col-md-12 p-0 m-0"  style="width:100%;">
                             <div class="p-0 m-0" id="gananciasCategoria" style="width:100%;">
                                 <!-- Las ganancias por categoría se llenarán dinámicamente -->
+                                <div id="emptyState2" class="text-center flex-wrap align-content-center py-5 d-none" style="width:100%; height:100%;">
+                                    <i class="bi bi-emoji-neutral display-4 text-muted"></i>
+                                    <p class="text-muted fs-5 mt-3">No se encontraron resultados</p>
+                                </div>
                                  <table id="tablaGanVenCategorias" class="table-striped" style="width:100%;">
                                     <thead>
                                         <tr>

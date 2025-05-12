@@ -89,6 +89,7 @@
                         <th style="background-color: rgb(13, 71, 161); color:white">Cant. física</th>
                         <th style="background-color: rgb(13, 71, 161); color:white">Cant. en tránsito</th>
                         <th style="background-color: rgb(13, 71, 161); color:white">Cant. total</th>
+                        <th style="background-color: rgb(13, 71, 161); color:white">Costo</th>
                         <th style="background-color: rgb(13, 71, 161); color:white">Precio</th>
                         <th style="background-color: rgb(13, 71, 161); color:white">Stock Máximo</th>
                         <th style="background-color: rgb(13, 71, 161); color:white">Stock Mínimo</th>

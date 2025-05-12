@@ -221,9 +221,11 @@ $opcion = $_POST['opcion'];
     //CONSULTA PARA OBTENER LAS GANANCIAS Y VENTAS POR CATEGORIAS
     else 
     if($opcion == '6'){
-        $anio= (isset($_POST['anio']) && !$_POST['anio']=='') ? $_POST['anio'] : NULL;
-        $mes= (isset($_POST['mes']) && !$_POST['mes']=='') ? $_POST['mes'] : NULL;
-        $grupoFecha= (isset($_POST['grupoFecha']) && !$_POST['grupoFecha']=='') ? $_POST['grupoFecha'] : NULL;
+        $anio= (isset($_POST['anio']) && !$_POST['anio']=='') ? $_POST['anio'] : 0;
+        $mes= (isset($_POST['mes']) && !$_POST['mes']=='') ? $_POST['mes'] : 0;
+
+         $filtromes = ($mes != 0) ? ' AND MONTH(uv.fecha) = :mes ' : '';
+         $filtroanio = ($anio != 0) ? ' AND YEAR(uv.fecha) = :anio ' : '';
 
         $sql= "SELECT uc.categoria, 
                     AVG(ISNULL(uva.costo, 0)) as costoPromedio, 
@@ -234,11 +236,16 @@ $opcion = $_POST['opcion'];
                 from uni_venta_articulo as uva 
                         inner join uni_articulos as ua on uva.id_articulo = ua.id_articulo
                         inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria 
+                        left join uni_venta as uv on uv.id_venta =uva.id_venta
+                            WHERE 1=1 ".$filtromes." ".$filtroanio."
                     group by categoria 
                 order by categoria";
 
         $ganVenCat = $conn->prepare($sql);
         $response= array();
+
+         ($mes != 0 && $mes != null) ? $ganVenCat->bindparam(':mes', $mes) : '';
+        ($anio != 0 && $anio != null) ? $ganVenCat->bindparam(':anio', $anio) : '';
 
         //$updateVenta->bindparam(':id_venta', $id_venta);
         //$updateVenta->bindparam(':fecha', $fecha_valor);
@@ -259,24 +266,32 @@ $opcion = $_POST['opcion'];
     //CONSULTA PARA OBTENER LAS VENTAS CON LOS PROMEDIOS
     else 
         if($opcion=='7'){
+            $grupoFecha = (isset($_POST['grupoFecha']) && !empty($_POST['grupoFecha'])) ? $_POST['grupoFecha'] : '';
+            $mes = (isset($_POST['mes']) && !empty($_POST['mes'])) ? $_POST['mes'] : 0;
+            $anio = (isset($_POST['anio']) && !empty($_POST['anio'])) ? $_POST['anio'] : 0;
+
+            $filtromes = ($mes != 0) ? ' AND MONTH(fecha) = :mes ' : '';
+            $filtroanio = ($anio != 0) ? ' AND YEAR(fecha) = :anio ' : '';
+
             $sql="SELECT count(id_venta) as numVentas, 
                          sum(pago_total) as ventasTotales, 
                          AVG(isNULL(pago_total,0)) AS ventasPromeio 
-                    from uni_venta";
+                    from uni_venta WHERE 1=1 ".$filtromes." ".$filtroanio;
 
-            $ventasSql = "SELECT FORMAT(uv.fecha, 'yyyy/MM/dd HH:mm')  as fecha, SUM(pago_total) as ventaTotal, SUM( SUM(pago_total)) over () AS ventasTotales
-                                from uni_venta as uv 
-                            group by  FORMAT(uv.fecha, 'yyyy/MM/dd HH:mm'), id_venta
-                        order by fecha";
+            $ventasSql = "SELECT FORMAT(fecha, '".$grupoFecha."') as fecha, SUM(pago_total) as ventaTotal, SUM( SUM(pago_total)) over () AS ventasTotales
+                                from uni_venta WHERE 1=1 ".$filtromes." ".$filtroanio."
+                            group by  FORMAT(fecha, '".$grupoFecha."') order by fecha";
 
              $ventas = $conn->prepare($sql);
              $listaVEntas = $conn->prepare($ventasSql);
              $listaVEntasResponse;
 
+            ($mes != 0) ? $ventas->bindparam(':mes', $mes) : '';
+            ($anio != 0) ? $ventas->bindparam(':anio', $anio) : '';
 
-             
-             //$updateVenta->bindparam(':id_venta', $id_venta);
-             //$updateVenta->bindparam(':fecha', $fecha_valor);
+
+            ($mes != 0) ? $listaVEntas->bindparam(':mes', $mes) : '';
+            ($anio != 0) ? $listaVEntas->bindparam(':anio', $anio) : '';
 
                 if($ventas->execute()){
                     $promedio = $ventas->fetch(PDO::FETCH_ASSOC);
@@ -303,13 +318,18 @@ $opcion = $_POST['opcion'];
         //CONSULTA PARA LA SECCION DE INVENTARIOS
     else 
         if($opcion=='8'){
+            $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : 0;
+
+            $filtroCategoria = ($categoria != 0) ? ' AND ua.id_categoria = :categoria ' : '';
+            
              $sql= "SELECT ua.id_articulo, ua.nombre, ua.costo, ua.precio, ua.cantidad, ua.stock_min, ua.stock_max 
 					        from uni_articulos ua 
                         inner join uni_categoria as uc 
-                    on ua.id_categoria = uc.id_categoria";
+                    on ua.id_categoria = uc.id_categoria AND 1=1 ".$filtroCategoria;
 
             $inventario = $conn->prepare($sql);
-            $response= array();
+            ($categoria != 0) ? $inventario->bindparam(':categoria', $categoria) : '';
+             $response= array();
 
             if($inventario->execute()){
                     while($inv = $inventario->fetch(PDO::FETCH_ASSOC)) {

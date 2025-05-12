@@ -23,11 +23,11 @@
                             <option value="consultasReportesInventario" selected>De inventario</option>
                         </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3 my-1">
+                <div class="col-12 col-md-6 col-lg-4 my-1">
                     <label for="categoriaCat"><b>FILTROS</b></label>
                     <div class="input-group">
                         <select class="form-select" id="categoria">
-                            <option value="todos">Todos</option>
+                            <option value="0">Todos</option>
                                 <?php
                                     while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
                                     echo '<option value="'.$categoria['id_categoria'].'">'.$categoria['categoria'].'</option>';
