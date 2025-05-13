@@ -158,11 +158,15 @@ select* from uni_salida_articulo order by id_usuario
 				SUM(uva.costo * uva.cantidad) as costoCompra,
 				( SUM(uva.precio * uva.cantidad) - SUM(uva.costo * uva.cantidad)) as gananciaPorCategoria,
 				SUM(SUM(uva.precio * uva.cantidad) - SUM(uva.costo * uva.cantidad)) over () as gananciaTotal
-			from uni_venta_articulo as uva 
+			from uni_venta_articulo as uva
 					inner join uni_articulos as ua on uva.id_articulo = ua.id_articulo
-					inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria 
+					inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
+					left join uni_venta as uv on uv.id_venta =uva.id_venta
+					WHERE 1=1 and
 				group by categoria 
 			order by categoria
+	--- FIN CONSULTAS
+
 
 
 	--CONSULTA PARA OBTENER EL LISTADO DE VENTAS REGISTRADAS CON SU VALOR DE VENTA TOTAL POR FECHA 
@@ -170,10 +174,82 @@ select* from uni_salida_articulo order by id_usuario
 				from uni_venta as uv 
 			group by  FORMAT(uv.fecha, 'yyyy/MM/dd HH:mm'), id_venta
 		order by fecha
+	--- FIN CONSULTAS
 
-
-		select* from uni_venta order by pago_total
 
 	--NUMERO DE VENTAS
 		select id_venta, fecha, SUM( SUM(pago_total)) over () AS ventasTotales from uni_venta where fecha between '2025/02/1' and '2025/03/1' group by id_venta, fecha
 			select count(id_venta) as numVentas, sum(pago_total) as ventasTotales, AVG(ISNULL(pago_total,0)) AS ventasPromeio from uni_venta
+	--- FIN CONSULTAS
+
+
+	--CONSULTA PARA OBTENER LOS ARTICULOS CON LOS QUE SE ENCUNTRAN EN TRANSITO POR ALGUN PEDIDO PARA LA TABLA DE ALMACEN
+		SELECT a.id_articulo, a.nombre, u.talla, g.genero, a.cantidad as cantFisica, 
+                     isNULL(cantTran, 0) as cantTran, (isNULL ((a.cantidad + cantTran), 0)) as total,
+                     a.costo, a.precio,  a.stock_max, a.stock_min
+                    from uni_articulos as a 
+                        inner join uni_talla as u on a.id_talla = u.id_talla 
+                        inner join uni_estado as e on a.id_estado = e.id_estado
+                        inner join uni_genero as g on a.genero = g.id_genero
+                        left join ( select distinct(id_articulo) as id_articulo, SUM(cantidad) as cantTran from uni_pedido as up 
+										inner join uni_pedido_articulo as upa on up.id_pedido = upa.id_pedido 
+									where status='2' group by id_articulo) as atr on a.id_articulo= atr.id_articulo
+                    where 1=1 
+	--- FIN CONSULTAS
+
+	--OBTENER LOS NUMEROS DE PEDIDOS POR AÑO Y ,ES Y GENERAR EL ID CORRESPONDIENTE
+		DECLARE @AnioMes NVARCHAR(7) = FORMAT(GETDATE(), 'yyyy/MM');
+		DECLARE @Numero INT = (
+			SELECT COUNT(*) + 1
+			FROM uni_pedido
+			WHERE FORMAT(fecha_creacion, 'yyyy/MM') = FORMAT(GETDATE(), 'yyyy/MM')
+		);
+		DECLARE @Consecutivo NVARCHAR(3) = RIGHT('000' + CAST(@Numero AS VARCHAR), 3);
+
+		-- Resultado final
+		SELECT @AnioMes + '/' + @Consecutivo AS IdPedido;
+
+
+		WITH Secuencia AS (
+			SELECT COUNT(*) + 1 AS num
+			FROM uni_pedido
+			WHERE fecha_creacion BETWEEN 
+				DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) 
+				AND EOMONTH(GETDATE())
+		)
+		SELECT 
+			CONVERT(VARCHAR(7), GETDATE(), 111) 
+			+ '/' 
+			+ RIGHT(REPLICATE('0', 3) + CAST(num AS VARCHAR(3)), 3)
+		FROM Secuencia;
+
+
+		SELECT 
+			CONVERT(VARCHAR(7), GETDATE(), 111) 
+			+ '/' 
+			+ RIGHT(REPLICATE('0', 3) 
+				+ CAST(
+					(SELECT COUNT(*) + 1 
+					 FROM uni_pedido 
+					 WHERE fecha_creacion >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)
+					   AND fecha_creacion < DATEADD(MONTH, 1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0))) as VARCHAR(3)), 3);
+
+		select  FORMAT(GETDATE(), 'yyyy/MM') 
+				+ '/' 
+				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
+										WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) 
+			as num_pedido;
+	--- FIN CONSULTAS
+
+
+	select ua.id_articulo, ua.cantidad, ua.nombre, uc.categoria, ut.talla,  ug.genero from uni_articulos as ua
+		inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
+		inner join uni_genero as ug on ua.genero = ug.id_genero
+		inner join uni_talla as ut on ua.id_talla = ut.id_talla
+		where cantidad <= stock_min
+
+
+	--CONSULTA PARA LA ENTRADA POR ARTICULOS REGISTRADOS COMO SALIDA
+
+		select* from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
+			where FORMAT(us.fecha, 'yyyy/MM/dd') between '2024/05/13' and '2025/05/13'

@@ -1,58 +1,8 @@
-    const entradaConsecutivo = document.getElementById("entradaConsecutivo");
     const generarPedidoBtn = document.getElementById("generarPedidoBtn");
-    const eliminarSeleccionadosBtn = document.getElementById("eliminarSeleccionadosBtn");
-    const confirmarEliminarBtn = document.getElementById("confirmarEliminarBtn");
     const confirmarPedidoBtn = document.getElementById("confirmarPedidoBtn");
-    const tablaArticulos = document.getElementById("tablaArticulos");
-    //const tablaArticulos = document.getElementById("tablaArticulos").getElementsByTagName("tbody")[0];
-
-    // Datos de ejemplo
-    const articulos = [
-        { id: 1, cantidad: 10, nombre: "PLAYERA ML-Hombre T XS", categoria: "Playera", talla: "XS", genero: "Hombre" },
-        { id: 2, cantidad: 5, nombre: "PLAYERA ML-Hombre T S", categoria: "Playera", talla: "S", genero: "Hombre" },
-        { id: 3, cantidad: 8, nombre: "PLAYERA ML-Hombre T M", categoria: "Playera", talla: "M", genero: "Hombre" },
-        { id: 4, cantidad: 12, nombre: "PLAYERA ML-Hombre T L", categoria: "Playera", talla: "L", genero: "Hombre" },
-        { id: 5, cantidad: 7, nombre: "PLAYERA ML-Hombre T XL", categoria: "Playera", talla: "XL", genero: "Hombre" }
-    ];
-
-    // Función para renderizar los artículos en la tabla
-    function renderizarArticulos() {
-        tablaArticulos.innerHTML = "";
-        articulos.forEach(articulo => {
-            const fila = document.createElement("tr");
-            fila.innerHTML = `
-                <td>${articulo.id}</td>
-                <td>${articulo.cantidad}</td>
-                <td>${articulo.nombre}</td>
-                <td>${articulo.categoria}</td>
-                <td>${articulo.talla}</td>
-                <td>${articulo.genero}</td>
-            `;
-            tablaArticulos.appendChild(fila);
-        });
-    }
-
-    // Función para generar el número de pedido
-    function generarNumeroPedido() {
-        const fecha = new Date();
-        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-        const consecutivo = String(1).padStart(3, "0"); // Aquí deberías obtener el consecutivo real
-        entradaConsecutivo.textContent = `${fecha.getFullYear()}/${mes}/${consecutivo}`;
-    }
-
-    // Evento para abrir el modal de confirmación de eliminar
-    eliminarSeleccionadosBtn.addEventListener("click", () => {
-        const modalConfirm = new bootstrap.Modal(document.getElementById("modalConfirm"));
-        modalConfirm.show();
-    });
-
-    // Evento para confirmar la eliminación de artículos
-    confirmarEliminarBtn.addEventListener("click", () => {
-        // Lógica para eliminar los artículos seleccionados
-        alert("Artículos eliminados");
-        const modalConfirm = new bootstrap.Modal(document.getElementById("modalConfirm"));
-        modalConfirm.hide();
-    });
+    var seleccionadosGlobal = [];
+    const checkPadre = document.getElementById("checkPadre");
+    let datos;
 
     // Evento para abrir el modal de confirmación de generar pedido
     generarPedidoBtn.addEventListener("click", () => {
@@ -68,6 +18,119 @@
         confirmModal.hide();
     });
 
+    checkPadre.addEventListener('change', function(){
+        if (checkPadre.checked) {
+                seleccionadosGlobal = datos
+                $('#tablaArticulos input[type="checkbox"]').prop('checked', true);
+                }
+
+        else {
+                seleccionadosGlobal = [];
+                $('#tablaArticulos input[type="checkbox"]').prop('checked', false);
+        }
+    })
+
+    // Delegación de eventos para checkboxes dinámicos
+    $('#tablaArticulos tbody').on('change', 'input[type="checkbox"]', function() {
+        const id = $(this).data('id');
+        const index = seleccionadosGlobal.indexOf(id);
+        
+        //AGREGA EL ELEMENTO
+        if(this.checked && index === -1) {
+            seleccionadosGlobal.push(id);
+        } 
+        //ELIMINA EL ELEMENTO
+        else if(!this.checked && index > -1) {
+            seleccionadosGlobal.splice(index, 1);
+        }
+
+        checkPadre.checked = (seleccionadosGlobal <=0 ) ? false : true;
+    });
+
+    // Función para renderizar los artículos en la tabla
+    function renderizarArticulos() {
+        var ancho = window.innerWidth;
+
+        var formData = new FormData;
+        formData.append("opcion", "1");
+    
+        fetch("./api/entradas.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => { 
+                              datos = data.map(item => Number(item.id_articulo));
+                              
+
+                                $('#tablaArticulos').DataTable().destroy(); //Restaurar la tablas
+                
+                                //Crear el dataTable con las nuevas configuraciones
+                                $('#tablaArticulos').DataTable({
+                                    responsive: true,
+                                    scrollX: (ancho - 50),
+                                    scrollY: 350,
+                                    scrollCollapse: true,
+                                    data: data,
+                                    pageLength: 100,
+                                    columns: [
+                                        { 
+                                            "data": "check",
+                                            "orderable": false
+                                        },
+                                        { "data": "id_articulo" },
+                                        { "data": "cantidad" },
+                                        { "data": "nombre" },
+                                        { "data": "talla" },
+                                        { "data": "genero" },
+                                        { "data": "categoria" },
+                                    ],
+                                    columnDefs: [
+                                        {
+                                            targets: [0, 1, 2, 3, 4, 5, 6], // Actualizar índices de columnas
+                                            className: 'text-center'
+                                        },
+                                    ],
+                                     createdRow: function(row, data , dataIndex) {
+                                            // Marcar checkbox si está en seleccionadosGlobal
+                                             $(row).attr('data-id', dataIndex);
+                                             const $checkbox = $('input[type="checkbox"]', row);
+                                            const dataId = $checkbox.data('id');
+                                            
+                                            if(seleccionadosGlobal.includes(dataId)) {
+                                                $checkbox.prop('checked', true);
+                                            }
+                                        },
+                                        drawCallback: function(settings) {
+                                            // Recorre todas las filas visibles actualmente
+                                            $('#tablaArticulos tbody tr').each(function () {
+                                            const $row = $(this);
+                                            const $checkbox = $row.find('input[type="checkbox"]');
+                                            const dataId = $checkbox.data('id');
+
+                                            if (seleccionadosGlobal.includes(dataId)) {
+                                                $checkbox.prop('checked', true);
+                                            } else {
+                                                $checkbox.prop('checked', false);
+                                            }
+                                            });
+
+                                        }
+                                });
+                            })
+                        .catch((error) => {
+                            console.log(error);
+
+                            $('#tablaArticulos').DataTable().clear();
+                            $('#tablaArticulos').DataTable().destroy();
+                            $('#tablaArticulos').DataTable();
+                        });
+    }
+
+    // Función para obtener los ID seleccionados
+    function obtenerSeleccionados() {
+        return seleccionadosGlobal;
+    }
+
     // Renderizar los artículos y el número de pedido al cargar la página
     renderizarArticulos();
-    generarNumeroPedido();

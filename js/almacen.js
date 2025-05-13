@@ -61,6 +61,12 @@
                                         { "data": "stock_min" },
                                         { "data": "acciones" }
                                     ], 
+                                    columnDefs: [
+                                        {
+                                            targets: [0,1,2,3,4,5,6,7,8,9,10,11],
+                                            className: 'text-center'
+                                        }
+                                    ],
                                     layout: {
                                         topEnd: {
                                             buttons: [{
