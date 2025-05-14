@@ -35,7 +35,7 @@
                             //Crear el dataTable con las nuevas configuraciones
                              var tabla = $('#tableBody').DataTable({
                                 responsive: true,
-                                scrollX: (380),
+                                scrollX: (500),
                                 scrollY: 340,
                                 scrollCollapse: true,
                                 data: data,

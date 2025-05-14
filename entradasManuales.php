@@ -29,7 +29,7 @@
 
 
         <div class="table-container">
-            <table id="tablaArticulos" class="table table-striped table-hover">
+            <table id="tablaArticulos" class="table-striped">
                 <thead>
                     <tr>
                         <th>ID</th>

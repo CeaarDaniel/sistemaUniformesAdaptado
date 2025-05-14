@@ -1,16 +1,10 @@
     <div id="entradasSalidas">
-        <div class="padding-header">
-            <div class="row align-items-center mb-4">
+            <div class="row align-items-center mt-3">
                 <div class="col">
                     <h1 class="title">Entradas por salidas</h1>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-success" id="generarPedidoBtn">
-                        <i class="bi bi-file-earmark-plus"></i> Generar pedido
-                    </button>
-                </div>
             </div>
-            
+    </div>
             <div class="row mb-3">
                 <div class="col">
                     <div class="remarcado-font fs-5" id="numPedido"></div>
@@ -18,7 +12,7 @@
             </div>
             
             <div class="row mt-2 mb-2">
-                <div class="col-1 align-self-center">Periodo:</div>
+                    <div class="col-1 align-self-center">Periodo:</div>
                     <div class="col-4">
                         <div class="input-group">
                             <input type="date" id="startDate" class="form-control">
@@ -26,24 +20,25 @@
                             <input type="date" id="endDate" class="form-control">
                         </div>
                     </div>
+                    <div class="col-auto text-end">
+                    <button class="btn btn-success" id="generarPedidoBtn">
+                        <i class="bi bi-file-earmark-plus"></i> Generar pedido
+                    </button>
+                </div>
             </div>
 
-        </div>
-
-        <div class="padding-side">
-            <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <table id="tableBody" class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th class="text-center">ID</th>
-                                <th class="text-center">Cantidad</th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+        <div class="d-flex justify-content-center" style="width:100%">
+            <div id="tableContainer" style="width:650px;">
+                <table id="tableBody" class="table-striped responsive">
+                    <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
 
@@ -65,4 +60,3 @@
                 </div>
             </div>
         </div>
-    </div>
