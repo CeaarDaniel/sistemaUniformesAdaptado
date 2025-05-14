@@ -38,4 +38,26 @@ if($opcion=='1'){
     echo json_encode($response);
 }
 
+//ARTICULOS PARA REGISTRAR COMO ENTRADA POR SALIDA
+else 
+    if($opcion== '2'){
+        $sql = "SELECT id_articulo, SUM(cantidad) as cantidad from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
+                where FORMAT(us.fecha, 'yyyy/MM/dd') between '2024/05/13' and '2025/05/13'
+                group by id_articulo order by id_articulo";
+        
+        $articulos = $conn->prepare($sql); 
+
+        if($articulos->execute()){
+            while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                $response[]= array( 'id_articulo' => $articulo['id_articulo'],
+                                    'cantidad' => $articulo['cantidad'],
+                                    'boton' => "<button class='btn btn-danger my-0 mx-1 btn-eliminar' data-id='".$articulo['id_articulo']."'><i class='fas fa-trash'></i></button>");
+        }
+
+        else 
+            $response = array('error' => $articulos->errorInfo()[2]);
+
+    echo json_encode($response);
+    }
+
 ?>

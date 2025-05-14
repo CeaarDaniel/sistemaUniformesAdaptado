@@ -15,7 +15,6 @@
     // Elementos del DOM
     const elementos = {
         numPedido: document.getElementById('numPedido'),
-        tableBody: document.getElementById('tableBody'),
         fechaDesde: document.getElementById('fechaDesde'),
         fechaHasta: document.getElementById('fechaHasta'),
         confirmModal: new bootstrap.Modal('#confirmModal'),
@@ -30,16 +29,7 @@
 
     // Funciones principales
     async function inicializar() {
-        await obtenerConsecutivo();
-        await buscarArticulos();
         actualizarVista();
-    }
-
-    async function obtenerConsecutivo() {
-        const fecha = new Date();
-        // Simular llamada a la API
-        const consecutivo = '001'; // Reemplazar con llamada real
-        state.entradaConsecutivo = `${fecha.getFullYear()}/${String(fecha.getMonth() + 1).padStart(2, '0')}/${consecutivo.padStart(3, '0')}`;
     }
 
     async function buscarArticulos() {
@@ -55,29 +45,73 @@
     }
 
     function actualizarVista() {
-        elementos.numPedido.textContent = `NUM PEDIDO: ${state.entradaConsecutivo}`;
-        
-        // Actualizar tabla
-        elementos.tableBody.innerHTML = state.pedido.map(item => `
-            <tr>
-                <td class="text-center">${item.id_articulo}</td>
-                <td class="text-center">${item.cantidad}</td>
-                <td>${item.nombre}</td>
-                <td class="text-center">${item.abrev}</td>
-                <td class="text-center">${item.talla}</td>
-                <td class="text-center">
-                    <button class="btn btn-danger btn-sm deleteBtn" data-id="${item.id_articulo}">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        var ancho = window.innerWidth;
+                var formData = new FormData;
+                formData.append("opcion", "2");
+            
+                fetch("./api/entradas.php", {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                            $('#tableBody').DataTable().destroy(); //Restaurar la tablas
+                            //Crear el dataTable con las nuevas configuraciones
+                            $('#tableBody').DataTable({
+                                responsive: true,
+                                scrollX: (380),
+                                scrollY: 340,
+                                scrollCollapse: true,
+                                data: data,
+                                columns: [
+                                    { "data": "id_articulo" },  
+                                    { "data": "cantidad" },
+                                    { "data": "boton" },
+                                ], 
+                                "render": function(data, type, row) {
+    return `<button class="btn-eliminar" data-id="${row.id_articulo}">Eliminar</button>`;
+},
+                                columnDefs: [
+                                    {
+                                        targets: [0,1,2],
+                                        className: 'text-center'
+                                    },
+                                ],
+                                "drawCallback": function(settings) {
+                                    // Delegación de eventos para mejor performance
+                                    $('#tableBody').on('click', '.btn-eliminar', function() {
+                                        eliminarRegistro(this);
+                                    });
+                                }
+                            });
+        })
+        .catch((error) => {
+        console.log(error);
 
-        // Agregar eventos a botones de eliminar
-        document.querySelectorAll('.deleteBtn').forEach(btn => {
-            btn.addEventListener('click', () => eliminarArticulo(parseInt(btn.dataset.id)));
-    })
+        $('#tableBody').DataTable().clear();
+        $('#tableBody').DataTable().destroy();
+        $('#tableBody').DataTable();
+    });
 }
+
+function eliminarRegistro(boton) {
+    const table = $('#tableBody').DataTable();
+    const row = $(boton).closest('tr');
+    const rowData = table.row(row).data();
+    
+    // Eliminar de DataTable y del array de datos
+    table.row(row).remove();
+    
+    // Actualizar el array original
+    const index = data.findIndex(item => item.id_articulo === rowData.id_articulo);
+    if (index !== -1) {
+        data.splice(index, 1);
+    }
+    
+    table.draw(); // Redibujar tabla
+}
+
+
 
     async function generarPedido() {
         if (state.pedido.length === 0) {

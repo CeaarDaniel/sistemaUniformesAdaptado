@@ -32,18 +32,15 @@
         <div class="padding-side">
             <div class="row justify-content-center">
                 <div class="col-xl-10">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
+                    <table id="tableBody" class="table table-striped table-hover">
+                        <thead>
                             <tr>
                                 <th class="text-center">ID</th>
                                 <th class="text-center">Cantidad</th>
-                                <th>Nombre</th>
-                                <th class="text-center">Categoria</th>
-                                <th class="text-center">Talla</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody"></tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
