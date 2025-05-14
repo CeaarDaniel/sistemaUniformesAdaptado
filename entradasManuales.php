@@ -4,11 +4,6 @@
                 <div class="col">
                     <h1 class="title">Entradas manuales</h1>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="tooltip" title="Confirmar entrada (alt + c)">
-                        <i class="bi bi-box-arrow-in-down"></i> Generar entrada
-                    </button>
-                </div>
             </div>
             
             <div class="row mb-3">
@@ -16,15 +11,10 @@
             </div>
             
             <div class="row g-3 align-items-center mb-4">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="articuloNombre" placeholder="Artículo" readonly 
-                               data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
-                        <input type="number" class="form-control" id="cantidad" value="1" min="1" style="max-width: 100px;">
-                        <button class="btn btn-success" id="agregarArticuloBtn">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
+                <div class="col-auto">
+                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="tooltip" title="Confirmar entrada (alt + c)">
+                        <i class="bi bi-box-arrow-in-down"></i> Generar entrada
+                    </button>
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
@@ -37,20 +27,20 @@
             </div>
         </div>
 
+
         <div class="table-container">
-            <table class="table table-striped table-hover">
+            <table id="tablaArticulos" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>nombre</th>
+                        <th>Tipo</th>
                         <th>Cantidad</th>
-                        <th>Nombre</th>
-                        <th>Categoria</th>
-                        <th>Talla</th>
-                        <th>Género</th>
-                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Precio</th>
+                        <th>Boton</th>
                     </tr>
                 </thead>
-                <tbody id="tablaArticulos"></tbody>
+                <tbody></tbody>
             </table>
         </div>
 
@@ -68,11 +58,98 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Seleccionar Artículo</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h5 class="modal-title">SELECCIONAR ARTÍCULO</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Contenido de selección de artículos -->
+                        <div class="form-container">
+                            <form>
+                                <h3><i class="bi bi-box-seam"></i> Agregar Artículo</h3>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-key-fill bi-icon"></i>
+                                                ID
+                                            </label>
+                                            <input type="text" id="id" class="form-control" placeholder="ID" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-tag-fill bi-icon"></i>
+                                                Nombre
+                                            </label>
+                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-123 bi-icon"></i>
+                                                Cantidad
+                                            </label>
+                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-grid-fill bi-icon"></i>
+                                                Categoría
+                                            </label>
+                                            <input type="text" id="tipo" class="form-control" placeholder="Categoría" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-rulers bi-icon"></i>
+                                                Talla
+                                            </label>
+                                            <input type="text" class="form-control" placeholder="Talla" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-gender-ambiguous bi-icon"></i>
+                                                Género
+                                            </label>
+                                            <select class="form-control" id="genero" required>
+                                                <option value="" disabled selected>Seleccione género</option>
+                                                <option value="hombre">Hombre</option>
+                                                <option value="mujer">Mujer</option>
+                                                <option value="unisex">Unisex</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <label class="form-label">
+                                                <i class="bi bi-currency-exchange bi-icon"></i>
+                                                Precio
+                                            </label>
+                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <button id="btnAgregarArticulo" class="btn btn-custom" type="button">
+                                            <i class="bi bi-plus-circle"></i> Agregar Artículo
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

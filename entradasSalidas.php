@@ -5,7 +5,7 @@
                     <h1 class="title">Entradas por salidas</h1>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-success" id="generarPedidoBtn" data-bs-toggle="tooltip" title="Confirmar pedido (alt + c)">
+                    <button class="btn btn-success" id="generarPedidoBtn">
                         <i class="bi bi-file-earmark-plus"></i> Generar pedido
                     </button>
                 </div>
@@ -17,16 +17,17 @@
                 </div>
             </div>
             
-            <div class="row g-3 align-items-center">
-                <div class="col-md-4">
-                    <label class="form-label">Periodo:</label>
-                    <div class="input-group">
-                        <input type="date" class="form-control" id="fechaDesde">
-                        <span class="input-group-text">a</span>
-                        <input type="date" class="form-control" id="fechaHasta">
+            <div class="row mt-2 mb-2">
+                <div class="col-1 align-self-center">Periodo:</div>
+                    <div class="col-4">
+                        <div class="input-group">
+                            <input type="date" id="startDate" class="form-control">
+                            <span class="input-group-text">a</span>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
                     </div>
-                </div>
             </div>
+
         </div>
 
         <div class="padding-side">

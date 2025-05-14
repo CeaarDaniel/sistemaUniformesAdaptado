@@ -2,45 +2,14 @@
     // Inicializar tooltips
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(t => new bootstrap.Tooltip(t));
-    
-    let state = {
-        fecha: {
-            from: new Date().toISOString().split('T')[0],
-            to: new Date().toISOString().split('T')[0]
-        },
-        entradaConsecutivo: '',
-        pedido: []
-    };
 
-    // Elementos del DOM
-    const elementos = {
-        numPedido: document.getElementById('numPedido'),
-        fechaDesde: document.getElementById('fechaDesde'),
-        fechaHasta: document.getElementById('fechaHasta'),
-        confirmModal: new bootstrap.Modal('#confirmModal'),
-        generarPedidoBtn: document.getElementById('generarPedidoBtn')
-    };
+    var datos;
+    var generarPedidoBtn= document.getElementById('generarPedidoBtn');
 
-    // Event Listeners
-    elementos.fechaDesde.addEventListener('change', actualizarFecha);
-    elementos.fechaHasta.addEventListener('change', actualizarFecha);
-    elementos.generarPedidoBtn.addEventListener('click', () => elementos.confirmModal.show());
-    document.getElementById('confirmarBtn').addEventListener('click', generarPedido);
+    generarPedidoBtn.addEventListener('click', actualizarVista)
 
     // Funciones principales
     async function inicializar() {
-        actualizarVista();
-    }
-
-    async function buscarArticulos() {
-        // Simular llamada a la API
-        state.pedido = [
-            { id_articulo: 1, cantidad: 5, nombre: 'Camisa', abrev: 'CAM', talla: 'M' }
-        ]; // Reemplazar con datos reales
-    }
-
-    function eliminarArticulo(id) {
-        state.pedido = state.pedido.filter(item => item.id_articulo !== id);
         actualizarVista();
     }
 
@@ -48,6 +17,10 @@
         var ancho = window.innerWidth;
                 var formData = new FormData;
                 formData.append("opcion", "2");
+                formData.append('startDate',  document.getElementById('startDate').value);
+                formData.append('endDate',  document.getElementById('endDate').value);
+
+                console.log(" startr"+ document.getElementById('startDate').value+ " end" +document.getElementById('endDate').value)
             
                 fetch("./api/entradas.php", {
                         method: "POST",
@@ -55,9 +28,12 @@
                     })
                     .then((response) => response.json())
                     .then((data) => {
+
+                            datos = data.map(item => item.id_articulo);
+                            console.log(datos)
                             $('#tableBody').DataTable().destroy(); //Restaurar la tablas
                             //Crear el dataTable con las nuevas configuraciones
-                            $('#tableBody').DataTable({
+                             var tabla = $('#tableBody').DataTable({
                                 responsive: true,
                                 scrollX: (380),
                                 scrollY: 340,
@@ -69,8 +45,8 @@
                                     { "data": "boton" },
                                 ], 
                                 "render": function(data, type, row) {
-    return `<button class="btn-eliminar" data-id="${row.id_articulo}">Eliminar</button>`;
-},
+                                        return `<button class="btn-eliminar" data-id="${row.id_articulo}">Eliminar</button>`;
+                                    },
                                 columnDefs: [
                                     {
                                         targets: [0,1,2],
@@ -78,9 +54,35 @@
                                     },
                                 ],
                                 "drawCallback": function(settings) {
-                                    // Delegación de eventos para mejor performance
-                                    $('#tableBody').on('click', '.btn-eliminar', function() {
-                                        eliminarRegistro(this);
+
+                                    var api = this.api();
+                                     // Delegar evento a los botones de eliminar en la página actual
+                                    api.rows({ page: 'current' }).nodes().each(function(row, index) {
+                                        $(row).find('.btn-eliminar').off('click').on('click', function(e) {
+                                            e.stopPropagation(); // evita que se dispare otro evento en la fila
+
+                                            var fila = tabla.row($(this).closest('tr'));
+
+                                            // Eliminar del arreglo datos
+                                            var valbus= fila.data().id_articulo
+                                            const index = datos.indexOf(valbus);
+    
+
+                                            //ELIMINA EL ELEMENTO
+                                                if( index > -1) {
+                                                datos.splice(index, 1);
+                                            }
+
+                                            fila.remove().draw(false);
+
+                                            console.log(datos);
+
+                                            // Luego de eliminar una fila o cuando lo necesites
+                                                var datosActuales = tabla.rows().data().toArray();
+
+                                                console.log("Datos actuales en el DataTable:", datosActuales);
+
+                                        });
                                     });
                                 }
                             });
@@ -94,23 +96,6 @@
     });
 }
 
-function eliminarRegistro(boton) {
-    const table = $('#tableBody').DataTable();
-    const row = $(boton).closest('tr');
-    const rowData = table.row(row).data();
-    
-    // Eliminar de DataTable y del array de datos
-    table.row(row).remove();
-    
-    // Actualizar el array original
-    const index = data.findIndex(item => item.id_articulo === rowData.id_articulo);
-    if (index !== -1) {
-        data.splice(index, 1);
-    }
-    
-    table.draw(); // Redibujar tabla
-}
-
 
 
     async function generarPedido() {
@@ -119,11 +104,6 @@ function eliminarRegistro(boton) {
             return;
         }
         
-        // Simular envío a la API
-        console.log('Pedido generado:', state.pedido);
-        elementos.confirmModal.hide();
-        mostrarAlerta('Pedido generado correctamente!', 'success');
-        window.location.href = '/uniformes/entradas';
     }
 
     function mostrarAlerta(mensaje, tipo) {
@@ -136,14 +116,5 @@ function eliminarRegistro(boton) {
         document.body.prepend(alerta);
     }
 
-    function actualizarFecha() {
-        state.fecha.from = elementos.fechaDesde.value;
-        state.fecha.to = elementos.fechaHasta.value;
-        buscarArticulos();
-        actualizarVista();
-    }
 
-    // Inicializar
-    elementos.fechaDesde.value = state.fecha.from;
-    elementos.fechaHasta.value = state.fecha.to;
     inicializar();

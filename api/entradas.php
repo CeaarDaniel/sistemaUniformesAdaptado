@@ -16,9 +16,9 @@ if($opcion=='1'){
 		inner join uni_genero as ug on ua.genero = ug.id_genero
 		inner join uni_talla as ut on ua.id_talla = ut.id_talla
 		where cantidad <= stock_min";    
-        
-    $articulos = $conn->prepare($sql); 
 
+
+    $articulos = $conn->prepare($sql); 
     //$articulos->bindparam(':id_salida', $id_salida);
 
         if($articulos->execute()){
@@ -41,11 +41,24 @@ if($opcion=='1'){
 //ARTICULOS PARA REGISTRAR COMO ENTRADA POR SALIDA
 else 
     if($opcion== '2'){
+         $startDate = (isset($_POST['startDate']) && !$_POST['startDate']=='') ? (new DateTime($_POST['startDate']))->format('Y/m/d') : 0;
+         $endDate = (isset($_POST['endDate']) && !$_POST['endDate']=='') ? (new DateTime($_POST['endDate']))->format('Y/m/d') : 0;
+    
+        $filtroFecha = ($startDate != 0 && $endDate != 0) 
+                                ? $filtroFecha = " AND FORMAT(us.fecha, 'yyyy/MM/dd') between :startDate and :endDate " 
+                                : $filtroFecha = '';
+
         $sql = "SELECT id_articulo, SUM(cantidad) as cantidad from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
-                where FORMAT(us.fecha, 'yyyy/MM/dd') between '2024/05/13' and '2025/05/13'
-                group by id_articulo order by id_articulo";
+                    where 1=1 ".$filtroFecha." 
+                 group by id_articulo order by id_articulo";
         
         $articulos = $conn->prepare($sql); 
+
+        if ($startDate != 0 && $endDate != 0){
+            $articulos->bindparam(':startDate', $startDate);
+            $articulos->bindparam(':endDate', $endDate);
+        }
+
 
         if($articulos->execute()){
             while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))

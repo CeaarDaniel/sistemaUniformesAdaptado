@@ -252,4 +252,4 @@ select* from uni_salida_articulo order by id_usuario
 	--CONSULTA PARA LA ENTRADA POR ARTICULOS REGISTRADOS COMO SALIDA
 
 		select* from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
-			where FORMAT(us.fecha, 'yyyy/MM/dd') between '2024/05/13' and '2025/05/13'
+			where FORMAT(us.fecha, 'yyyy/MM/dd') between '2025-01-01' and '2025-05-31'

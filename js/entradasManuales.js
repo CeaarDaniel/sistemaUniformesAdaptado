@@ -1,155 +1,162 @@
-    let state = {
-        entradaConsecutivo: '',
-        articulos: [],
-        selected: [],
-        currentArticulo: null
-    };
 
-    // Elementos del DOM
-    const elementos = {
-        cantidad: document.getElementById('cantidad'),
-        tablaArticulos: document.getElementById('tablaArticulos'),
-        numPedido: document.getElementById('numPedido'),
-        progressBar: document.getElementById('progressBar')
-    };
+    // Fuente de datos inicial
+        let datos = [];
+        var  btnAgregarArticulo = document.getElementById('btnAgregarArticulo');
+        var  eliminarBtn = document.getElementById('eliminarBtn');
+        const table = $('#tablaArticulos').DataTable();
 
-    // Event Listeners
-    document.getElementById('agregarArticuloBtn').addEventListener('click', agregarArticulo);
-    document.getElementById('eliminarBtn').addEventListener('click', mostrarModalEliminar);
-    document.getElementById('generarEntradaBtn').addEventListener('click', mostrarModalConfirmacion);
-    document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+    btnAgregarArticulo.addEventListener('click', agregarArticulo)
+    eliminarBtn.addEventListener('click', function(){
+        datos= []; 
+        actualizarVista();
+    })
     
-    // Teclas rápidas
-    document.addEventListener('keydown', (e) => {
-        if (e.altKey) {
-            if (e.key === 'a') document.getElementById('seleccionarArticuloModal').click();
-            if (e.key === 'c') mostrarModalConfirmacion();
-            if (e.key === 'Enter') agregarArticulo();
-        }
-    });
-
-    // Funciones principales
-    async function inicializar() {
-        await obtenerConsecutivo();
-        actualizarVista();
-    }
-
-    async function obtenerConsecutivo() {
-        // Simular llamada a la API
-        const fecha = new Date();
-        state.entradaConsecutivo = `${fecha.getFullYear()}/${String(fecha.getMonth() + 1).padStart(2, '0')}/001`;
-    }
-
-    function agregarArticulo() {
-        const cantidad = parseInt(elementos.cantidad.value);
-        
-        if (!state.currentArticulo) {
-            mostrarAlerta('Selecciona un artículo primero', 'warning');
-            return;
-        }
-        
-        if (cantidad < 1) {
-            mostrarAlerta('La cantidad debe ser mayor a cero', 'warning');
-            return;
-        }
-
-        const existente = state.articulos.find(a => a.id === state.currentArticulo.id);
-        
-        if (existente) {
-            existente.cantidad += cantidad;
-        } else {
-            state.articulos.push({
-                ...state.currentArticulo,
-                cantidad: cantidad
-            });
-        }
-
-        elementos.cantidad.value = 1;
-        state.currentArticulo = null;
-        document.getElementById('articuloNombre').value = '';
-        actualizarVista();
-    }
 
     function actualizarVista() {
-        elementos.numPedido.textContent = `NUM PEDIDO: ${state.entradaConsecutivo}`;
-        
-        // Actualizar tabla
-        elementos.tablaArticulos.innerHTML = state.articulos.map(articulo => `
-            <tr data-id="${articulo.id}">
-                <td>${articulo.id}</td>
-                <td>${articulo.cantidad}</td>
-                <td>${articulo.nombre}</td>
-                <td>${articulo.categoria}</td>
-                <td>${articulo.talla}</td>
-                <td>${articulo.genero}</td>
-                <td><input type="checkbox" class="select-item"></td>
-            </tr>
-        `).join('');
+        var ancho = window.innerWidth;
 
-        // Agregar eventos a checkboxes
-        document.querySelectorAll('.select-item').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const id = parseInt(e.target.closest('tr').dataset.id);
-                if (e.target.checked) {
-                    state.selected.push(id);
-                } else {
-                    state.selected = state.selected.filter(item => item !== id);
+        $('#tablaArticulos').DataTable().destroy(); //Restaurar la tablas
+        //Crear el dataTable con las nuevas configuraciones
+        var tabla = $('#tablaArticulos').DataTable({
+            responsive: true,
+            scrollX: ancho-100,
+            scrollY: 340,
+            scrollCollapse: true,
+            data: datos,
+            columns: [
+                { "data": "id" },
+                { "data": "nombre" },
+                { "data": "tipo" },
+                { "data": "cantidad" },
+                { "data": "precio" },
+                { "data": "boton"}
+            ], 
+            columnDefs :  [ 
+                {
+                    targets: [0,1,2,3,4,5],
+                    className: 'text-center'
+                }
+            ],
+            "drawCallback": function (settings) {
+
+                var api = this.api();
+                // Delegar evento a los botones de eliminar en la página actual
+                api.rows({ page: 'current' }).nodes().each(function (row, index) {
+                    $(row).find('.btn-eliminar').off('click').on('click', function (e) {
+                        e.stopPropagation(); // evita que se dispare otro evento en la fila
+                        var fila = tabla.row($(this).closest('tr'));
+                        fila.remove().draw();
+
+                        // Luego de eliminar una fila o cuando lo necesites
+                        var datosActuales = tabla.rows().data().toArray();
+                    });
+                });
+            }
+        });
+    }
+
+
+    //Problema al ingresar id con 0 y al reordenar la pagina
+    /*
+        function agregarArticulo() {
+            var tabla = $('#tablaArticulos').DataTable();
+            var nuevoId = Number(document.getElementById("id").value);
+            var nuevaCantidad = Number(document.getElementById("cantidadArt").value);
+
+            // Obtener todos los datos de la tabla como objetos
+            var filas = tabla.rows().data().toArray();
+            var indice = filas.findIndex(function (fila) {
+                return fila.id === nuevoId;
+            });
+
+            console.log("indice"+ indice)
+
+            if(indice < 0) {
+                // No existe, lo agregamos como nuevo
+                var nuevoArticulo = {
+                    id: Number(document.getElementById("id").value),
+                    nombre: document.getElementById("nombre").value,
+                    tipo: document.getElementById("tipo").value,
+                    cantidad: Number(document.getElementById("cantidadArt").value),
+                    precio: Number(document.getElementById("precio").value),
+                    boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
+                };
+
+                datos.push(nuevoArticulo);
+                tabla.row.add(nuevoArticulo).draw(false); //.draw(false) Redibuja la tabla manteniendo la página actual (muy útil en tablas paginadas).
+                document.querySelectorAll("input").forEach(input => input.value = "");
+
+                console.log("Entro "+ nuevoArticulo);
+            }
+
+            else {
+                // Obtener la fila completa
+                var datosFila = tabla.row(indice).data();
+
+                console.log("No entro indice: "+indice)
+
+                // Modificar solo el valor deseado
+
+                console.log("Cantidad actual"+ datosFila.cantidad)
+                console.log("Cantidad agregada"+ nuevaCantidad)
+                datosFila.cantidad = parseInt(datosFila.cantidad) + nuevaCantidad ;
+
+                // Aplicar los nuevos datos a la fila
+                tabla.row(indice).data(datosFila).draw(false);
+            }
+
+            console.log('indice 2',indice)
+            console.log("Filas actuales:",tabla.rows().data().toArray())
+            console.log("Filas anteriores: ",filas)
+            console.log("Fila modificada ",  tabla.rows(indice).data().toArray());
+            } 
+        */
+
+        function agregarArticulo() {
+            const tabla = $('#tablaArticulos').DataTable();
+            const nuevoId = Number(document.getElementById("id").value);
+            const nuevaCantidad = Number(document.getElementById("cantidadArt").value);
+
+            // Buscar en todas las filas (incluyendo páginas no visibles)
+            let filaExistente = null;
+            tabla.rows().every(function (index) {
+                const filaData = this.data();
+                if (filaData.id === nuevoId) {
+                    filaExistente = this;
+                    return false; // Detener la iteración
                 }
             });
-        });
-    }
 
-    function toggleSelectAll(e) {
-        const checkboxes = document.querySelectorAll('.select-item');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = e.target.checked;
-            checkbox.dispatchEvent(new Event('change'));
-        });
-    }
+            if (!filaExistente) {
+                // Agregar nuevo artículo
+                const nuevoArticulo = {
+                    id: nuevoId,
+                    nombre: document.getElementById("nombre").value,
+                    tipo: document.getElementById("tipo").value,
+                    cantidad: nuevaCantidad,
+                    precio: Number(document.getElementById("precio").value),
+                    boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
+                };
 
-    function mostrarModalEliminar() {
-        if (state.selected.length === 0) {
-            mostrarAlerta('Selecciona al menos un artículo', 'warning');
-            return;
+                datos.push(nuevoArticulo);
+                tabla.row.add(nuevoArticulo).draw(false);
+                document.querySelectorAll("input").forEach(input => input.value = "");
+            } else {
+                // Actualizar cantidad en fila existente
+                const datosActualizados = filaExistente.data();
+                datosActualizados.cantidad += nuevaCantidad;
+
+                // Actualizar ambas fuentes de datos
+                filaExistente.data(datosActualizados);
+
+                // Actualizar el array original
+                const indexOriginal = datos.findIndex(item => item.id === nuevoId);
+                if (indexOriginal !== -1) {
+                    datos[indexOriginal].cantidad = datosActualizados.cantidad;
+                }
+
+                tabla.draw(false); // Redibujar manteniendo paginación/orden
+            }
         }
-        new bootstrap.Modal('#confirmarEliminarModal').show();
-    }
 
-    async function confirmarEliminacion() {
-        state.articulos = state.articulos.filter(articulo => 
-            !state.selected.includes(articulo.id)
-        );
-        state.selected = [];
-        actualizarVista();
-        mostrarAlerta('Artículos eliminados correctamente', 'success');
-    }
-
-    async function generarEntrada() {
-        if (state.articulos.length === 0) {
-            mostrarAlerta('No hay artículos para procesar', 'danger');
-            return;
-        }
-        
-        elementos.progressBar.classList.remove('d-none');
-        
-        // Simular envío a la API
-        setTimeout(() => {
-            elementos.progressBar.classList.add('d-none');
-            mostrarAlerta('Entrada generada correctamente', 'success');
-            window.location.href = '/uniformes/dashboard';
-        }, 2000);
-    }
-
-    function mostrarAlerta(mensaje, tipo) {
-        const alerta = document.createElement('div');
-        alerta.className = `alert alert-${tipo} alert-dismissible fade show fixed-alert`;
-        alerta.innerHTML = `
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alerta);
-        setTimeout(() => alerta.remove(), 3000);
-    }
-
-    // Inicialización
-    inicializar();
+actualizarVista();
