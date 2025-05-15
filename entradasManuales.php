@@ -78,52 +78,23 @@ include('./api/conexion.php');
                     </div>
                     <div class="modal-body">
                         <div class="form-container">
-                            <form>
+                            <form id="formAgregarArticulo" class="form-control">
                                 <h3><i class="bi bi-box-seam"></i> Agregar Artículo</h3>
                                 
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="">
                                             <label class="form-label">
-                                                <i class="bi bi-key-fill bi-icon"></i> Nombre del articulo
-                                            </label>
-                                            <select id="id" class="form-select" required>
-                                                <option value="">---SELECCIONE UN ARTICULO ---</option>
-                                                <?php 
-                                                    while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['abrev']."</option>";
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="">
-                                            <label class="form-label">
-                                                <i class="bi bi-tag-fill bi-icon"></i>
-                                                Nombre
-                                            </label>
-                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="">
-                                            <label class="form-label">
-                                                <i class="bi bi-123 bi-icon"></i>
-                                                Cantidad
-                                            </label>
-                                            <input type="number" id="cantidadArt" class="form-control" min=1 placeholder="Cantidad" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="">
-                                            <label class="form-label">
                                                 <i class="bi bi-grid-fill bi-icon"></i>
                                                 Categoría
                                             </label>
-                                            <input type="text" id="tipo" class="form-control" placeholder="Categoría" required>
+                                            <select class="form-select" name="tipo" id="tipo" required>
+                                                <option value="">Seleccione una categoría</option>
+                                                <?php 
+                                                    while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -133,7 +104,9 @@ include('./api/conexion.php');
                                                 <i class="bi bi-rulers bi-icon"></i>
                                                 Talla
                                             </label>
-                                            <input type="text" class="form-control" placeholder="Talla" required>
+                                            <select name="talla" id="talla" class="form-select" required>
+                                                <option value="" selected>Seleccione una talla</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -143,23 +116,46 @@ include('./api/conexion.php');
                                                 <i class="bi bi-gender-ambiguous bi-icon"></i>
                                                 Género
                                             </label>
-                                            <select class="form-control" id="genero" required>
-                                                <option value="" disabled selected>Seleccione género</option>
-                                                <option value="hombre">Hombre</option>
-                                                <option value="mujer">Mujer</option>
-                                                <option value="unisex">Unisex</option>
+                                            <select id="genero" name="genero" class="form-select" required>
+                                                <option value="" selected>Seleccione género</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-tag-fill bi-icon"></i>
+                                                Nombre
+                                            </label>
+                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly>
+                                    </div>
+                                    
+
+                                    <div class="col-md-6">
                                             <label class="form-label">
                                                 <i class="bi bi-currency-exchange bi-icon"></i>
                                                 Precio
                                             </label>
                                             <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-123 bi-icon"></i>
+                                                Cantidad
+                                            </label>
+                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" required>
                                         </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!--
+                                            <label class="form-label">
+                                                <i class="bi bi-key-fill bi-icon"></i> ID
+                                            </label> 
+                                        -->
+                                            <input id="id" class="form-control d-none" type="text" >
                                     </div>
 
                                     <div class="col-12">
