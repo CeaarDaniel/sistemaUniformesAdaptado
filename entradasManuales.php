@@ -1,4 +1,19 @@
-    <div id="entradasUsado">
+<?php 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+include('./api/conexion.php');
+
+        $sql= "SELECT* from uni_categoria";
+
+        $articulos = $conn->prepare($sql); 
+        $articulos->execute()
+        
+        
+?>
+
+<div id="entradasUsado">
         <div class="padding-header">
             <div class="row align-items-center mb-4">
                 <div class="col">
@@ -68,37 +83,42 @@
                                 
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <div class="input-group">
+                                        <div class="">
                                             <label class="form-label">
-                                                <i class="bi bi-key-fill bi-icon"></i>
-                                                ID
+                                                <i class="bi bi-key-fill bi-icon"></i> Nombre del articulo
                                             </label>
-                                            <input type="text" id="id" class="form-control" placeholder="ID" required>
+                                            <select id="id" class="form-select" required>
+                                                <option value="">---SELECCIONE UN ARTICULO ---</option>
+                                                <?php 
+                                                    while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['abrev']."</option>";
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="input-group">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-tag-fill bi-icon"></i>
                                                 Nombre
                                             </label>
-                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
+                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-123 bi-icon"></i>
                                                 Cantidad
                                             </label>
-                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" required>
+                                            <input type="number" id="cantidadArt" class="form-control" min=1 placeholder="Cantidad" required>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-grid-fill bi-icon"></i>
                                                 Categoría
@@ -107,8 +127,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="input-group">
+                                    <div class="col-md-6">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-rulers bi-icon"></i>
                                                 Talla
@@ -118,7 +138,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="input-group">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-gender-ambiguous bi-icon"></i>
                                                 Género
@@ -133,12 +153,12 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="input-group">
+                                        <div class="">
                                             <label class="form-label">
                                                 <i class="bi bi-currency-exchange bi-icon"></i>
                                                 Precio
                                             </label>
-                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" required>
+                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
                                         </div>
                                     </div>
 
