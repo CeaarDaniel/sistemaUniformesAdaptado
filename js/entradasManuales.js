@@ -260,7 +260,7 @@
                                             `Has alcanzado la cantidad máxima permitida para este artículo.\n` +
                                             `➤ Cantidad agregada: ${datosActualizados.cantidad}\n` +
                                             `➤ Cantidad por agregar: ${nuevaCantidad}\n\n` +
-                                            `➤ Cantidad total: ${datosActualizados.cantidad + nuevaCantidad}\n\n` +
+                                            `➤ Cantidad total: ${datosActualizados.cantidad + nuevaCantidad}\n` +
                                             `➤ Máximo permitido: ${cantidad.max}\n` +
                                             `No es posible agregar estas unidades al pedido.`
                                         );
@@ -288,11 +288,5 @@
                             }
                     }
         }
-
-        //Validar que el id exista que no este vacio o sea null, 
-//Que el total de los articulos ingresados en la tabla no exceda al maximo del input de cantidad
-//Validar el report validity para que no se ingresen valores nulos
-//No permitir ingresar valores a la tabla si no hay registro de articulo
-
 
 actualizarVista();
