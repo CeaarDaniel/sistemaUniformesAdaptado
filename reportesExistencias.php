@@ -31,16 +31,16 @@ include('./api/conexion.php');
             <div class="row mt-2 mb-2">
                 <div class="col-auto ms-3">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="rbnExistencia" value="1" checked>
-                        <label class="form-check-label">Todos</label>
+                        <input class="form-check-input" type="radio" id="groupRadioTodos" name="rbnExistencia" value="1" checked>
+                        <label class="form-check-label" for="groupRadioTodos">Todos</label>
                     </div>
                     <div class="form-check form-check-inline ms-3">
-                        <input class="form-check-input" type="radio" name="rbnExistencia" value="2">
-                        <label class="form-check-label">Solo con existencia</label>
+                        <input class="form-check-input" type="radio" id="groupRadioSolo" name="rbnExistencia" value="2">
+                        <label class="form-check-label"  for="groupRadioSolo">Solo con existencia</label>
                     </div>
                     <div class="form-check form-check-inline ms-3">
-                        <input class="form-check-input" type="radio" name="rbnExistencia" value="3">
-                        <label class="form-check-label">Sin existencia</label>
+                        <input class="form-check-input" type="radio" id="groupRadioSin" name="rbnExistencia" value="3">
+                        <label class="form-check-label" for="groupRadioSin">Sin existencia</label>
                     </div>
                 </div>
                 <div class="col-auto ms-auto">

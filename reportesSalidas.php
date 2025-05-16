@@ -36,12 +36,12 @@ include('./api/conexion.php');
             
             <div class="col-auto ms-3">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rbnSalida" value="1" checked>
-                    <label class="form-check-label">Solo salidas</label>
+                    <input class="form-check-input" type="radio" id="soloSalidas" name="rbnSalida" value="1" checked>
+                    <label class="form-check-label" for="soloSalidas">Solo salidas</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rbnSalida" value="2">
-                    <label class="form-check-label">Solo artículos</label>
+                    <input class="form-check-input" type="radio" id="soloArticulos" name="rbnSalida" value="2">
+                    <label class="form-check-label" for="soloArticulos">Solo artículos</label>
                 </div>
             </div>
             

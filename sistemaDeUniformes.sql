@@ -253,3 +253,32 @@ select* from uni_salida_articulo order by id_usuario
 
 		select* from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
 			where FORMAT(us.fecha, 'yyyy/MM/dd') between '2025-01-01' and '2025-05-31'
+
+
+		--Obtener las tallas de la categoria 
+			select ua.id_talla, ut.talla from uni_articulos ua
+				inner join uni_talla as ut on ua.id_talla = ut.id_talla 
+				group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla   
+
+			--Obtener los generos de la categoria
+			select ua.id_categoria, ug.id_genero, ug.genero from uni_articulos as ua 
+				left join uni_genero as ug on ua.genero = ug.id_genero 
+			 group by id_categoria, ug.genero, ug.id_genero
+
+			 select* from uni_talla
+			 select* from uni_tipo_talla
+
+			 select id_articulo, nombre, cantidad, precio from uni_articulos where id_talla = '2' and genero='1' and id_categoria=2 and eliminado='0'
+
+			 select* from uni_vale
+			 select* from uni_vale_uniforme
+			 select* from uni_tipo_vale
+			 select* from uni_roles_sesion
+			 select* from uni_rol
+
+
+			 select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol, ur.rol
+					from uni_roles_sesion AS rs 
+				inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
+				left join uni_rol as ur on rs.id_rol = ur.id_rol 
+			order by id_rol

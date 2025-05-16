@@ -9,13 +9,11 @@ include('./api/conexion.php');
 
         $articulos = $conn->prepare($sql); 
         $articulos->execute()
-        
-        
 ?>
 
 <div id="entradasUsado">
-        <div class="padding-header">
-            <div class="row align-items-center mb-4">
+
+            <div class="row align-items-center my-3">
                 <div class="col">
                     <h1 class="title">Entradas manuales</h1>
                 </div>
@@ -40,7 +38,6 @@ include('./api/conexion.php');
                     </button>
                 </div>
             </div>
-        </div>
 
 
         <div class="table-container">

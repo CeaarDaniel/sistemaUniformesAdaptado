@@ -1,13 +1,7 @@
-
-
         var empleado = document.getElementById('empleadoInput');
         var valeInput = document.getElementById('valeInput');
         var emptyState = document.getElementById('emptyState');
         let datos = []
-
-
-  
-
 
     
     // Fuente de datos inicial
@@ -29,6 +23,7 @@
     eliminarBtn.addEventListener('click', function(){
         datos= []; 
         actualizarVista();
+        ocultarMostrarTabla();
     })
     
     categoria.addEventListener('change', function () {
@@ -83,18 +78,8 @@
                             fila.remove().draw();
 
                             // Luego de eliminar una fila o cuando lo necesites
-                            var datos = tabla.rows().data().toArray();
-
-                                                          if (datos.length === 0) {
-                                    document.getElementById('emptyState').classList.remove('d-none');
-                                    document.getElementById('contenedorTabla').classList.add('d-none');
-                                }
-
-
-                                else {
-                                    document.getElementById('emptyState').classList.add('d-none');
-                                    document.getElementById('contenedorTabla').classList.remove('d-none');
-                                }
+                            datos = tabla.rows().data().toArray();
+                            ocultarMostrarTabla();
                         });
                     });
                 }
@@ -250,19 +235,21 @@
                                         });
                                     }
                                 }
-
-                                if (datos.length === 0) {
-                                    document.getElementById('emptyState').classList.remove('d-none');
-                                    document.getElementById('contenedorTabla').classList.add('d-none');
-                                }
-
-
-                                else {
-                                    document.getElementById('emptyState').classList.add('d-none');
-                                    document.getElementById('contenedorTabla').classList.remove('d-none');
-                                }
+                                    ocultarMostrarTabla();
                             }
                     }
+        }
+
+        function ocultarMostrarTabla(){
+                if (datos.length === 0) {
+                    document.getElementById('emptyState').classList.remove('d-none');
+                    document.getElementById('contenedorTabla').classList.add('d-none');
+                }
+
+                else {
+                    document.getElementById('emptyState').classList.add('d-none');
+                    document.getElementById('contenedorTabla').classList.remove('d-none');
+                }
         }
 
 actualizarVista();
