@@ -45,14 +45,12 @@ include('./api/conexion.php');
             <table id="tablaArticulos" class="table-striped">
                 <thead>
                     <tr>
-                        <th>Acciones</th>
-                        <th>Estado</th>
                         <th>ID</th>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Género</th>
-                        <th>Talla</th>
+                        <th>nombre</th>
+                        <th>Tipo</th>
                         <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Boton</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
