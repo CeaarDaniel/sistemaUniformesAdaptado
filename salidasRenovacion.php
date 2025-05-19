@@ -21,9 +21,6 @@ include('./api/conexion.php');
                 <div class="col-md-4">
                     <input type="number" min="2" step="1" class="form-control" id="empleadoInput" placeholder="Empleado">
                 </div>
-                <div class="col-md-3">
-                    <input type="text" class="form-control" id="valeInput" placeholder="Vale">
-                </div>
                 <div class="col-4 col-md-auto">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
                         <i class="bi bi-plus-lg"></i>
