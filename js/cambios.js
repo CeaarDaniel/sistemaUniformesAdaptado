@@ -1,30 +1,17 @@
-var btnBuscar = document.getElementById('btnBuscar');
-var btnSeleccionarArticuloCambio = document.getElementById('btnSeleccionarArticuloCambio');
+    var btnBuscar = document.getElementById('btnBuscar');
+    var btnSeleccionarArticuloCambio = document.getElementById('btnSeleccionarArticuloCambio');
+   
+    var salida_articulos = []; //Datos de los articulos de la salida ya registrada
+    const ids_articulos = []; //Id de los articulos de la salida que seran devueltos
+    const articulos_cambio = []; //Datos para la tabla de los articulos agregados
+    const ids_articulos_cambio = []; //Id de los nuevos articulos agregados
 
 
-btnBuscar.addEventListener('click', function () {
-    navegar('cambios',$('#numSalida').val(),'mainContent')
-})
+    btnBuscar.addEventListener('click', function () {
+        navegar('cambios',$('#numSalida').val(),'mainContent'); 
+    });
 
-btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
-
-
-        // Datos de ejemplo (simulados)
-        const salida = {
-            fecha: "2023-10-01",
-            nombre: "Usuario 1",
-            usuario: "Empleado 1",
-            tipo_salida: "Tipo 1"
-        };
-
-        const salida_articulos = [
-            { id_articulo: 1, cantidad: 5, nombre: "Camisa", talla: "M" },
-            { id_articulo: 2, cantidad: 3, nombre: "Pantalón", talla: "L" }
-        ];
-
-        const articulos_cambio = [];
-        const ids_articulos = [];
-        const ids_articulos_cambio = [];
+    btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
 
         // Función para renderizar las tablas
         function renderTables() {
@@ -32,12 +19,12 @@ btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
             const tbodyOriginal = document.getElementById('tablaOriginal');
             tbodyOriginal.innerHTML = salida_articulos.map(art => `
                 <tr>
-                    <td class="${ids_articulos.includes(art.id_articulo) ? 'text-decoration-underline' : ''}">${art.id_articulo}</td>
-                    <td class="${ids_articulos.includes(art.id_articulo) ? 'text-disabled text-line-through' : ''}">${art.cantidad}</td>
-                    <td class="${ids_articulos.includes(art.id_articulo) ? 'text-disabled text-line-through' : ''}">${art.nombre}</td>
-                    <td class="${ids_articulos.includes(art.id_articulo) ? 'text-disabled text-line-through' : ''}">${art.talla}</td>
+                    <td class="${ids_articulos.includes(parseInt(art.id_articulo)) ? 'text-decoration-line-through' : ''}">${art.id_articulo}</td>
+                    <td class="${ids_articulos.includes(parseInt(art.id_articulo)) ? 'text-decoration-line-through' : ''}">${art.cantidad}</td>
+                    <td class="${ids_articulos.includes(parseInt(art.id_articulo)) ? 'text-decoration-line-through' : ''}">${art.nombre}</td>
+                    <td class="${ids_articulos.includes(parseInt(art.id_articulo)) ? 'text-decoration-line-through' : ''}">${art.talla}</td>
                     <td>
-                        ${!ids_articulos.includes(art.id_articulo) ? `
+                        ${!ids_articulos.includes(parseInt(art.id_articulo)) ? `
                             <button class='btn btn-success btn-action btnEscoger' 
                                     data-id = '${art.id_articulo}' 
                                     data-nombre = '${art.nombre}' >
@@ -47,8 +34,6 @@ btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
                     </td>
                 </tr>
             `).join('');
-
-    
 
                 let btnEscoger = document.querySelectorAll(".btnEscoger");
                 btnEscoger.forEach(boton => {
@@ -83,26 +68,13 @@ btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
             });
         }
 
-        // Función para buscar artículos
-        function buscarArticulos() {
-            const numSalida = document.getElementById('numSalida').value;
-            if (!numSalida) {
-                alert('Ingresa un número de salida válido.');
-                return;
-            }
-            // Simulación de carga de datos
-            document.getElementById('fechaSalida').textContent = salida.fecha;
-            document.getElementById('realizadoPor').textContent = salida.nombre;
-            document.getElementById('paraUsuario').textContent = salida.usuario;
-            document.getElementById('tipoSalida').textContent = salida.tipo_salida;
-            renderTables();
-        }
-
-        // Función para abrir el modal de selección de artículo
+        // Función para abrir el modal donde se ecnutra el formulario para la selección de artículos
         function abrirEscogerArtModal(event) {
             const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
             var id = boton.getAttribute('data-id');
             var nombre = boton.getAttribute('data-nombre');
+
+            console.log(id, nombre)
 
             //Se agrega un data-id con dataset.id, igual al valor del data del boton que disparo el boton
             document.getElementById('escogerArtModal').dataset.id = id;
@@ -113,10 +85,12 @@ btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
         // Función para seleccionar un artículo
         function seleccionarArticulo() {
             const id = document.getElementById('escogerArtModal').dataset.id;
-            const articulo = { id_articulo: 3, cantidad: 5, nombre: "Camisa Nueva", talla: "M" }; // Simulación de selección
-            ids_articulos.push(parseInt(id));
-            ids_articulos_cambio.push(articulo.id_articulo);
-            articulos_cambio.push(articulo);
+            const articulo = { id_articulo: 5, cantidad: 5, //Nuevo articulo agregado
+                               nombre: "Camisa Nueva", talla: "M", 
+                               precio: "50.00", total: "50.00" }; // Simulación de selección
+            ids_articulos.push(parseInt(id)); //Se agrega el articulo que sera devuelto, a la lista de articulos
+            ids_articulos_cambio.push(articulo.id_articulo); //Se agrega el articulo que saldra
+            articulos_cambio.push(articulo); //Se agrega el articulo a los datos de la tabla
             renderTables();
             new bootstrap.Modal(document.getElementById('escogerArtModal')).hide();
             console.log(ids_articulos)
@@ -127,27 +101,33 @@ btnSeleccionarArticuloCambio.addEventListener('click', seleccionarArticulo);
             const boton = event.target.closest("button");
             var id = boton.getAttribute('data-id');
             const index = articulos_cambio.findIndex(a => a.id_articulo === id);
+            console.log(index);
             ids_articulos.splice(index, 1);
             ids_articulos_cambio.splice(index, 1);
             articulos_cambio.splice(index, 1);
             renderTables();
         }
 
-        // Función para abrir el modal de confirmación
-        function abrirModalConfirmacion() {
-            if (ids_articulos.length === 0) {
-                alert('No has seleccionado ningún artículo para cambiar.');
-                return;
-            }
-            new bootstrap.Modal(document.getElementById('modalConfirmacion')).show();
-        }
+        function getDatos() {
+            var formData = new FormData;
+            formData.append("opcion", "1");
+            formData.append("id_salida", $("#numSalida").val());
 
-        // Función para realizar el cambio
-        function realizarCambio() {
-            alert('Cambio realizado correctamente.');
-            new bootstrap.Modal(document.getElementById('modalConfirmacion')).hide();
-            // Aquí iría la lógica para guardar los cambios
+            fetch("./api/cambios.php", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    salida_articulos = data;
+
+                    //Renderizar la tabla al cargar los datos
+                    renderTables();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
 
         // Renderizar las tablas al cargar la página
-        renderTables();
+        getDatos();
