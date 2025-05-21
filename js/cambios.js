@@ -2,6 +2,7 @@
     var btnSeleccionarArticuloCambio = document.getElementById('btnSeleccionarArticuloCambio');
    
     var salida_articulos = []; //Datos de los articulos de la salida ya registrada
+    const articulos_regreso = [] // Datos de los articulos que regresaran al almacen
     const ids_articulos = []; //Id de los articulos de la salida que seran devueltos
     const articulos_cambio = []; //Datos para la tabla de los articulos agregados
     const ids_articulos_cambio = []; //Id de los nuevos articulos agregados
@@ -53,7 +54,7 @@
                     <td>${art.talla}</td>
                     <td>
                         <button class="btn btn-danger btnCancelarCambio" 
-                                data-id="${art.id_articulo}" >
+                                data-id="${art.id_articuloSalida}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -85,9 +86,9 @@
         // Función para seleccionar un artículo
         function seleccionarArticulo() {
             const id = document.getElementById('escogerArtModal').dataset.id;
-            const articulo = { id_articulo: 5, cantidad: 5, //Nuevo articulo agregado
+            const articulo = { id_articulo: (Math.floor(Math.random() * 255) + 1), cantidad: 5, //Nuevo articulo agregado
                                nombre: "Camisa Nueva", talla: "M", 
-                               precio: "50.00", total: "50.00" }; // Simulación de selección
+                               precio: "50.00", total: "50.00", id_articuloSalida: id}; // Simulación de selección
             ids_articulos.push(parseInt(id)); //Se agrega el articulo que sera devuelto, a la lista de articulos
             ids_articulos_cambio.push(articulo.id_articulo); //Se agrega el articulo que saldra
             articulos_cambio.push(articulo); //Se agrega el articulo a los datos de la tabla
@@ -100,8 +101,9 @@
         function cancelarCambio(event) {
             const boton = event.target.closest("button");
             var id = boton.getAttribute('data-id');
-            const index = articulos_cambio.findIndex(a => a.id_articulo === id);
-            console.log(index);
+            const index = articulos_cambio.findIndex(a => a.id_articuloSalida === id);
+           // console.log("indice borrado",index);
+           //console.log("Valor del indice",id);
             ids_articulos.splice(index, 1);
             ids_articulos_cambio.splice(index, 1);
             articulos_cambio.splice(index, 1);

@@ -24,8 +24,10 @@ $opcion = $_POST['opcion'];
             $salidas->bindparam(':id_salida', $id_salida);
 
             if($salidas->execute()){
-                while($salida = $salidas->fetch(PDO::FETCH_ASSOC))
+                while($salida = $salidas->fetch(PDO::FETCH_ASSOC)) {
+                     $salida['agregado'] = false;
                     $response[]= $salida;
+                } 
             }
 
             else 
