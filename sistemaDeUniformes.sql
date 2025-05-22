@@ -282,3 +282,16 @@ select* from uni_salida_articulo order by id_usuario
 				inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
 				left join uni_rol as ur on rs.id_rol = ur.id_rol 
 			order by id_rol
+
+select* from uni_salida_articulo where id_salida = '15'
+
+-- CONSULTA PARA ELIMINAR VALORES DUPLICADOS EN TABLAS SIN IDENTIFICADOR UNICO
+WITH Duplicados AS (
+   SELECT *,
+			 ROW_NUMBER() OVER (PARTITION BY id_salida, id_articulo, cantidad ORDER BY id_salida) AS fila
+	  FROM uni_salida_articulo 
+)
+delete FROM Duplicados WHERE fila > 1;
+
+
+select* from uni_articulos

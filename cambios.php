@@ -38,6 +38,11 @@
                 $usuario = $registro['usuario']; // Nombre de quien realiza la operacion
            }
     }
+
+    $sqlArticulos= "SELECT* from uni_categoria";
+
+    $articulos = $conn->prepare($sqlArticulos); 
+    $articulos->execute()
 ?>
 
     <div id="cambios">
@@ -77,19 +82,102 @@
 
 
         <div class="modal fade" id="escogerArtModal" tabindex="-1" aria-labelledby="escogerArtModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="escogerArtModalLabel">Seleccionar Artículo</h5>
                         <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
-                        <p>Selecciona un artículo para realizar el cambio.</p>
-                        <!-- Aquí iría la lista de artículos disponibles -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button id="btnSeleccionarArticuloCambio" type="button" class="btn btn-primary">Seleccionar</button>
+                        <div class="form-container">
+                            <form id="formAgregarArticulo" class="form-control">
+                                <h3><i class="bi bi-box-seam"></i> Agregar Artículo</h3>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-grid-fill bi-icon"></i>
+                                                Categoría
+                                            </label>
+                                            <select class="form-select" name="tipo" id="tipo" required>
+                                                <option value="">Seleccione una categoría</option>
+                                                <?php 
+                                                    while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-rulers bi-icon"></i>
+                                                Talla
+                                            </label>
+                                            <select name="talla" id="talla" class="form-select" required>
+                                                <option value="" selected>Seleccione una talla</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-gender-ambiguous bi-icon"></i>
+                                                Género
+                                            </label>
+                                            <select id="genero" name="genero" class="form-select" required>
+                                                <option value="" selected>Seleccione género</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                            <label class="form-label">
+                                                <i class="bi bi-tag-fill bi-icon"></i>
+                                                Nombre
+                                            </label>
+                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly>
+                                    </div>
+                                    
+
+                                    <div class="col-md-6">
+                                            <label class="form-label">
+                                                <i class="bi bi-currency-exchange bi-icon"></i>
+                                                Precio
+                                            </label>
+                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <label class="form-label">
+                                                <i class="bi bi-123 bi-icon"></i>
+                                                Cantidad
+                                            </label>
+                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!--
+                                            <label class="form-label">
+                                                <i class="bi bi-key-fill bi-icon"></i> ID
+                                            </label> 
+                                        -->
+                                            <input id="id" class="form-control d-none" type="text" >
+                                    </div>
+
+                                    <div class="col-12">
+                                        <button id="btnSeleccionarArticuloCambio" class="btn btn-custom" type="button">
+                                            <i class="bi bi-plus-circle"></i> Agregar Artículo
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,6 +232,6 @@
             </div>
         <!-- Botón de Realizar Cambio -->
         <div class="container mt-4 text-end">
-            <button class="btn btn-success">Realizar Cambio</button>
+            <button id="btnRealizarCambio" class="btn btn-success">Realizar Cambio</button>
         </div>
     </div>
