@@ -107,8 +107,6 @@
             var nombre = boton.getAttribute('data-nombre');
             var cantidad = boton.getAttribute ('data-cantidad')
 
-            console.log(id, nombre)
-
             //Se agrega un data-id con dataset.id, igual al valor del data del boton que disparo el boton
             document.getElementById('escogerArtModal').dataset.id = id;
             $("#cantidadArt").val(cantidad);
@@ -119,36 +117,43 @@
         // Función para seleccionar un artículo
         function seleccionarArticulo() {
             const id = document.getElementById('escogerArtModal').dataset.id;
-            console.log(cantidad.max)
 
-            if(cantidad.value > cantidad.max) 
-                alert("No hay suficientes unidades para este artículo")
+           
+
+            if(ids_articulos_cambio.includes($('#id').val()))
+                    alert("Este articulo ya ha sido agregado")
 
             else 
                 if(id == $("#id").val()) 
                     alert("No puedes cambiar un artículo por el mismo, selecciona uno diferente");
-                
+
              else {
                  var fmamantenimiento = document.getElementById("formAgregarArticulo");
                  var isValidfm = fmamantenimiento.reportValidity();
 
                  if (isValidfm) {
 
-                     //ARTICULO SELECCIONADO
-                     const articulo = {
-                         id_articulo: $('#id').val(),
-                         cantidad: $("#cantidadArt").val(), //Nuevo articulo agregado
-                         nombre: $('#nombre').val(),
-                         talla: $('#talla option:selected').text(),
-                         precio: $('#precio').val(),
-                         id_articuloSalida: id //ARTICULO DE LA SALIDA AL QUE SE LE AGREGO EL ARTICULO DE ENTRADA
-                     };
+                    //VALIDAR LA CANTIDAD MAXIMA DEL ARTICULO SI SE AGREGA UN MISMO ARTICULO EN DIFERENTES ARTICULOS DE LA SALIDA
+                    if(parseInt(cantidad.value) > parseInt(cantidad.max)) 
+                        alert("No hay suficientes unidades para este artículo")                    
 
-                     ids_articulos.push(parseInt(id)); //Se agrega el articulo que sera devuelto, a la lista de articulos
-                     ids_articulos_cambio.push(articulo.id_articulo); //Se agrega el articulo que saldra
-                     articulos_cambio.push(articulo); //Se agrega el articulo a los datos de la tabla
-                     renderTables();
-                     bootstrap.Modal.getInstance(document.getElementById('escogerArtModal')).hide();
+                    else {
+                        //ARTICULO SELECCIONADO
+                        const articulo = {
+                            id_articulo: $('#id').val(),
+                            cantidad: $("#cantidadArt").val(), //Nuevo articulo agregado
+                            nombre: $('#nombre').val(),
+                            talla: $('#talla option:selected').text(),
+                            precio: $('#precio').val(),
+                            id_articuloSalida: id //ARTICULO DE LA SALIDA AL QUE SE LE AGREGO EL ARTICULO DE ENTRADA
+                        };
+
+                        ids_articulos.push(parseInt(id)); //Se agrega el articulo que sera devuelto, a la lista de articulos
+                        ids_articulos_cambio.push(articulo.id_articulo); //Se agrega el articulo que saldra
+                        articulos_cambio.push(articulo); //Se agrega el articulo a los datos de la tabla
+                        renderTables();
+                        bootstrap.Modal.getInstance(document.getElementById('escogerArtModal')).hide();
+                    }
                  }
              }
         }
@@ -188,20 +193,16 @@
         }
 
         function realizarCambio() {
-            let cont = 0;
             salida_articulos.forEach(articulo => {
                 articulo.agregado = ids_articulos.includes(parseInt(articulo.id_articulo));
-
-                if(articulo.agregado)
-                    cont ++;
             });
 
-            if(cont <= 0) alert("No se ha seleccionado ningún artículo para realizar el cambio")
+            if(ids_articulos_cambio == null || ids_articulos_cambio == '') 
+                    alert("No se ha seleccionado ningún artículo para realizar el cambio")
 
             else {
                 alert("Se a realizado el cambio");
-                
-            } 
+            }
         }
 
 
@@ -261,7 +262,6 @@
                         cantidad.min = (cantidad.max <= 0) ? cantidad.max : 1;
                         $('#id').val(data.articulo.id_articulo);
                     }
-
                 })
                 .catch((error) => {
                     console.log(error);

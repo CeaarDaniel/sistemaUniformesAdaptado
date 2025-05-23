@@ -139,7 +139,7 @@
                                                 <i class="bi bi-tag-fill bi-icon"></i>
                                                 Nombre
                                             </label>
-                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly>
+                                            <input type="text" id="nombre" class="form-control" placeholder="Nombre" readonly style="background-color:#3f51b521">
                                     </div>
                                     
 
@@ -148,7 +148,7 @@
                                                 <i class="bi bi-currency-exchange bi-icon"></i>
                                                 Precio
                                             </label>
-                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
+                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly style="background-color:#3f51b521">
                                     </div>
 
                                     <div class="col-md-6">
@@ -157,7 +157,7 @@
                                                 <i class="bi bi-123 bi-icon"></i>
                                                 Cantidad
                                             </label>
-                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" readonly>
+                                            <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" readonly style="background-color:#3f51b521">
                                         </div>
                                     </div>
 
