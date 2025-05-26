@@ -1,4 +1,4 @@
- const tabla= $('#tableArticulos').DataTable();
+ var tabla= $('#tableArticulos').DataTable();
 
  // Función para renderizar la tabla
     function renderTable() {
@@ -16,7 +16,7 @@
                                 $('#tableArticulos').DataTable().destroy(); //Restaurar la tablas
                 
                                 //Crear el dataTable con las nuevas configuraciones
-                                $('#tableArticulos').DataTable({
+                                 $('#tableArticulos').DataTable({
                                     responsive: true,
                                     scrollX: '100%',
                                     scrollY: 370,
@@ -35,7 +35,7 @@
                                     ],
                                     columnDefs: [
                                         {
-                                            targets: 3, // Índice de la columna que quieres modificar (empieza desde 0)
+                                            targets: [2,3,4,5,6,7,8], // Índice de la columna que quieres modificar (empieza desde 0)
                                             className: 'editColum' // Puedes aplicar una clase CSS
                                         },
                                         {
@@ -50,8 +50,11 @@
                                             var cellValue = $(this).text() //GUARDAMOS EL CONTENIDO DEL ELEMENTO
                                             var columnIndex = cell.index();
                                             var columnasPermitidas = [2, 3, 4, 5, 6, 7, 8]; // Índices de las columnas que pueden editarse
-
                                             
+                                            //Id del articulo modificado
+                                            var valorColumna0 = cell.closest('tr').find('td').eq(0).text();
+                                            var campoModificado = "";
+
                                             if (columnasPermitidas.includes(columnIndex)) {
 
                                                 switch (columnIndex){
@@ -67,6 +70,7 @@
                                                                     class: 'm-0 p-0' // Puedes añadir clases para el estilo
                                                                 });
                                                             }
+                                                            campoModificado= "clave_comercial";
                                                         break;
                                                     
                                                     case 3:
@@ -81,6 +85,7 @@
                                                                     class: 'm-0 p-0' // Puedes añadir clases para el estilo
                                                                 });
                                                             }
+                                                            campoModificado= "descripcion";
                                                     break;
 
                                                     case 4: case 5:
@@ -96,7 +101,7 @@
                                                                 class: 'm-0 p-0' // Puedes añadir clases para el estilo
                                                             });
                                                         }
-
+                                                        campoModificado= (columnIndex == 4) ? "precio" : "costo";
                                                     break;
                                                     case 6: case 7: case 8:
                                                          //Evaluar que no exista el input, si no reiniciara los valroes de la celda al presionar click sobre el input
@@ -111,7 +116,9 @@
                                                                 class: 'm-0 p-0' // Puedes añadir clases para el estilo
                                                             });
                                                         }
-                                                        break;
+
+                                                        campoModificado = (columnIndex == 6) ? "stock_min" : `${(columnIndex == 7) ? "stock_max" : "cantidad"}`;
+                                                    break;
                                                 }
                                                 
                                                 cell.html(input); //Modificamos el contenido del html es com un inner.Html
@@ -122,15 +129,53 @@
                                                 // Cuando el usuario termine de editar y presione Enter o pierda el foco
                                                 input.on('blur', function() {
                                                     var newValue = input.val(); // Obtener el valor actualizado
-                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
-                                                    console.log(columnIndex);
+                                                    //console.log(columnIndex); indice de la colimna cero
+
+                                                    if(newValue == '' || newValue == null || newValue.trim() === "" || newValue === cellValue) 
+                                                            cell.html(cellValue);
+
+                                                    else 
+                                                        if( (columnIndex == 4  || columnIndex == 5  || columnIndex == 6 || columnIndex == 7  || columnIndex == 8) && Number(newValue) < 0)
+                                                            cell.html(cellValue);
+                                                            
+                                                    else 
+                                                        {
+                                                            var actualizar = confirm("Esta seguro que desea modificar este campo?");
+                                                            if (actualizar) {
+                                                                //El valor del precio y el costo solo debe contener 2 decimales
+                                                                    if(columnIndex == 4 || columnIndex == 5)  newValue =  Number(newValue).toFixed(2)
+
+                                                                    else 
+                                                                        //Los valoes de costo stock min y stock max, no deben de contener decimales por lo que se truncan
+                                                                        if(columnIndex == 6 || columnIndex == 7 || columnIndex == 8)
+                                                                             newValue = Math.trunc(Number(newValue)); 
+                                                                            //Math.round(Number(newValue));
+
+                                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
+                                                                    console.log(campoModificado+":"+newValue) 
+                                                                }
+                                                            else
+                                                                cell.html(cellValue);
+                                                        }
                                                 });
 
                                                 //escuchar el evento 'Enter' para confirmar la edición
                                                 input.on('keypress', function(event) {
                                                     if (event.which === 13) { // Tecla Enter
                                                         var newValue = input.val(); // Obtener el valor actualizado
-                                                        cell.html(newValue); // Reemplazar el input por el nuevo valor
+                                                         if(newValue == '' || newValue == null || newValue.trim() === "" || newValue === cellValue)
+                                                                  cell.html(cellValue);
+
+                                                        else 
+                                                           {
+                                                                var actualizar = confirm("Esta seguro que desea modificar este campo?");
+
+                                                                if (actualizar)
+                                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
+
+                                                                else
+                                                                    cell.html(cellValue);
+                                                            }
                                                     } 
                                                 })   
                                             }                                            

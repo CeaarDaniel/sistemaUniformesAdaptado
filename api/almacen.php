@@ -126,7 +126,7 @@ $opcion = $_POST['opcion'];
         
     }
 
-    //Consulta para obtener solamente los datos de un articulo
+    //Consulta para obtener solamente los datos de los articulos
     else 
         if($opcion == '3'){
             $sql= "select id_articulo, nombre, clave_comercial, descripcion, precio, costo, stock_max, stock_min, cantidad from uni_articulos";

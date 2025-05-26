@@ -138,8 +138,8 @@
                     btnAgregarArticulo.disabled= false
                     nombre.value = data.articulo.nombre;
                     precio.value= data.articulo.precio;
-                    cantidad.max = data.articulo.cantidad;
-                    cantidad.min = (cantidad.max <= 0) ? cantidad.max : 1;
+                    //cantidad.max = data.articulo.cantidad;
+                    cantidad.min = 1;
                     $('#id').val(data.articulo.id_articulo);
                 }
 
@@ -210,10 +210,10 @@
             var fmamantenimiento = document.getElementById("formAgregarArticulo");
             var isValidfm = fmamantenimiento.reportValidity();
                     if (isValidfm) {
-                        if(cantidad.max <= 0)
-                            alert('No hay suficientes unidades para este artículo')
+                        //if(cantidad.max <= 0)
+                            //alert('No hay suficientes unidades para este artículo')
 
-                        else
+                        //else
                             if (idArticulo.value == '' || idArticulo === null || !idArticulo || !idArticulo.value)
                                 alert("Este artículo no esta disponible o no existe")
 
@@ -253,20 +253,6 @@
                                 } else {
                                     // Actualizar cantidad en fila existente
                                     const datosActualizados = filaExistente.data();
-                                    
-
-                                    if (parseInt(datosActualizados.cantidad + nuevaCantidad) > parseInt(cantidad.max)) {
-                                        alert(
-                                            `Has alcanzado la cantidad máxima permitida para este artículo.\n` +
-                                            `➤ Cantidad agregada: ${datosActualizados.cantidad}\n` +
-                                            `➤ Cantidad por agregar: ${nuevaCantidad}\n\n` +
-                                            `➤ Cantidad total: ${datosActualizados.cantidad + nuevaCantidad}\n` +
-                                            `➤ Máximo permitido: ${cantidad.max}\n` +
-                                            `No es posible agregar estas unidades al pedido.`
-                                        );
-                                    }
-
-                                    else {
                                         datosActualizados.cantidad += nuevaCantidad;
                                         // Actualizar ambas fuentes de datos
                                         filaExistente.data(datosActualizados);
@@ -283,7 +269,6 @@
                                         document.querySelectorAll("select").forEach(select => {
                                             select.selectedIndex = 0; // selecciona la primera opción
                                         });
-                                    }
                                 }
                             }
                     }

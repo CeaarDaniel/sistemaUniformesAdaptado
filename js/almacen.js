@@ -106,7 +106,7 @@
                                             botonEdit.removeEventListener("click", handleEditarClick);
                                             botonEdit.addEventListener("click", handleEditarClick);
                                         });
-                                    }
+                                    },
                                 });
             })
             .catch((error) => {
@@ -180,7 +180,7 @@
                                                                                                 <label for="costo" class="form-label">Costo</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="costo" step="0.01" value="${data.costo}">
+                                                                                                    <input min=0 type="number" class="form-control" id="costo" step="0.01" min="0" max="100000" value="${data.costo}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -189,7 +189,7 @@
                                                                                                 <label for="precio" class="form-label">Precio</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="precio" setp="0.01" value="${data.precio}">
+                                                                                                    <input min=0 type="number" class="form-control" id="precio" step="0.01" min="0" max="100000" value="${data.precio}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -197,7 +197,7 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_max" class="form-label">Stock máximo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" step="1" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" step="1" min="0" max="100000" value="${data.stock_max}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>
@@ -206,7 +206,7 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_min" class="form-label">Stock mínimo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" step="1" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" step="1" min="0" max="100000" value="${data.stock_max}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>

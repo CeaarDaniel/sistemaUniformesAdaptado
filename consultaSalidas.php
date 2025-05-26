@@ -130,13 +130,20 @@
                             <div class="my-1 col-3"><b>Entregado a:</b></div>
                             <div class="my-1 col-auto text-uppercase"><label id ="salidaEmpleado"></label></div>
                          </div>
-
+                         
+                         <!-- TIPO DE SALIDA -->
                          <div class="row mt-1">
                             <div class="my-1 col-3"><b>Tipo de salida:</b></div>
                             <div class="my-1 col-auto text-uppercase"><label id ="salidaTipo"></label></div>
                          </div>
 
-                         <hr class="my-5" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+                        <!-- VALE -->
+                        <div id="columVale" class="row mt-1"></div>
+
+                        <!-- TIPO DE VALE -->
+                        <div id="columTipoVale" class="row my-0"></div>
+
+                         <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
 
                             <!--TABLA DE PRODUCTOS -->
                             <p class="text-center fs-7"><b> PRODUCTOS </b></p>

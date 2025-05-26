@@ -25,11 +25,13 @@ $opcion = $_POST['opcion'];
         //$filtroempleado = ($empleado != 0) ? ' AND us.id_empleado= :empleado ' : ' ';
         //$filtrousuario = ($usuario != 0) ? ' AND us.id_usuario = :usuario ' : ' ';
                             
-        $sql= "SELECT us.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.tipo_salida,  d.Nombre as realizado_por, e.usuario as empleado
+        $sql= "SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.usuario as empleado, tv.nombre
                     FROM uni_salida as us 
                 left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
                 left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
-                inner join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida WHERE 1=1 ".$filtrotipo." ".$filtrobusquedaEmp." ".$filtroanio." ".$filtromes." ";
+                left join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida
+				left join (select tipo_vale,barcode from uni_vale group by tipo_vale, barcode) as uv on us.vale = uv.barcode 
+				left join uni_tipo_vale as tv on uv.tipo_vale = tv.id_tipo_vale WHERE 1=1 ".$filtrotipo." ".$filtrobusquedaEmp." ".$filtroanio." ".$filtromes." ";
         $salidas = $conn->prepare($sql);
 
          ($anio != 0) ? $salidas->bindparam(':anio', $anio) : '';
@@ -51,9 +53,13 @@ $opcion = $_POST['opcion'];
                                                         <button class="btn btnVer"
                                                                 data-id="'.$salida['id_salida'].'"
                                                                 data-salidaFecha="'.$salida['fecha'].'"
+                                                                data-salidaIdTipo="'.$salida['id_tipo_salida'].'"
                                                                 data-salidaTipo="'.$salida['tipo_salida'].'"
                                                                 data-salidaRealizadoPor="'.$salida['realizado_por'].'"
                                                                 data-salidaEmpleado="'.$salida['empleado'].'"
+                                                                data-salidaVale = "'.$salida['vale'].'"
+                                                                data-tipoVale = "'.$salida['nombre'].'"
+
                                                                 >
                                                             <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
                                                         </button>

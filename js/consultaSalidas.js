@@ -80,9 +80,14 @@ filtroBusqueda.forEach(filtro => {
             const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
             var Id = boton.getAttribute('data-id');
             var salidaTipo = boton.getAttribute('data-salidaTipo');
+            var salidaIdTipo = boton.getAttribute('data-salidaIdTipo');
             var salidaFecha = boton.getAttribute('data-salidaFecha');
             var salidaRealizadoPor = boton.getAttribute('data-salidaRealizadoPor');
             var salidaEmpleado = boton.getAttribute('data-salidaEmpleado');
+            var salidaVale = boton.getAttribute('data-salidaVale');
+            var tipoVale = boton.getAttribute('data-tipoVale');
+
+
             var total= 0;
 
             document.getElementById('salidaId').textContent = `# ${Id}`;
@@ -90,6 +95,18 @@ filtroBusqueda.forEach(filtro => {
             document.getElementById('salidaTipo').textContent = salidaTipo;
             document.getElementById('salidaRealizadoPor').textContent = salidaRealizadoPor;
             document.getElementById('salidaEmpleado').textContent = salidaEmpleado;
+            (salidaIdTipo == 1) ? document.getElementById('columVale').innerHTML = `<div class="my-1 col-3"><b>Vale:</b></div>
+                                                                                        <div class="my-1 col-auto text-uppercase">
+                                                                                            <label id="salidaVale"> ${salidaVale}</label>
+                                                                                        </div>` 
+                                                                                    : document.getElementById('columVale').innerHTML = ``;
+
+            (salidaIdTipo == 1) ? document.getElementById('columTipoVale').innerHTML = `<div class="my-1 col-3"><b>Tipo de vale:</b></div>
+                                                                                                    <div class="my-1 col-auto text-uppercase">
+                                                                                                        <label id="tipoVale"> ${tipoVale}</label>
+                                                                                                    </div>` 
+                                                                        : document.getElementById('columTipoVale').innerHTML = ``;
+            console.log(salidaIdTipo)
  
 
             var formData = new FormData;
