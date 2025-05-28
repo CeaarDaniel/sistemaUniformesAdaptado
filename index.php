@@ -6,8 +6,8 @@
     <meta name="description" content="A Quasar Framework app">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
-   
+    <meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1,minimum-scale=1,width=device-width">
+
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <link rel="icon" type="image/ico" href="logo_b.png">
     <link rel="icon" type="image/ico" href="logo_b.png">
