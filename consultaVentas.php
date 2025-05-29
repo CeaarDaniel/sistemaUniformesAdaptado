@@ -5,6 +5,8 @@
     $years = $conn->prepare($sql); 
     $years->execute();
 ?>
+
+<div id="pantallaConsultasVentas" class="my-5">
     <!-- Contenido principal -->
     <div class="p-0 my-3 mx-2">
         <div class="row">
@@ -52,7 +54,7 @@
         </div>
 
         <!-- Tabla de ventas -->
-            <div class="mt-4 p-0" style="height: 250px; width:100%;">
+            <div class="mt-4 mb-5 p-0" style="height: 250px; width:100%;">
                 <table id="tablaVentas" class="table table-striped" style="width:100%;">
                     <thead class="sticky-header">
                         <tr>
@@ -133,3 +135,9 @@
                 </div>
             </div>
         </div>
+</div>
+
+<div class="my-5" style="all: unset !important;">
+        <div id="contenido" class="hojaImpresion my-5">
+        </div>
+</div>

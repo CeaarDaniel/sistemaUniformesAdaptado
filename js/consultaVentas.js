@@ -1,6 +1,7 @@
 
         document.getElementById('anio').addEventListener('change', renderizarVentas)
         document.getElementById('mes').addEventListener('change', renderizarVentas)
+        const cartaDescuentos = document.getElementById("contenido");
 
         function renderizarVentas() {
                 var ancho = window.innerWidth;
@@ -224,77 +225,147 @@
 
 
         async function verFirma(event) {
-
-            const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
-            var id = boton.getAttribute('data-id');
+             const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
+            var id = boton.getAttribute('data-id'); //ID  de salida
             var firma = boton.getAttribute('data-firma');
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+             var fecha = boton.getAttribute("data-fecha")
+             var empleado = boton.getAttribute("data-empleado")
+             var costo = boton.getAttribute("data-costo")
+             var NN = boton.getAttribute("data-NN");
 
-            const fecha = '05-05-2025';
-            const empresa = 'BEYONZ MEXICANA, S.A. de C.V.';
-            const empleado = 'DELGADO ESCAMILLA CERVANDO';
-            const numeroEmpleado = 'N.N. 203';
-            const monto = '$79.00';
-            const montoLetra = 'SETENTA Y NUEVE PESOS';
-            const descripcion = 'Cantidad: 1 GORRA-T Gris $79.00 c/u';
-
-            let y = 20;
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text('CARTA DE ACEPTACIÓN DE DESCUENTOS', 105, y, { align: 'center' });
-            doc.text(fecha, 20, y); y += 10;
-            doc.setFont("helvetica", "normal");
-
+             var formData = new FormData;
+             formData.append("opcion", "2");
+             formData.append("id_salida", id)
             
-            doc.text('ATENCIÓN', 20, y); y += 8;
-            doc.text(empresa, 20, y); y += 10;
+                fetch("./api/consultas.php", {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                            console.log(data);
+                    }).catch((error) => {
+                    console.log(error); 
+                })
 
-            doc.text(`Por medio de la presente, autorizo a la empresa ${empresa},`, 20, y); y += 7;
-            doc.text(`que me descuente vía nómina la cantidad de ${monto} (pesos 00/100 M.N.) en total.`, 20, y); y += 10;
+   
 
-            doc.setFont(undefined, 'bold');
-            doc.text('CANTIDAD A     MONTO EN LETRA     CANTIDAD DE     FECHA', 20, y); y += 7;
-            doc.setFont(undefined, 'normal');
-            doc.text(`${monto}     ${montoLetra}     1 de 1           ${fecha}`, 20, y); y += 10;
+            var conteniod = `<!--TITULO DEL DOCUMENTO -->
+                            <p class="text-center" style="font-size:16px;"><b>CARTA DE ACEPTACIÓN DE DESCUENTOS</b></p>
+                            <p class="text-end"><b>${(new Date(fecha)).toLocaleDateString("es-MX")}</b></p>
+                            <p class="text-start ms-3" style="font-size:14px;">
+                                ATENCIÓN <br>
+                                BEYONZ MEXICANA, S.A. de C.V.
+                            </p>
 
-            doc.setFont(undefined, 'bold');
-            doc.text(`${monto}     Total adeudo`, 20, y); y += 10;
-            doc.setFont(undefined, 'normal');
+                            <!--PRIMER PARRAFO -->
+                            <p class="text-start mt-4 mb-5" style="text-indent: 2em; font-size:14px;">
+                                Por medio de la presente, autorizo a la empresa BEYONZ MEXICANA, S.A. DE C.V., que me descuente vía nómina la cantidad de $ ${costo} (pesos 00/100 M.N.) en total.
+                            </p>
 
-            doc.text('Con estos descuentos estaré cubriendo el adeudo por concepto de compra de uniforme adicional que por', 20, y); y += 7;
-            doc.text('interés personal he solicitado:', 20, y); y += 7;
-            doc.text(descripcion, 20, y); y += 15;
+                            <!--TABLA DE DESCUENTOS --> 
+                            <div class="page-break-avoid">
+                                <div class="row mx-3 p-0" style="max-width: 716px; margin: 0 auto;">
+                                    <div class="col-2 border border-black p-0"><div class="d-flex text-center align-items-center" style="height:100%;"><b style="font-size: 12px;"> CANTIDAD A DESCONTAR </b></div> </div>
+                                    <div class="col-6 border-top border-bottom border-end border-black p-0"><div class="d-flex justify-content-center align-items-center" style="height:100%;"><b style="font-size: 12px;">MONTO EN LETRA</b></div></div>
+                                    <div class="col-2 border-top border-bottom border-end border-black p-0"><div class="d-flex text-center align-items-center" style="height:100%;"><b style="font-size: 12px;">CANTIDAD DE DESCUENTOS</b></div></div>
+                                    <div class="col-2 border-top border-bottom border-end border-black p-0"><div class="d-flex justify-content-center align-items-center" style="height:100%;"><b style="font-size: 12px;">FECHA</b></div></div>
 
-            doc.text('Ratifico con mi firma lo aquí descrito.', 20, y); y += 20;
+                                    <div class="col-2 text-center border-start border-bottom border-end border-black p-0"><label style="font-size: 12px;"> $ ${costo} </label></div>
+                                    <div class="col-6 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">QUINIENTOS VEINTIOCHO PESOS </label></div>
+                                    <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">1 de 1</labelb></div>
+                                    <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">${(new Date(fecha)).toLocaleDateString("es-MX")}</label></div>
 
-            doc.text('Atentamente:', 20, y); y += 10;
-            doc.text(empleado, 20, y); y += 7;
-            doc.text(numeroEmpleado, 20, y); y += 10;
+                                    <div class="col-2 text-center border-start border-bottom border-end border-black p-0">
+                                    <label style="font-size: 12px;"><b> $ ${costo} </b></label>
+                                    </div>
+                                    <div class="col-4">
+                                    <b style="font-size: 12px;"> Total adeudo </b>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!--DESGLOCE DE ARTRTICULOS SOLICITADOS -->
+                            <div class="page-break-avoid">
+                                <p class="text-start mt-4" style="text-indent: 2em; font-size:14px;">
+                                    Con estos descuentos estaré cubriendo el adeudo por concepto de compra de uniforme adicional que por
+                                    interés personal he solicitado: 
+                                </p>
+                            </div>
 
-            // Cargar imagen de firma (debe estar en la misma ruta del servidor o accesible)
-            const firmaUrl = 'http://localhost/sistemaUniformesAdaptado/imagenes/firmas/'+firma;
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.src = firmaUrl;
+                            <div class="row mt-3 ms-3 page-break-avoid" style="font-size:14px;">
+                                <div class="col-2">Cantidad: 1</div>
+                                <div class="col-4">PANTALÓN-Hombre T 28</div>
+                                <div class="col-2">$322.00 c/u</div>
+                            </div>
+                            <div class="row mb-1 ms-3 page-break-avoid" style="font-size:14px;">
+                                <div class="col-2">Cantidad: 1</div>
+                                <div class="col-4">PLAYERA MC-Hombre T S</div>
+                                <div class="col-2">$206.00 c/u</div>
+                            </div>
 
-            img.onload = function () {
-                doc.addImage(img, 'PNG', 20, y, 50, 20); // (imagen, formato, x, y, ancho, alto)
-                y += 25;
+                            <!-- FIRMA DEL EMPLEADO -->
+                            <div class="page-break-avoid">
+                                <p class="mt-5 mb-1 p-0 mx-0" style="font-size:14px;">
+                                    Ratifico con mi firma lo aquí descrito. <br> <br>
+                                    Atentamente: 
+                                </p>
+                            </div>
 
-                doc.text('_________________________', 20, y); y += 7;
-                doc.text('Firma', 40, y);
-
-                // Mostrar el PDF en nueva pestaña
-                const blob = doc.output('blob');
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
+                            <div class="page-break-avoid signature-area ms-0">
+                                <div class="row mt-1">
+                                    <div class="col-8 mt-0 p-0"> 
+                                        <div class="text-center">
+                                            <img class="my-0 p-0" src="imagenes/firmas/${firma}" style="height: 60px;">
+                                            <div class="signature-line"></div>
+                                            <p>${empleado}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 p-0 m-0">
+                                        <div style="height: 40px;"></div>
+                                        <p>N.N.<span class="underline mx-2">&nbsp;${NN}&nbsp;</span></p>
+                                    </div>
+                                </div>
+                            </div>`; 
+             
+            cartaDescuentos.innerHTML = conteniod;
+            // Configuración optimizada para tamaño carta
+            const opt = {
+                margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
+                filename: 'carta_descuento.pdf',
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.98
+                },
+                html2canvas: { 
+                    scale: 3, // Escala óptima para calidad y rendimiento
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'letter', 
+                    orientation: 'portrait' 
+                },
+                // Configuración avanzada para saltos de página
+                pagebreak: { 
+                    mode: ['avoid-all', 'css'], 
+                    before: '.page-break-before',
+                    avoid: '.page-break-avoid'
+                }
             };
 
-            img.onerror = function () {
-                alert('No se pudo cargar la imagen de la firma.');
-            };
+            // Generar PDF y abrir en nueva pestaña
+            html2pdf().set(opt).from(cartaDescuentos).outputPdf('blob')
+                .then(function(blob) {
+                    const blobUrl = URL.createObjectURL(blob);
+                    window.open(blobUrl, '_blank');
+                })
+                .catch(function(error) {
+                  console.log(error)
+                });
         }
 
    renderizarVentas(); 

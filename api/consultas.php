@@ -110,7 +110,7 @@ $opcion = $_POST['opcion'];
             $filtroanio = ($anio != 0) ? ' AND YEAR(uv.fecha) = :anio ' : '';
             $filtromes = ($mes != 0) ? ' AND MONTH(uv.fecha) = :mes ' : '';
 
-            $sql = "SELECT id_venta, FORMAT(fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario, pago_total, 
+            $sql = "SELECT id_venta, e.id_usuario, FORMAT(fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario, pago_total, 
 						num_descuentos, (ISNULL(CASE WHEN uv.check_1 = 1 THEN 1 ELSE 0 END, 0) +
 										 ISNULL(CASE WHEN uv.check_2 = 1 THEN 1 ELSE 0 END, 0) +
 										 ISNULL(CASE WHEN uv.check_3 = 1 THEN 1 ELSE 0 END, 0) +
@@ -147,7 +147,12 @@ $opcion = $_POST['opcion'];
                                                             </button>',
                                         'firma' => '<button class="btn btnFirma btn-sm btn-primary" 
                                                                    data-id="'.$venta['id_venta'].'" 
-                                                                   data-firma="'.$venta['firma'].'">
+                                                                   data-NN="'.$venta['id_usuario'].'" 
+                                                                   data-firma="'.$venta['firma'].'"
+                                                                   data-fecha="'.$venta['fecha'].'"
+                                                                   data-empleado="'.$venta['usuario'].'"
+                                                                   data-costo="'.$venta['pago_total'].'"
+                                                                   >
                                                         <i class="fas fa-signature" style="font-size:20px;"></i>
                                                     </button>');
                     }

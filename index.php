@@ -36,8 +36,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
 
-    <!--Libreria PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!--html2PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Libreria numero a letras -->
+     <script src="https://cdn.jsdelivr.net/npm/numero-a-letras@1.0.3/dist/numero-a-letras.umd.min.js"></script>
 
     <!-- 
     <link href="css/vendor.df1fcf64.css" rel="stylesheet">
