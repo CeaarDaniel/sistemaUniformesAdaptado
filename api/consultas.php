@@ -7,6 +7,15 @@ include('./conexion.php');
 
 $opcion = $_POST['opcion'];
 
+function numeroALetras($numero) {
+    $formatter = new NumberFormatter("es", NumberFormatter::SPELLOUT);
+    $partes = explode(".", number_format($numero, 2, '.', ''));
+    $entero = $formatter->format($partes[0]); 
+    //Poner una condicion para que no agregue la parte decimal si es igual a cero
+    $decimal = isset($partes[1]) ? $formatter->format($partes[1]) : "cero";
+    return "$entero punto $decimal";
+}
+
 //CONSULTAS DE SALIDAS
     if($opcion == '1'){  
         $tipo = (isset($_POST['tipo']) && !$_POST['tipo']=='') ? $_POST['tipo'] : 0;
@@ -152,6 +161,7 @@ $opcion = $_POST['opcion'];
                                                                    data-fecha="'.$venta['fecha'].'"
                                                                    data-empleado="'.$venta['usuario'].'"
                                                                    data-costo="'.$venta['pago_total'].'"
+                                                                   data-costoTexto="'.numeroALetras($venta['pago_total']).'"
                                                                    >
                                                         <i class="fas fa-signature" style="font-size:20px;"></i>
                                                     </button>');
@@ -326,7 +336,7 @@ $opcion = $_POST['opcion'];
             echo json_encode($response);
         }
 
-        //CONSULTA PARA LA SECCION DE INVENTARIOS
+    //CONSULTA PARA LA SECCION DE INVENTARIOS
     else 
         if($opcion=='8'){
             $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : 0;
@@ -350,6 +360,30 @@ $opcion = $_POST['opcion'];
 
             else 
                 $response = array( 'error' => $inventario->errorInfo()[2]);
+
+            echo json_encode($response);
+    }
+
+    //CONSULTA PARA OBTENER EL DETALLE DE LA VENTA PARA LA IMPRESION DE LA CARTA DE ACEPTACION DE DESCUENTO
+    else 
+        if ($opcion == '9'){
+            $id_venta = (isset($_POST['id_venta']) && !$_POST['id_venta']=='') ? $_POST['id_venta'] : NULL;
+            $sql = "SELECT ua.nombre, uva.id_venta, uva.cantidad, uva.precio, uva.costo 
+                            from uni_venta_articulo uva 
+                        inner join uni_articulos  ua on uva.id_articulo = ua.id_articulo
+                    where id_venta = :id_venta";
+
+            $salidas = $conn->prepare($sql); 
+
+            $salidas->bindparam(':id_venta', $id_venta);
+
+            if($salidas->execute()){
+                while($salida = $salidas->fetch(PDO::FETCH_ASSOC))
+                    $response[]= $salida;
+            }
+
+            else 
+                $response = array('error' => $salidas->errorInfo()[2]);
 
             echo json_encode($response);
     }

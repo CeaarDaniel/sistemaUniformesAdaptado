@@ -6,7 +6,7 @@
     $years->execute();
 ?>
 
-<div id="pantallaConsultasVentas" class="my-5">
+    <div id="pantallaConsultasVentas" class="m-0 p-0" style="overflow:hidden;">
     <!-- Contenido principal -->
     <div class="p-0 my-3 mx-2">
         <div class="row">
@@ -54,7 +54,7 @@
         </div>
 
         <!-- Tabla de ventas -->
-            <div class="mt-4 mb-5 p-0" style="height: 250px; width:100%;">
+            <div class="mt-4 mb-0 p-0 display nowrap" style="max-height:400px; width:100%; overflow-y:auto">
                 <table id="tablaVentas" class="table table-striped" style="width:100%;">
                     <thead class="sticky-header">
                         <tr>
@@ -74,7 +74,7 @@
             </div>
 
         <!-- Modal de Ver Salida -->
-           <div class="modal fade" id="detalleVentadaModal" tabindex="-1" aria-labelledby="detalleVentadaModal" aria-hidden="true">
+            <div class="modal fade" id="detalleVentadaModal" tabindex="-1" aria-labelledby="detalleVentadaModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -88,7 +88,7 @@
                             <table>
                                 <tbody>
                                     <tr style="background-color: #0A0A85;
-                                               color: white;">
+                                                color: white;">
                                         <td class="p-0 border border-dark"><b>NUM SALIDA</b></td>
                                     </tr>
                                     <tr>
@@ -107,19 +107,19 @@
                         <div class="row mt-1">
                             <div class="my-1 col-3"><b>Empleado: </b></div>
                             <div class="my-1 col-auto text-uppercase"><label id ="ventaEmpleado"></label></div>
-                         </div>
+                            </div>
 
-                         <div class="row mt-1">
+                            <div class="row mt-1">
                             <div class="my-1 col-3"><b>Costo total:</b></div>
                             <div class="my-1 col-auto text-uppercase"><label id ="ventaCosto"></label></div>
-                         </div>
+                            </div>
 
-                         <div class="row mt-1">
+                            <div class="row mt-1">
                             <div class="my-1 col-3"><b>Descuentos:</b></div>
                             <div class="my-1 col-auto text-uppercase"><label id ="ventaDescuentos"></label></div>
-                         </div>
+                            </div>
 
-                         <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+                            <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
 
                             <!--SECCION DE DECUENTOS -->
                                 <div class="form-card my-0">                                    
@@ -135,9 +135,10 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
 
-<div class="my-5" style="all: unset !important;">
-        <div id="contenido" class="hojaImpresion my-5">
+    <div class="d-none p-0 m-p">
+        <div id="contenido" class="hojaImpresion">
         </div>
-</div>
+    </div>
+

@@ -23,8 +23,8 @@
                                         //Crear el dataTable con las nuevas configuraciones
                                         $('#tablaVentas').DataTable({
                                             responsive: true,
-                                            scrollX: (ancho - 50),
-                                            scrollY: 340,
+                                            scrollX: true,
+                                            scrollY: true,
                                             scrollCollapse: true,
                                             data: data,
                                             columns: [
@@ -233,10 +233,11 @@
              var empleado = boton.getAttribute("data-empleado")
              var costo = boton.getAttribute("data-costo")
              var NN = boton.getAttribute("data-NN");
+             var costoTexto = boton.getAttribute("data-costoTexto")
 
              var formData = new FormData;
-             formData.append("opcion", "2");
-             formData.append("id_salida", id)
+             formData.append("opcion", "9");
+             formData.append("id_venta", id)
             
                 fetch("./api/consultas.php", {
                         method: "POST",
@@ -244,14 +245,15 @@
                     })
                     .then((response) => response.json())
                     .then((data) => {
-                            console.log(data);
-                    }).catch((error) => {
-                    console.log(error); 
-                })
+                        let articulosventa = "";   
+                        data.forEach( (articulo) => {
+                            articulosventa = articulosventa + `<div class="row mb-1 ms-3 page-break-avoid" style="font-size:14px;">
+                                                                    <div class="col-2">Cantidad: ${articulo.cantidad}</div>
+                                                                    <div class="col-4">${articulo.nombre}</div>
+                                                                    <div class="col-2">$ ${articulo.precio} c/u</div>
+                                                                </div>`});
 
-   
-
-            var conteniod = `<!--TITULO DEL DOCUMENTO -->
+                                    var conteniod = `<!--TITULO DEL DOCUMENTO -->
                             <p class="text-center" style="font-size:16px;"><b>CARTA DE ACEPTACIÓN DE DESCUENTOS</b></p>
                             <p class="text-end"><b>${(new Date(fecha)).toLocaleDateString("es-MX")}</b></p>
                             <p class="text-start ms-3" style="font-size:14px;">
@@ -273,15 +275,15 @@
                                     <div class="col-2 border-top border-bottom border-end border-black p-0"><div class="d-flex justify-content-center align-items-center" style="height:100%;"><b style="font-size: 12px;">FECHA</b></div></div>
 
                                     <div class="col-2 text-center border-start border-bottom border-end border-black p-0"><label style="font-size: 12px;"> $ ${costo} </label></div>
-                                    <div class="col-6 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">QUINIENTOS VEINTIOCHO PESOS </label></div>
+                                    <div class="col-6 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;"> ${costoTexto} </label></div>
                                     <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">1 de 1</labelb></div>
                                     <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">${(new Date(fecha)).toLocaleDateString("es-MX")}</label></div>
 
                                     <div class="col-2 text-center border-start border-bottom border-end border-black p-0">
-                                    <label style="font-size: 12px;"><b> $ ${costo} </b></label>
-                                    </div>
-                                    <div class="col-4">
-                                    <b style="font-size: 12px;"> Total adeudo </b>
+                                        <label style="font-size: 12px;"><b> $ ${costo} </b></label>
+                                        </div>
+                                        <div class="col-4">
+                                        <b style="font-size: 12px;"> Total adeudo </b>
                                     </div>
                                 </div>
                             </div>
@@ -294,16 +296,7 @@
                                 </p>
                             </div>
 
-                            <div class="row mt-3 ms-3 page-break-avoid" style="font-size:14px;">
-                                <div class="col-2">Cantidad: 1</div>
-                                <div class="col-4">PANTALÓN-Hombre T 28</div>
-                                <div class="col-2">$322.00 c/u</div>
-                            </div>
-                            <div class="row mb-1 ms-3 page-break-avoid" style="font-size:14px;">
-                                <div class="col-2">Cantidad: 1</div>
-                                <div class="col-4">PLAYERA MC-Hombre T S</div>
-                                <div class="col-2">$206.00 c/u</div>
-                            </div>
+                            ${articulosventa}
 
                             <!-- FIRMA DEL EMPLEADO -->
                             <div class="page-break-avoid">
@@ -324,48 +317,53 @@
                                     </div>
                                     <div class="col-4 p-0 m-0">
                                         <div style="height: 40px;"></div>
-                                        <p>N.N.<span class="underline mx-2">&nbsp;${NN}&nbsp;</span></p>
+                                        <p class="my-0 py-0">N.N.<span class="text-decoration-underline mx-2 my-0 py-0">&nbsp;${NN}&nbsp;</span></p>
                                     </div>
                                 </div>
                             </div>`; 
              
-            cartaDescuentos.innerHTML = conteniod;
-            // Configuración optimizada para tamaño carta
-            const opt = {
-                margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
-                filename: 'carta_descuento.pdf',
-                image: { 
-                    type: 'jpeg', 
-                    quality: 0.98
-                },
-                html2canvas: { 
-                    scale: 3, // Escala óptima para calidad y rendimiento
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'letter', 
-                    orientation: 'portrait' 
-                },
-                // Configuración avanzada para saltos de página
-                pagebreak: { 
-                    mode: ['avoid-all', 'css'], 
-                    before: '.page-break-before',
-                    avoid: '.page-break-avoid'
-                }
-            };
+                        cartaDescuentos.innerHTML = conteniod;
+                        // Configuración optimizada para tamaño carta
+                        const opt = {
+                            margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
+                            filename: 'carta_descuento.pdf',
+                            image: { 
+                                type: 'jpeg', 
+                                quality: 0.98
+                            },
+                            html2canvas: { 
+                                scale: 3, // Escala óptima para calidad y rendimiento
+                                useCORS: true,
+                                letterRendering: true,
+                                logging: false
+                            },
+                            jsPDF: { 
+                                unit: 'mm', 
+                                format: 'letter', 
+                                orientation: 'portrait' 
+                            },
+                            // Configuración avanzada para saltos de página
+                            pagebreak: { 
+                                mode: ['avoid-all', 'css'], 
+                                before: '.page-break-before',
+                                avoid: '.page-break-avoid'
+                            }
+                        };
 
-            // Generar PDF y abrir en nueva pestaña
-            html2pdf().set(opt).from(cartaDescuentos).outputPdf('blob')
-                .then(function(blob) {
-                    const blobUrl = URL.createObjectURL(blob);
-                    window.open(blobUrl, '_blank');
+                        // Generar PDF y abrir en nueva pestaña
+                        html2pdf().set(opt).from(cartaDescuentos).outputPdf('blob')
+                            .then(function(blob) {
+                                const blobUrl = URL.createObjectURL(blob);
+                                window.open(blobUrl, '_blank');
+                                cartaDescuentos.innerHTML= '';
+                            })
+                            .catch(function(error) {
+                            console.log(error)
+                            });
+
+                    }).catch((error) => {
+                    console.log(error); 
                 })
-                .catch(function(error) {
-                  console.log(error)
-                });
         }
 
    renderizarVentas(); 

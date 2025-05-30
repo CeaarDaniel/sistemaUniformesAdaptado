@@ -133,9 +133,9 @@ filtroBusqueda.forEach(filtro => {
                             fila.innerHTML =
                             `<td>${dato.id_articulo}</td>
                              <td>${dato.cantidad}</td>
-                             <td>${ (dato.nombre == null) ? 'N/A' : dato.nombre}</td>
-                             <td>${ (dato.precio == null) ? 'N/A' : `$ ${(parseFloat(dato.precio)).toFixed(2)}` }</td>
-                             <td>${ (dato.total == null) ? 'N/A' : `$ ${(parseFloat(dato.total)).toFixed(2)}` }</td>`;
+                             <td>${ (dato.nombre == null) ? '-' : dato.nombre}</td>
+                             <td>${ (dato.precio == null) ? '-' : `$ ${(parseFloat(dato.precio)).toFixed(2)}` }</td>
+                             <td>${ (dato.total == null) ? '-' : `$ ${(parseFloat(dato.total)).toFixed(2)}` }</td>`;
                             t.appendChild(fila);
 
                             total = total +  parseFloat( (dato.total == null) ? 0 : dato.total);
