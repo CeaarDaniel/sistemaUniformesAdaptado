@@ -7,14 +7,14 @@
 ?>
 
     <div id="pantallaConsultasVentas" class="m-0 p-0" style="overflow:hidden;">
-    <!-- Contenido principal -->
-    <div class="p-0 my-3 mx-2">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="title">Consultas de ventas</h1>
+        <!-- Contenido principal -->
+        <div class="p-0 my-3 mx-2">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="title">Consultas de ventas</h1>
+                </div>
             </div>
         </div>
-    </div>
 
         <!-- Filtros -->
         <div class="row mt-3">
@@ -75,69 +75,69 @@
 
         <!-- Modal de Ver Salida -->
             <div class="modal fade" id="detalleVentadaModal" tabindex="-1" aria-labelledby="detalleVentadaModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="detalleVentadaModalLabel">REGISTRAR DESCUENTOS</h5>
-                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Detalles de la salida -->
-                        <div class="mx-5 d-flex justify-content-between">
-                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
-                            <table>
-                                <tbody>
-                                    <tr style="background-color: #0A0A85;
-                                                color: white;">
-                                        <td class="p-0 border border-dark"><b>NUM SALIDA</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-0 border border-dark"><b id="ventaId"></b></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detalleVentadaModalLabel">REGISTRAR DESCUENTOS</h5>
+                            <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                         </div>
+                        <div class="modal-body">
+                            <!-- Detalles de la salida -->
+                            <div class="mx-5 d-flex justify-content-between">
+                                <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                                <table>
+                                    <tbody>
+                                        <tr style="background-color: #0A0A85;
+                                                    color: white;">
+                                            <td class="p-0 border border-dark"><b>NUM SALIDA</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-0 border border-dark"><b id="ventaId"></b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <!-- Detalles del pedido -->
-                        <div class="row mt-5">
-                            <div class="my-1 col-3"><b>Fecha:</b></div>
-                            <div class="my-1 col-auto"><label class="mx-0 px-0 text-uppercase" id="ventaFecha"></label></div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="my-1 col-3"><b>Empleado: </b></div>
-                            <div class="my-1 col-auto text-uppercase"><label id ="ventaEmpleado"></label></div>
+                            <!-- Detalles del pedido -->
+                            <div class="row mt-5">
+                                <div class="my-1 col-3"><b>Fecha:</b></div>
+                                <div class="my-1 col-auto"><label class="mx-0 px-0 text-uppercase" id="ventaFecha"></label></div>
                             </div>
 
                             <div class="row mt-1">
-                            <div class="my-1 col-3"><b>Costo total:</b></div>
-                            <div class="my-1 col-auto text-uppercase"><label id ="ventaCosto"></label></div>
-                            </div>
-
-                            <div class="row mt-1">
-                            <div class="my-1 col-3"><b>Descuentos:</b></div>
-                            <div class="my-1 col-auto text-uppercase"><label id ="ventaDescuentos"></label></div>
-                            </div>
-
-                            <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
-
-                            <!--SECCION DE DECUENTOS -->
-                                <div class="form-card my-0">                                    
-                                    <form>
-                                        <p class="text-center fs-7 my-0 p-0 textlabelVentas"><b> DESCUENTOS</b></p>
-                                        
-                                        <!--LISTADO DE DESCUENTOS -->
-                                        <div id="descuentosModal">
-                                        </div>
-                                    </form>
+                                <div class="my-1 col-3"><b>Empleado: </b></div>
+                                <div class="my-1 col-auto text-uppercase"><label id ="ventaEmpleado"></label></div>
                                 </div>
+
+                                <div class="row mt-1">
+                                <div class="my-1 col-3"><b>Costo total:</b></div>
+                                <div class="my-1 col-auto text-uppercase"><label id ="ventaCosto"></label></div>
+                                </div>
+
+                                <div class="row mt-1">
+                                <div class="my-1 col-3"><b>Descuentos:</b></div>
+                                <div class="my-1 col-auto text-uppercase"><label id ="ventaDescuentos"></label></div>
+                                </div>
+
+                                <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+                                <!--SECCION DE DECUENTOS -->
+                                    <div class="form-card my-0">                                    
+                                        <form>
+                                            <p class="text-center fs-7 my-0 p-0 textlabelVentas"><b> DESCUENTOS</b></p>
+                                            
+                                            <!--LISTADO DE DESCUENTOS -->
+                                            <div id="descuentosModal">
+                                            </div>
+                                        </form>
+                                    </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
-    <div class="d-none p-0 m-p">
+    <div class="d-none p-0 m-0">
         <div id="contenido" class="hojaImpresion">
         </div>
     </div>

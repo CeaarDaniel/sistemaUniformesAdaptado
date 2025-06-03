@@ -89,83 +89,115 @@
     </div>
     
     <div id="contenido" class="hojaImpresion">
-        <!--TITULO DEL DOCUMENTO -->
-          <p class="text-center" style="font-size:16px;"><b>CARTA DE ACEPTACIÓN DE DESCUENTOS</b></p>
-          <p class="text-end"><b>26-05-2025</b></p>
-          <p class="text-start ms-3" style="font-size:14px;">
-              ATENCIÓN <br>
-              BEYONZ MEXICANA, S.A. de C.V.
-          </p>
+             <p class="text-center" style="font-size:15px;"> 
+            <b>SALIDA - UNIFORMES</b>
+        </p>
+  
+        <!-- Detalles de la salida -->
+        <div class="mx-5 d-flex justify-content-between">
+            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="text-center p-0 border-top border-start border-end border-dark" style="width:100%"><b>&nbsp; NUM SALIDA&nbsp;</b></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center p-0 border border-dark" style="width:100%"># 2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <!--PRIMER PARRAFO -->
-          <p class="text-start mt-4 mb-5" style="text-indent: 2em; font-size:14px;">
-              Por medio de la presente, autorizo a la empresa BEYONZ MEXICANA, S.A. DE C.V., que me descuente vía nómina la cantidad de $528.00 (pesos 00/100 M.N.) en total.
-          </p>
+        <!-- Detalles del pedido -->
+        <div class="row mt-5">
+            <div class="my-0 col-4"><b>Fecha de elaboración:</b></div>
+            <div class="my-0 col-auto"><label class="mx-0 px-0 text-uppercase">2021-05-18 09:44</label></div>
+        </div>
 
-         <!--TABLA DE DESCUENTOS --> 
-          <div class="page-break-avoid">
-            <div class="row mx-3 p-0" style="max-width: 716px; margin: 0 auto;">
-                <div class="col-2 border border-black p-0"><div class="d-flex text-center align-items-center" style="height:100%;"><b style="font-size: 12px;"> CANTIDAD A DESCONTAR </b></div> </div>
-                <div class="col-6 border-top border-bottom border-end border-black p-0"><div class="d-flex justify-content-center align-items-center" style="height:100%;"><b style="font-size: 12px;">MONTO EN LETRA</b></div></div>
-                <div class="col-2 border-top border-bottom border-end border-black p-0"><div class="d-flex text-center align-items-center" style="height:100%;"><b style="font-size: 12px;">CANTIDAD DE DESCUENTOS</b></div></div>
-                <div class="col-2 border-top border-bottom border-end border-black p-0"><div class="d-flex justify-content-center align-items-center" style="height:100%;"><b style="font-size: 12px;">FECHA</b></div></div>
+        <div class="row my-0">
+            <div class="my-0 col-4"><b>Realizado por:</b></div>
+            <div class="my-0 col-auto"><label>RAUL TORRES SANDOVAL</label></div>
+        </div>
 
-                <div class="col-2 text-center border-start border-bottom border-end border-black p-0"><label style="font-size: 12px;">$528.00 </label></div>
-                <div class="col-6 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">QUINIENTOS VEINTIOCHO PESOS </label></div>
-                <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">1 de 1</labelb></div>
-                <div class="col-2 text-center border-bottom border-end border-black p-0"><label style="font-size: 12px;">26-05-2025</label></div>
+        <div class="row my-0">
+            <div class="my-0 col-4"><b>Entregado a:</b></div>
+            <div class="my-0 col-auto text-uppercase"><label>2357-JUAREZ RODRIGUEZ YADIRA VANESSA</label></div>
+            </div>
+            
+            <!-- TIPO DE SALIDA -->
+            <div class="row mt-0">
+            <div class="my-0 col-4"><b>Tipo de salida:</b></div>
+            <div class="my-0 col-auto text-uppercase"><label>Venta de uniforme</label></div>
+            </div>
 
-                <div class="col-2 text-center border-start border-bottom border-end border-black p-0">
-                  <label style="font-size: 12px;"> $528.00</label>
-                </div>
-                <div class="col-4">
-                  <b style="font-size: 12px;">  Total adeudo </b>
+            <!-- VALE -->
+            <div class="row mt-1"></div>
+
+            <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+            <!--TABLA DE PRODUCTOS -->
+            <p class="text-center fs-7"><b> ARTICULOS </b></p>
+            <div style="max-height: 400px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Clave</th>
+                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Artículo</th>
+                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio Unitario</th>
+                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size:12px">
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                        <tr class="page-break-avoid">
+                            <td>14</td>
+                            <td>1</td>
+                            <td>PLAYERA MC-Hombre T S</td>
+                            <td>$ 140.00</td>
+                            <td>$ 140.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mx-3 d-flex justify-content-end" style="font-size:13px">
+                    <b>Total:</b> &nbsp; &nbsp; <label>       $ 140</label>
                 </div>
             </div>
-          </div>
-          
-        <!--DESGLOCE DE ARTRTICULOS SOLICITADOS -->
-          <div class="page-break-avoid">
-            <p class="text-start mt-4" style="text-indent: 2em; font-size:14px;">
-                Con estos descuentos estaré cubriendo el adeudo por concepto de compra de uniforme adicional que por
-                interés personal he solicitado: 
-            </p>
-          </div>
-
-          <div class="row mt-3 ms-3 page-break-avoid" style="font-size:14px;">
-              <div class="col-2">Cantidad: 1</div>
-              <div class="col-4">PANTALÓN-Hombre T 28</div>
-              <div class="col-2">$322.00 c/u</div>
-          </div>
-          <div class="row mb-1 ms-3 page-break-avoid" style="font-size:14px;">
-              <div class="col-2">Cantidad: 1</div>
-              <div class="col-4">PLAYERA MC-Hombre T S</div>
-              <div class="col-2">$206.00 c/u</div>
-          </div>
-
-          <!-- FIRMA DEL EMPLEADO -->
-          <div class="page-break-avoid">
-              <p class="mt-5 mb-1 p-0 mx-0" style="font-size:14px;">
-                  Ratifico con mi firma lo aquí descrito. <br> <br>
-                  Atentamente: 
-              </p>
-          </div>
-
-          <div class="page-break-avoid signature-area ms-0">
-            <div class="row mt-1">
-                <div class="col-8 mt-0 p-0"> 
-                    <div class="text-center">
-                        <img class="my-0 p-0" src="http://localhost/sistemaUniformesAdaptado/imagenes/firmas/19-1625.png" style="height: 60px;">
-                        <div class="signature-line"></div>
-                        <p>FIRMA LOZA GONZALEZ OSVALDO ALEJANDRO</p>
-                    </div>
-                </div>
-                <div class="col-4 p-0 m-0">
-                    <div style="height: 40px;"></div>
-                    <p>N.N.<span class="underline mx-2">&nbsp;2481&nbsp;</span></p>
-                </div>
-            </div>
-          </div>
     </div>
 
     <script>

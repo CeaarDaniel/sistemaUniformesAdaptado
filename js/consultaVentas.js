@@ -251,9 +251,10 @@
                                                                     <div class="col-2">Cantidad: ${articulo.cantidad}</div>
                                                                     <div class="col-4">${articulo.nombre}</div>
                                                                     <div class="col-2">$ ${articulo.precio} c/u</div>
-                                                                </div>`});
+                                                                </div>`
+                            });
 
-                                    var conteniod = `<!--TITULO DEL DOCUMENTO -->
+                        var conteniod = `<!--TITULO DEL DOCUMENTO -->
                             <p class="text-center" style="font-size:16px;"><b>CARTA DE ACEPTACIÓN DE DESCUENTOS</b></p>
                             <p class="text-end"><b>${(new Date(fecha)).toLocaleDateString("es-MX")}</b></p>
                             <p class="text-start ms-3" style="font-size:14px;">

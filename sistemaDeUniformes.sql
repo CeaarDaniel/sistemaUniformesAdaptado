@@ -296,3 +296,19 @@ delete FROM Duplicados WHERE fila > 1;
 
 
 select* from uni_articulos
+
+select* from uni_tipo_salida
+	--LA SALIDA POR VALE NO REGISTRA Y NO MUESTRA EL PRECIO EN LA SALIDA (1)
+	--LA VENTA DE UNIFORE REGISTRA Y MUESTA LA EL PRECIO DE LA VENTA (2)
+	--EN LA ENTREGA DE UNIFORME USADO EL UNICO REGISTRO LE ASIGNO UN VALOR DE 0 AL PRECIO Y EN REPORTE LO MUESTRA EN BLANCO (3)
+	--LA SALIDA POR REPOSICIÓN DE UNIFORME SI REGITRA PERO NO LA MUESTRA EN EL REPORTE (4) 
+	--LA SALIDA POR CAMBIO SOLO EN UNA NO REGITRO EL PRECIO Y EN EL REPORTE NO SE MUESTRA (5)
+	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
+
+SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
+                    FROM uni_salida as us 
+                left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
+                left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
+                left join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida
+				left join (select tipo_vale,barcode from uni_vale group by tipo_vale, barcode) as uv on us.vale = uv.barcode 
+				left join uni_tipo_vale as tv on uv.tipo_vale = tv.id_tipo_vale WHERE 1=1

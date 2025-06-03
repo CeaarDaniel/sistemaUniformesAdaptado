@@ -12,7 +12,7 @@
 
 
 
-<div id="consultaSalidas">
+    <div id="consultaSalidas" class="m-0 p-0" style="overflow:hidden;">
         <!-- Título -->
         <div class="container mt-4">
             <h1 class="title text-center">Consultas de Salidas</h1>
@@ -72,8 +72,8 @@
         </div>
 
         <!-- Tabla de Salidas -->
-        <div class="container mt-4 table-container">
-            <table id="tablaSalidas" class="table table-striped">
+        <div class="mt-4 mb-0 display nowrap" style="max-height:400px; width:100%; overflow-y:auto">
+            <table id="tablaSalidas" class="table table-striped" style="width:100%;">
                 <thead class="sticky-header">
                     <tr>
                         <th style="background-color: rgb(13, 71, 161); color:white">ID</th>
@@ -173,5 +173,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="d-none p-0 m-0">
+        <div id="impresionDetalleSalida" class="hojaImpresion" style="font-size:13px;">
         </div>
     </div>
