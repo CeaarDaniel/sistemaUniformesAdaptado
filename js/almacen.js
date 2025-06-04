@@ -2,12 +2,15 @@
   var categoriaCat = document.getElementById('categoriaCat');
   var estado = document.getElementById('estado');
   var generoCat = document.getElementById('generoCat');
+  var btnImprimirAlmacen = document.getElementById('btnImprimirAlmacen');
+  var impresionInventario = document.getElementById('impresionInventario');
 
   const tabla= $('#tablaArticulos').DataTable();
 
   categoriaCat.addEventListener('change', renderTable)
   estado.addEventListener('change', renderTable)
   generoCat.addEventListener('change', renderTable)
+  btnImprimirAlmacen.addEventListener('click', imprimirTabla);
 
   if (btnactualizartabla) btnactualizartabla.addEventListener('click', refresh)
 
@@ -73,6 +76,7 @@
                                                 //Botón para Excel
                                                 extend: 'excel',
                                                 title: 'Reporte de Inventario',
+                                                exportOptions: {columns: [0, 1, 4, 7, 8]}, // Excluye la última columna (la de los botones)
                                                 filename: 'Reporte de Inventario',
                                                 //Aquí es donde generas el botón personalizado
                                                 text: `<button class="btn btn-success" style="background-color: #1b5e20">
@@ -83,12 +87,47 @@
                                             {
                                                 extend: 'pdf',
                                                 className: 'unset',
+                                                exportOptions: {columns: [0, 1, 4, 7, 8]},  //exportOptions: {columns: ':not(:last-child)' }, // Excluye la última columna (la de los botones)
                                                 text: '<button class="btn btn-danger" style="color: white;" ><i class="fas fa-file-pdf"></i> Exportar PDF</button>',
                                                 title: 'Reporte de Inventario',
                                                 filename: 'Reporte de Inventario',
                                                 customize: function(doc) {
-                                                    doc.content[1].margin = [0, 10, 0, 10]; // Márgenes del contenido
-                                                }
+                                                        // Centrar el título
+                                                        doc.title = {
+                                                            text: 'Reporte de Inventario',
+                                                            alignment: 'center',
+                                                            margin: [0, 0, 0, 15] // [left, top, right, bottom]
+                                                        };
+                                                        
+                                                        // Centrar toda la tabla
+                                                        doc.content.forEach(function(item) {
+                                                            if (item.table) {
+                                                                item.alignment = 'center';
+                                                                item.margin = [0, 5, 0, 15]; // [left, top, right, bottom]
+                                                                
+                                                                // Ajustar el ancho de la tabla para que no quede pegado a los bordes
+                                                                item.table.widths = Array(item.table.body[0].length).fill('*');
+                                                                
+                                                                // Opcional: Centrar el texto en todas las celdas
+                                                                item.table.body.forEach(function(row) {
+                                                                    row.forEach(function(cell) {
+                                                                        if (cell.text) {
+                                                                            cell.alignment = 'center';
+                                                                        }
+                                                                    });
+                                                                });
+                                                            }
+                                                        });
+                                                        
+                                                        // Estilos adicionales para el PDF
+                                                        doc.defaultStyle = {
+                                                            fontSize: 10,
+                                                            alignment: 'center'
+                                                        };
+                                                        
+                                                        // Margen de la página (opcional)
+                                                        doc.pageMargins = [40, 60, 40, 60]; // [left, top, right, bottom]
+                                                    }
                                             },
                                         ]
                                         }
@@ -230,6 +269,101 @@
     function refresh(){
         renderTable();
         alert('Se ha actualizado la tabla')
+    }
+
+    function imprimirTabla(){
+        var formData = new FormData;
+        formData.append("opcion", "1");
+        formData.append('categoriaCat', categoriaCat.value)
+        formData.append('estado', estado.value)
+        formData.append('generoCat', generoCat.value)
+    
+        fetch("./api/almacen.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                let tabla= ``;
+                console.log(data);
+
+                data.forEach((dato) => {
+                    tabla = tabla + `<tr class="page-break-avoid py-0 my-0">
+                                        <td class="py-1 my-1"> ${dato.id_articulo}</td>
+                                        <td class="py-1 my-1"> ${dato.nombre}</td>
+                                        <td class="py-1 my-1"> ${dato.cantFisica}</td>
+                                        <td class="py-1 my-1">$ ${dato.costo}</td>
+                                        <td class="py-1 my-1">$ ${dato.precio}</td>
+                                    </tr>` 
+                });
+
+                    impresionInventario.innerHTML = `<!-- Detalles de la salida -->
+                                                        <div class="mx-5 d-flex justify-content-between">
+                                                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                                                        </div>
+
+                                                        <p class="text-center" style="font-size:20px;"><b> Reporte de Inventario </b></p>
+
+                                                        <p class="text-start mb-0" style="font-size:15px"> <b>Categoría:</b> ${ $('#categoriaCat option:selected').text() }</p>
+                                                         <hr class="mt-0 mb-1" 
+                                                             style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+                                                                    
+
+                                                        <p class="text-center m-0 p-0" style="font-size:16px;"><b>ARTÍCULOS</b></p>
+                                                         <table class="table mt-1" style="font-size:12px;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Clave</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Nombre</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Costo uni.</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody style="font-size:12px">
+                                                                ${tabla}
+                                                            </tbody>
+                                                        </table>`;
+                    const opt = {
+                        margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
+                        filename: 'salida_'+2357+'_entrega de uniforme por vale.pdf',
+                        image: { 
+                            type: 'jpeg', 
+                            quality: 0.98
+                        },
+                        html2canvas: { 
+                            scale: 3, // Escala óptima para calidad y rendimiento
+                            useCORS: true,
+                            letterRendering: true,
+                            logging: false
+                        },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: 'letter', 
+                            orientation: 'portrait' 
+                        },
+                        // Configuración avanzada para saltos de página
+                        pagebreak: { 
+                            mode: ['avoid-all', 'css'], 
+                            before: '.page-break-before',
+                            avoid: '.page-break-avoid'
+                        }
+                    };
+
+                    // Generar PDF y abrir en nueva pestaña
+                    html2pdf().set(opt).from(impresionInventario).outputPdf('blob')
+                        .then(function(blob) {
+                            const blobUrl = URL.createObjectURL(blob);
+                            window.open(blobUrl, '_blank');
+                            //impresionDetalleSalida.innerHTML= '';
+                        })
+                        .catch(function(error) {
+                            console.log(error)
+                        });
+            })
+            .catch((error) => {
+            console.log(error);
+        });
     }
 
     // Renderizar la tabla al cargar la página
