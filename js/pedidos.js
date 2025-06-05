@@ -201,9 +201,145 @@ estatus.addEventListener('change', renderTable)
     }
 
     function imprimirPedido(event){
-        const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
-        var dataId = boton.getAttribute('data-id');  
-        alert('Imprimr pedido: '+dataId);
+         const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
+        var dataId = boton.getAttribute('data-id');
+        var numPedido = boton.getAttribute('data-numPedido');
+        var fechaCreacion = boton.getAttribute('data-fechaCreacion'); 
+        var estado = boton.getAttribute('data-estado'); 
+        var nombre = boton.getAttribute('data-nombre'); //quien lo realizo
+        let totalPedido= 0;
+
+        var formData = new FormData;
+        formData.append("opcion", "2");
+        formData.append("id_pedido", dataId);
+
+        //Creacion de la tabla del modal
+        fetch("./api/pedidos.php", {
+            method: "POST",
+            body: formData,
+        })
+        .then((response) => response.json())
+        .then((data) => {
+                //MOSTRAR EL VALOR DE LA FECHA EN FORMATO DE 12 hr
+                let fechaP = (new Date (fechaCreacion)).toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true  // Usar el formato de 24 horas
+                }).replace(',', '');
+                
+                let tabla= ``; 
+
+                // Iterar sobre los datos y crear una fila para cada artículo
+                data.forEach(dato => {
+                     tabla = tabla + 
+                            `<tr class="page-break-avoid">
+                                <td class="my-1 page-break-avoid">${dato.clave}</td>
+                                <td class="my-1 page-break-avoid">${dato.Cantidad}</td>
+                                <td class="my-1 page-break-avoid">${dato.Articulo}</td>
+                                <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.costo)).toFixed(2)}</td>
+                                <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.total)).toFixed(2)}</td> 
+                            </tr>`;
+                     totalPedido = totalPedido +  parseFloat(dato.total);
+                  }); 
+
+                  `       $ ${ parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US') }`; 
+
+
+                     impresionInventario.innerHTML = `<!-- Detalles de pedido -->
+                                                        <p class="text-center" style="font-size:17px; page-break-avoid"><b> PEDIDO - UNIFORMES </b></p>
+                                                        
+                                                        <div class="mx-5 d-flex justify-content-between page-break-avoid">
+                                                            <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                                                            <table class="page-break-avoid">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="text-center p-0 border-top border-start border-end border-dark" style="width:100%"><b>&nbsp; NUM SALIDA&nbsp;</b></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-center p-0 border border-dark" style="width:100%"> ${numPedido}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                         <!-- Detalles del pedido -->
+                                                        <div class="row mt-5 page-break-avoid ">
+                                                            <div class="my-0 col-4"><b>Fecha de elaboración:</b></div>
+                                                            <div class="my-0 col-auto"><label class="mx-0 px-0 text-uppercase"> ${fechaP}</label></div>
+                                                        </div>
+
+                                                        <div class="row my-0 page-break-avoid">
+                                                            <div class="my-0 col-4"><b>Realizado por:</b></div>
+                                                            <div class="my-0 col-auto"><label>${nombre}</label></div>
+                                                        </div>
+
+                                                       <div class="row my-0 page-break-avoid">
+                                                            <div class="my-0 col-4"><b>Estado:</b></div>
+                                                            <div class="my-0 col-auto"><label> ${estado}</label></div>
+                                                        </div>
+
+                                            <hr class="mt-0 mb-1" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+                                                                    
+
+                                                        <p class="page-break-avoid text-center my-4" style="font-size:16px;"><b>ARTÍCULOS</b></p>
+                                                         <table class="page-break-avoid table mt-1" style="font-size:12px;">
+                                                            <thead class="page-break-avoid">
+                                                                <tr>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Clave</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Artículo</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio unitario</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="page-break-avoid" style="font-size:12px">
+                                                                ${tabla}
+                                                            </tbody>
+                                                        </table>`;
+
+                    const opt = {
+                        margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
+                        filename: 'salida_'+2357+'_entrega de uniforme por vale.pdf',
+                        image: { 
+                            type: 'jpeg', 
+                            quality: 0.98
+                        },
+                        html2canvas: { 
+                            scale: 3, // Escala óptima para calidad y rendimiento
+                            useCORS: true,
+                            letterRendering: true,
+                            logging: false
+                        },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: 'letter', 
+                            orientation: 'portrait' 
+                        },
+                        // Configuración avanzada para saltos de página
+                        pagebreak: { 
+                            mode: ['avoid-all', 'css'], 
+                            before: '.page-break-before',
+                            avoid: '.page-break-avoid'
+                        }
+                    };
+
+                    // Generar PDF y abrir en nueva pestaña
+                    html2pdf().set(opt).from(impresionInventario).outputPdf('blob')
+                        .then(function(blob) {
+                            const blobUrl = URL.createObjectURL(blob);
+                            window.open(blobUrl, '_blank');
+                            //impresionDetalleSalida.innerHTML= '';
+                        })
+                        .catch(function(error) {
+                            console.log(error)
+                });
+                 
+    }).catch((error) => {
+        console.log(error);
+    });
     }
 
     // Renderizar la tabla al cargar la página

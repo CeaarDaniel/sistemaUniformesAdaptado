@@ -20,7 +20,7 @@ include('./api/conexion.php');
                         <i class="bi bi-file-earmark-pdf"></i> Generar
                 </button>    
 
-                <button class="btn bg-blue-10" style="color: white;">
+                <button id="btnReporteVentas" class="btn bg-blue-10" style="color: white;">
                     <i class="fas fa-print"></i>
                 </button>
             </div>
@@ -65,7 +65,7 @@ include('./api/conexion.php');
                             <label class="form-check-label">Todas las categorías</label>
                         </div>
                         <select class="form-select" id="categorySelect" disabled>
-                            <option class="text-center" value=''>--- CATEGORIAS ---</option>
+                            <option class="text-center" value='0'>--- CATEGORIAS ---</option>
                                 <?php
                                     while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
                                     echo '<option value="'.$categoria['id_categoria'].'">'.$categoria['categoria'].'</option>';
@@ -91,7 +91,7 @@ include('./api/conexion.php');
                             <label class="form-check-label">Todos los usuarios</label>
                         </div>
                         <select class="form-select" id="userSelect" disabled>
-                            <option class="text-center" value=''>--- USUARIOS ---</option>
+                            <option class="text-center" value='0'>--- USUARIOS ---</option>
                             <?php
                                 while($usuario = $usuarios->fetch(PDO::FETCH_ASSOC))
                                 echo '<option value="'.$usuario['id_usuario'].'">'.$usuario['Nombre'].'</option>';
@@ -187,5 +187,11 @@ include('./api/conexion.php');
                         </button>                                                          
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+        <div class=" p-0 m-0">
+            <div id="impresionInventario" class="hojaImpresion" style="font-size:13px;">
             </div>
         </div>

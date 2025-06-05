@@ -67,7 +67,11 @@ $opcion = $_POST['opcion'];
                                                         <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
                                                     </button>
                                                     <button class="btn btnImprimir p-0 my-0 mx-1" 
-                                                            data-id="'.$pedido['id_pedido'].'">
+                                                            data-id="'.$pedido['id_pedido'].'"
+                                                            data-numPedido="'.$pedido['num_pedido'].'"
+                                                            data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                            data-estado="'.$pedido['pedido_estado'].'"
+                                                            data-nombre="'.$pedido['nombre'].'">
                                                         <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
                                                     </button>'
                                     );
@@ -79,6 +83,7 @@ $opcion = $_POST['opcion'];
         echo json_encode($response);
     }
 
+    //Consulta para obtener el detalle del pedido
     else 
         if($opcion == '2'){
             $id_pedido= (isset($_POST['id_pedido']) && !$_POST['id_pedido']=='') ? $_POST['id_pedido'] : NULL;
