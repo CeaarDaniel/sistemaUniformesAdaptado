@@ -9,96 +9,103 @@ $opcion = $_POST['opcion'];
 
 
 // OBTENER LOS DATOS DE LAS VENTAS Y ARTICULOS DE VANTAS 
-if ($opcion=='1'){
+    if ($opcion=='1'){
 
-    //VARIABLES PARA LOS FILTROS DE BUSQUEDA 
-    $categoria = (isset($_POST['categorySelect']) && !$_POST['categorySelect']=='') ? $_POST['categorySelect'] : 0; 
-    $usuario =  (isset($_POST['userSelect']) && !$_POST['userSelect']=='' ) ? $_POST['userSelect'] :  0; //USUARIO QUIEN REGISTRO LA VENTA
-    $empleado = (isset($_POST['employeeInput']) && !$_POST['employeeInput']=='' ) ? $_POST['employeeInput'] :  0;
-    $reportType = (isset($_POST['reportType']) && !$_POST['reportType']=='') ? $_POST['reportType'] : '';
+        //VARIABLES PARA LOS FILTROS DE BUSQUEDA 
+        $categoria = (isset($_POST['categorySelect']) && !$_POST['categorySelect']=='') ? $_POST['categorySelect'] : 0; 
+        $usuario =  (isset($_POST['userSelect']) && !$_POST['userSelect']=='' ) ? $_POST['userSelect'] :  0; //USUARIO QUIEN REGISTRO LA VENTA
+        $empleado = (isset($_POST['employeeInput']) && !$_POST['employeeInput']=='' ) ? $_POST['employeeInput'] :  0;
+        $reportType = (isset($_POST['reportType']) && !$_POST['reportType']=='') ? $_POST['reportType'] : '';
 
-    $startDate = (isset($_POST['startDate']) && !$_POST['startDate']=='') ? (new DateTime($_POST['startDate']))->format('Y-m-d') : 0;
-    $endDate = (isset($_POST['endDate']) && !$_POST['endDate']=='') ? (new DateTime($_POST['endDate']))->format('Y-m-d') : 0;
+        $startDate = (isset($_POST['startDate']) && !$_POST['startDate']=='') ? (new DateTime($_POST['startDate']))->format('Y-m-d') : 0;
+        $endDate = (isset($_POST['endDate']) && !$_POST['endDate']=='') ? (new DateTime($_POST['endDate']))->format('Y-m-d') : 0;
 
-    if($categoria != 0) 
-        $filtrocategoria = ' AND a.id_categoria = :categoria';
-    else 
-        $filtrocategoria = ' ';
+        if($categoria != 0) 
+            $filtrocategoria = ' AND a.id_categoria = :categoria';
+        else 
+            $filtrocategoria = ' ';
 
-    if($usuario != 0) 
-        $filtrousuario = ' AND v.id_usuario = :usuario ';
-    else 
-        $filtrousuario = ' ';
+        if($usuario != 0) 
+            $filtrousuario = ' AND v.id_usuario = :usuario ';
+        else 
+            $filtrousuario = ' ';
 
-    if($empleado != 0) 
-        $filtroempleado = ' AND v.id_empleado = :empleado ';
-    else 
-        $filtroempleado = ' ';
+        if($empleado != 0) 
+            $filtroempleado = ' AND v.id_empleado = :empleado ';
+        else 
+            $filtroempleado = ' ';
 
-    if($startDate != 0 && $endDate != 0){
-        $filtroFecha = ' AND v.fecha between :startDate and :endDate ';
+        if($startDate != 0 && $endDate != 0){
+            $filtroFecha = ' AND v.fecha between :startDate and :endDate ';
+        }
+
+        else {
+            $filtroFecha = '';
+        } 
+
+
+        if ($reportType=='1'){
+                $sql= "SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EMPLEADO, dr.Nombre as USUARIO, v.pago_total from uni_venta as v 
+                            inner join (SELECT
+                                                MIN(id_usuario) AS id_usuario,
+                                                MIN(usuario) AS usuario
+                                        FROM empleado
+                                        GROUP BY id_usuario) as e on v.id_empleado = e.id_usuario
+                            left join DIRECTORIO_0 as dr on v.id_usuario= dr.ID
+                            left join uni_venta_articulo as va on v.id_venta = va.id_venta
+                            left join uni_articulos as a  on va.id_articulo = a.id_articulo 
+                                WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha." 
+                        group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total ";
+        }
+
+        else 
+        if($reportType=='2'){
+                $sql= "SELECT va.id_venta as venta, va.id_articulo, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, va.cantidad, a.nombre from uni_venta_articulo va 
+                                inner join uni_articulos as a on va.id_articulo = a.id_articulo
+                                left join uni_venta as v on v.id_venta= va.id_venta
+                            WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha."  
+                        ORDER BY va.id_articulo
+                        
+                        SELECT va.id_articulo, a.nombre, sum(va.cantidad) as cantidad from uni_venta_articulo va 
+                                inner join uni_articulos as a on va.id_articulo = a.id_articulo
+                                left join uni_venta as v on v.id_venta= va.id_venta
+                            WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha."
+                            group by va.id_articulo, a.nombre
+                        ORDER BY va.id_articulo";
+        } 
+
+        $ventas = $conn->prepare($sql);
+        if($categoria != 0) 
+            $ventas->bindparam(':categoria', $categoria);
+
+        if($usuario != 0) 
+            $ventas->bindparam(':usuario', $usuario);
+
+        if($empleado != 0) 
+            $ventas->bindparam(':empleado', $empleado);
+
+            
+        if($startDate != 0 && $endDate != 0){
+            $ventas->bindparam(':startDate', $startDate);
+            $ventas->bindparam(':endDate', $endDate);
+        }
+
+
+        $response= array();
+
+        if($ventas -> execute()){
+            while($venta= $ventas->fetch(PDO::FETCH_ASSOC))
+                $response[] = $venta;
+        }
+
+        else 
+            $response = $ventas->errorInfo()[2];
+
+        echo json_encode($response);
     }
-
-    else {
-        $filtroFecha = '';
-    } 
-
-
-    if ($reportType=='1'){
-            $sql= "SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EMPLEADO, dr.Nombre as USUARIO, v.pago_total from uni_venta as v 
-                        inner join (SELECT
-                                            MIN(id_usuario) AS id_usuario,
-                                            MIN(usuario) AS usuario
-                                    FROM empleado
-                                    GROUP BY id_usuario) as e on v.id_empleado = e.id_usuario
-                        left join DIRECTORIO_0 as dr on v.id_usuario= dr.ID
-                        left join uni_venta_articulo as va on v.id_venta = va.id_venta
-                        left join uni_articulos as a  on va.id_articulo = a.id_articulo 
-                            WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha." 
-                    group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total ";
-    }
-
-    else 
-      if($reportType=='2'){
-            $sql= "SELECT va.id_venta as venta, va.id_articulo, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, va.cantidad, a.nombre from uni_venta_articulo va 
-                            inner join uni_articulos as a on va.id_articulo = a.id_articulo
-                            left join uni_venta as v on v.id_venta= va.id_venta
-                        WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha."  
-					ORDER BY va.id_venta";
-    } 
-
-    $ventas = $conn->prepare($sql);
-    if($categoria != 0) 
-        $ventas->bindparam(':categoria', $categoria);
-
-    if($usuario != 0) 
-        $ventas->bindparam(':usuario', $usuario);
-
-    if($empleado != 0) 
-        $ventas->bindparam(':empleado', $empleado);
-
-        
-    if($startDate != 0 && $endDate != 0){
-        $ventas->bindparam(':startDate', $startDate);
-        $ventas->bindparam(':endDate', $endDate);
-    }
-
-
-    $response= array();
-
-    if($ventas -> execute()){
-        while($venta= $ventas->fetch(PDO::FETCH_ASSOC))
-            $response[] = $venta;
-    }
-
-    else 
-        $response = $ventas->errorInfo()[2];
-
-    echo json_encode($response);
-}
 
 //OPCION PARA TRAER LOS ARTICULOS DE CADA VENTA
-  else
+    else
     if($opcion == '2'){
         $idVenta = (isset($_POST['idVenta']) && !$_POST['idVenta']=='') ? $_POST['idVenta'] : NULL;
 
@@ -122,7 +129,7 @@ if ($opcion=='1'){
         
     }
 
- else 
+    else 
     if($opcion == '3'){ 
         $existencia = (isset($_POST['existencia']) && !$_POST['existencia']=='') ? $_POST['existencia'] : 0;
         $genero = (isset($_POST['genero']) && !$_POST['genero']=='') ? $_POST['genero'] : 0;
@@ -135,7 +142,7 @@ if ($opcion=='1'){
 
         else 
             if($existencia == 3)
-             $filtroExistencia= ' AND cantidad < 1 '; 
+                $filtroExistencia= ' AND cantidad < 1 '; 
 
         else if($existencia == 1)
             $filtroExistencia = '';
@@ -199,7 +206,7 @@ if ($opcion=='1'){
 
             //SOLO ARTICULOS
             else 
-             if($reportType == 2)
+                if($reportType == 2)
                 $sql= "SELECT usa.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') as fecha, a.nombre as articulo, usa.cantidad
                                 from uni_salida_articulo as usa 
                             left join uni_articulos as a on usa.id_articulo = a.id_articulo
@@ -225,32 +232,31 @@ if ($opcion=='1'){
                 }
 
                 else 
-                 $response = $salidas->errorInfo()[2];
+                    $response = $salidas->errorInfo()[2];
 
             echo json_encode($response);
         }
 
+    else 
+        if($opcion == '5'){
+            $idSalida = (isset($_POST['idSalida']) && !$_POST['idSalida']=='') ? $_POST['idSalida'] : NULL;
 
-        else 
-            if($opcion == '5'){
-                $idSalida = (isset($_POST['idSalida']) && !$_POST['idSalida']=='') ? $_POST['idSalida'] : NULL;
+            $sql = 'SELECT usa.id_salida, usa.id_articulo, ua.nombre, usa.cantidad, usa.precio 
+                                from uni_salida_articulo as usa 
+                            inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo WHERE usa.id_salida = :id_salida';
 
-                $sql = 'SELECT usa.id_salida, usa.id_articulo, ua.nombre, usa.cantidad, usa.precio 
-                                    from uni_salida_articulo as usa 
-                                inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo WHERE usa.id_salida = :id_salida';
+            $articulos = $conn->prepare($sql);
+            $articulos->bindparam(':id_salida', $idSalida);
+            $response = array();
 
-                $articulos = $conn->prepare($sql);
-                $articulos->bindparam(':id_salida', $idSalida);
-                $response = array();
+                if($articulos->execute()){
+                    while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
+                        $response[] = $articulo;
+                }
 
-                    if($articulos->execute()){
-                        while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                            $response[] = $articulo;
-                    }
+                else 
+                $response = $articulos->errorInfo()[2];
 
-                    else 
-                    $response = $articulos->errorInfo()[2];
-
-                echo json_encode($response);
-            }
+            echo json_encode($response);
+        }
 ?>

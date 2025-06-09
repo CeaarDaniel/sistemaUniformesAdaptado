@@ -109,11 +109,6 @@ include('./api/conexion.php');
                 <thead class="sticky-header">
                     <!--CABECERA DE LA TABLA -->
                     <tr id="tableHeader">
-                        <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Empleado</th>
-                        <th>Usuario</th>
-                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody id="">

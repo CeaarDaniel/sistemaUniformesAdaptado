@@ -1,9 +1,12 @@
+var impresionInventario = document.getElementById('impresionInventario');
+var tabla = ``;
+var filtroEmpleado = ''
+
 //Inputs pertenecientes a los check de la seccion de filtros
 var  categorySelect = document.getElementById('categorySelect');
 var  employeeInput = document.getElementById('employeeInput');
 var  userSelect = document.getElementById('userSelect');
 var btnReporteVentas = document.getElementById('btnReporteVentas');
-
 
 //Inputs de los filtros de las fechas
 var startDate =  document.getElementById('startDate');
@@ -19,6 +22,22 @@ var allUsers = document.getElementById('allUsers');
 const today = new Date().toISOString().split('T')[0];
 // startDate.value = today //si quiero dar el valor de la fecha actual;
 //endDate.value =  today;
+
+         
+// Configurar jsPDF
+const { jsPDF } = window.jspdf;
+
+// Función para formatear fechas
+const formatter = {
+    fecha: function(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-MX');
+    },
+    currency: function(value) {
+        return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
+    }
+};
+
 
 
 function enableInput (){  
@@ -154,6 +173,48 @@ function updateTable() {
                     }
                 }
             });
+
+            //CODIGO PARA PREPARAR EL CONTENIDO PARA LA GENERACION DEL PDF
+             tabla = ``;
+              // Iterar sobre los datos y crear una fila para cada artículo
+
+             filtroEmpleado = (employeeInput.value == '' || employeeInput.value == '0') ? 'Todos' : employeeInput.value+"-"+data[0].EMPLEADO
+                data.forEach(dato => {
+                     tabla = tabla +  
+                            `<tr class="page-break-avoid">
+                                <td class="my-1 page-break-avoid">${dato.id_venta}</td>
+                                <td class="my-1 page-break-avoid">${dato.fecha}</td>
+                                <td class="my-1 page-break-avoid">${dato.EMPLEADO}</td>
+                                <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.pago_total)).toFixed(2)}</td>
+                            </tr>`;
+                  });
+
+            impresionInventario.innerHTML = `<div id="contenido" class="hojaImpresion" style="font-size:13px;"><!-- Detalles de la salida -->
+                                                    <div class="row border border-dark">
+                                                        <div class="col-6 text-center border-bottom border-dark my-1"><b>Reporte De Ventas</b></div>
+                                                        <div class="col-6 text-center border-bottom border-dark my-1"><b>Periodo:</b> ${(startDate.value == '' || endDate.value == '') ? 'Todos' : ` ${startDate.value} - ${endDate.value}` }</div>
+
+                                                        <div class="col-4 my-1"><b>Tipo:</b> ${(reportType.value == '1') ? 'Solo venta' : 'Solo articulos'}</div>
+                                                        <div class="col-8 my-1"><b>Empleado:</b> ${filtroEmpleado}</div>
+
+                                                        <div class="col-4 my-1"><b>Categoria:</b> ${ (categorySelect.value) == 0 ?  'Todos' :  $('#categorySelect option:selected').text()}</div>
+                                                        <div class="col-8 my-1"><b>Usuario:</b> ${ (userSelect.value) == 0 ? 'Todos' : $('#userSelect option:selected').text()}</div>
+                                                    </div>
+                                                </div>
+
+                                                    <table class="page-break-avoid table mt-1" style="font-size:12px;">
+                                                    <thead class="page-break-avoid">
+                                                        <tr>
+                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cant.</th>
+                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Fecha</th>
+                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Empleado</th>
+                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="page-break-avoid" style="font-size:12px">
+                                                        ${tabla}
+                                                    </tbody>
+                                                </table>`;
         })
         .catch((error) => {
             console.log(error);
@@ -234,84 +295,129 @@ function imprimirReporteVenta (){
     })
         .then((response) => response.json())
         .then((data) => {
-            let tabla = ``;
-              // Iterar sobre los datos y crear una fila para cada artículo
-
-             let filtroEmpleado = (employeeInput.value == '' || employeeInput.value == '0') ? 'Todos' : employeeInput.value+"-"+data[0].EMPLEADO
-                data.forEach(dato => {
-                     tabla = tabla +  
-                            `<tr class="page-break-avoid">
-                                <td class="my-1 page-break-avoid">${dato.id_venta}</td>
-                                <td class="my-1 page-break-avoid">${dato.fecha}</td>
-                                <td class="my-1 page-break-avoid">${dato.EMPLEADO}</td>
-                                <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.pago_total)).toFixed(2)}</td>
-                            </tr>`;
-                  });
-
-                    impresionInventario.innerHTML = `<div id="contenido" class="hojaImpresion" style="font-size:13px;"><!-- Detalles de la salida -->
-                                                            <div class="row border border-dark">
-                                                                <div class="col-6 text-center border-bottom border-dark my-1"><b>Reporte De Ventas</b></div>
-                                                                <div class="col-6 text-center border-bottom border-dark my-1"><b>Periodo:</b> ${(startDate.value == '' || endDate.value == '') ? 'Todos' : ` ${startDate.value} - ${endDate.value}` }</div>
-
-                                                                <div class="col-4 my-1"><b>Tipo:</b> ${(reportType.value == '1') ? 'Solo venta' : 'Solo articulos'}</div>
-                                                                <div class="col-8 my-1"><b>Empleado:</b> ${filtroEmpleado}</div>
-
-                                                                <div class="col-4 my-1"><b>Categoria:</b> ${ (categorySelect.value) == 0 ?  'Todos' :  $('#categorySelect option:selected').text()}</div>
-                                                                <div class="col-8 my-1"><b>Usuario:</b> ${ (userSelect.value) == 0 ? 'Todos' : $('#userSelect option:selected').text()}</div>
-                                                            </div>
-                                                        </div>
-
-                                                        <p class="page-break-avoid text-center my-4" style="font-size:16px;"><b>ARTÍCULOS</b></p>
-                                                         <table class="page-break-avoid table mt-1" style="font-size:12px;">
-                                                            <thead class="page-break-avoid">
-                                                                <tr>
-                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cant.</th>
-                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Fecha</th>
-                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Empleado</th>
-                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="page-break-avoid" style="font-size:12px">
-                                                                ${tabla}
-                                                            </tbody>
-                                                        </table>`;
-
-                    const opt = {
-                        margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
-                        filename: 'salida_'+2357+'_entrega de uniforme por vale.pdf',
-                        image: { 
-                            type: 'jpeg', 
-                            quality: 0.98
-                        },
-                        html2canvas: { 
-                            scale: 3, // Escala óptima para calidad y rendimiento
-                            useCORS: true,
-                            letterRendering: true,
-                            logging: false
-                        },
-                        jsPDF: { 
-                            unit: 'mm', 
-                            format: 'letter', 
-                            orientation: 'portrait' 
-                        },
-                        // Configuración avanzada para saltos de página
-                        pagebreak: { 
-                            mode: ['avoid-all', 'css'], 
-                            before: '.page-break-before',
-                            avoid: '.page-break-avoid'
+                // Obtener datos del reporte
+                const reportData = data;
+                
+                // Crear instancia de jsPDF
+                let doc = new jsPDF("p", "cm", "letter");
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                // Configuración inicial
+                doc.setLineWidth(0.01);
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(11);
+                
+                // Encabezado del reporte
+                doc.rect(2, 2, 17.5, 2);
+                doc.line(2, 2.5, 19.5, 2.5);
+                
+                doc.text("Reporte De Ventas", 3, 2.4);
+                doc.text("Periodo: ", 12, 2.4);
+                
+                doc.setFont("helvetica", "normal");
+                doc.text(`${(startDate.value == '' || endDate.value == '') ? 'Todos' : ` ${startDate.value} - ${endDate.value}` }`, 13.8, 2.4);
+                
+                doc.setFont("helvetica", "bold");
+                doc.text("Tipo: ", 2.5, 3);
+                doc.setFont("helvetica", "normal");
+                doc.text(`${(reportType.value == '1') ? 'Solo venta' : 'Solo articulos'}`, 3.6, 3);
+                
+                doc.setFont("helvetica", "bold");
+                doc.text("Categoria: ", 2.5, 3.7);
+                doc.setFont("helvetica", "normal");
+                doc.text(`${ (categorySelect.value) == 0 ?  'Todos' :  $('#categorySelect option:selected').text()}`, 4.5, 3.7);
+                
+                doc.setFont("helvetica", "bold");
+                doc.text("Empleado: ", 9, 3);
+                doc.setFont("helvetica", "normal");
+                doc.text(`${filtroEmpleado}`, 11.1, 3);
+                
+                doc.setFont("helvetica", "bold");
+                doc.text("Usuario: ", 9, 3.7);
+                doc.setFont("helvetica", "normal");
+                doc.text(`${ (userSelect.value) == 0 ? 'Todos' : $('#userSelect option:selected').text()}`, 10.7, 3.7);
+                
+                // Cabecera de la tabla
+                doc.setFillColor(30, 61, 144);
+                doc.rect(2, 4.45, 17.5, 0.7, "F");
+                
+                doc.setFontSize(9);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(255, 255, 255);
+                
+                let salto = 4.9;
+                
+                if (reportType.value === "1") {
+                    doc.text("Cant.", 2.3, salto);
+                    doc.text("Fecha", 5.6, salto);
+                    doc.text("Empleado", 11, salto);
+                    doc.text("Total", 17, salto);
+                    
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0, 0, 0);
+                    
+                    salto += 0.7;
+                    
+                    for (const v of reportData) {
+                        if (salto > pageHeight - 1.5) {
+                            doc.addPage();
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(0, 0, 0);
+                            doc.setLineWidth(0.01);
+                            salto = 2; // Reiniciar posición en nueva página
                         }
-                    };
-
-                    // Generar PDF y abrir en nueva pestaña
-                    html2pdf().set(opt).from(impresionInventario).outputPdf('blob')
-                        .then(function(blob) {
-                            const blobUrl = URL.createObjectURL(blob);
-                            window.open(blobUrl, '_blank');
-                            //impresionDetalleSalida.innerHTML= '';
-                        })
-                        .catch(function(error) {
-                            console.log(error)
-                });     
+                        
+                        doc.text(v.id_venta + "", 2.4, salto);
+                        doc.text(v.fecha, 4.4, salto);
+                        doc.text(v.EMPLEADO, 8.6, salto);
+                        doc.text(formatter.currency(v.pago_total), 18.2, salto, "right");
+                        
+                        doc.setLineWidth(0.01);
+                        doc.line(2, salto + 0.2, 19.4, salto + 0.2);
+                        salto += 0.7;
+                    }
+                } 
+                
+                else if (reportType.value === "2") {
+                    doc.text("ID", 2.3, salto);
+                    doc.text("Cant.", 4, salto);
+                    doc.text("Artículo", 7.5, salto);
+                    
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(0, 0, 0);
+                    
+                    salto += 0.7;
+                    
+                    for (const va of reportData) {
+                        if (salto > pageHeight - 1.5) {
+                            doc.addPage();
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(0, 0, 0);
+                            doc.setLineWidth(0.01);
+                            salto = 2;
+                        }
+                        
+                        doc.text(va.id_articulo + "", 2.4, salto);
+                        doc.text(va.cantidad + "", 4.4, salto);
+                        doc.text(va.nombre, 6.5, salto);
+                        doc.setLineWidth(0.01);
+                        doc.line(2, salto + 0.2, 19.4, salto + 0.2);
+                        salto += 0.7;
+                    }
+                }
+                
+                // Pie de página
+                    //const fechaGeneracion = new Date();
+                    //doc.setFontSize(8);
+                    //doc.setTextColor(100);
+                    //doc.text(`Generado el: ${fechaGeneracion.toLocaleString()}`, 2, pageHeight - 1);
+                    //doc.text(`Página ${doc.internal.getNumberOfPages()}`, 18, pageHeight - 1, null, null, "right");
+                
+                // Abrir el PDF en una nueva ventana
+                window.open(doc.output('bloburl'), '_blank');
+                
+                // Actualizar previsualización
+                actualizarPrevisualizacion(reportData);
     }).catch((error) => {
         console.log(error);
     });

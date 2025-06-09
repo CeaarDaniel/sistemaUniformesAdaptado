@@ -39,6 +39,9 @@
     <!--html2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <!-- 
     <link href="css/vendor.df1fcf64.css" rel="stylesheet">
     <link href="css/app.0ed4cc44.css" rel="stylesheet">
