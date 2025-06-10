@@ -312,3 +312,44 @@ SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.
                 left join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida
 				left join (select tipo_vale,barcode from uni_vale group by tipo_vale, barcode) as uv on us.vale = uv.barcode 
 				left join uni_tipo_vale as tv on uv.tipo_vale = tv.id_tipo_vale WHERE 1=1
+
+
+select* from uni_venta
+
+
+
+SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EMPLEADO, dr.Nombre as USUARIO, v.pago_total from uni_venta as v 
+                            inner join (SELECT
+                                                MIN(id_usuario) AS id_usuario,
+                                                MIN(usuario) AS usuario
+                                        FROM empleado
+                                        GROUP BY id_usuario) as e on v.id_empleado = e.id_usuario
+                            left join DIRECTORIO_0 as dr on v.id_usuario= dr.ID
+                            left join uni_venta_articulo as va on v.id_venta = va.id_venta
+                            left join uni_articulos as a  on va.id_articulo = a.id_articulo 
+                                WHERE 1=1
+                        group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total 
+
+
+
+
+
+		SELECT a.nombre, SUM(va.cantidad) AS piezas, a.id_articulo
+        FROM uni_venta AS v, uni_venta_articulo AS va, uni_articulos AS a
+        WHERE 1=1
+        AND v.id_venta = va.id_venta
+        AND va.id_articulo = a.id_articulo
+        GROUP BY a.nombre, a.id_articulo order by id_articulo
+
+		select va.id_articulo, ua.nombre, sum(va.cantidad) as cantidad from uni_venta as uv 
+				inner join uni_venta_articulo as va on uv.id_venta = va.id_venta
+				inner join uni_articulos as ua on va.id_articulo = ua.id_articulo
+			group by va.id_articulo, ua.nombre
+		order by id_articulo
+
+		SELECT va.id_articulo, a.nombre, sum(va.cantidad) as cantidad from uni_venta_articulo va 
+                inner join uni_articulos as a on va.id_articulo = a.id_articulo
+                left join uni_venta as v on v.id_venta= va.id_venta
+            WHERE 1=1 AND v.id_usuario = '2357'
+			group by va.id_articulo, a.nombre
+        ORDER BY va.id_articulo

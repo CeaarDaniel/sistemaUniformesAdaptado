@@ -12,7 +12,6 @@ var btnReporteVentas = document.getElementById('btnReporteVentas');
 var startDate =  document.getElementById('startDate');
 var endDate = document.getElementById('endDate');
 
-
 //Check box de la seccion de filtros
 var allCategories = document.getElementById('allCategories')
 var allEmployees = document.getElementById('allEmployees')
@@ -22,7 +21,6 @@ var allUsers = document.getElementById('allUsers');
 const today = new Date().toISOString().split('T')[0];
 // startDate.value = today //si quiero dar el valor de la fecha actual;
 //endDate.value =  today;
-
          
 // Configurar jsPDF
 const { jsPDF } = window.jspdf;
@@ -37,8 +35,6 @@ const formatter = {
         return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
     }
 };
-
-
 
 function enableInput (){  
     //Verificar si el chek de Categoria esta seleccionado
@@ -109,17 +105,18 @@ function updateTable() {
             document.getElementById('emptyState').classList.add('d-none');
             document.getElementById('reportResults').classList.remove('d-none');
 
+            $('#reportResults').DataTable().clear();
             $('#reportResults').DataTable().destroy(); //Restaurar la tablas
 
             // Crear la configuración de las columnas para DataTables
             var columnas = Object.keys(data[0]);
-            var columnasConfig = columnas.map(function (columna) { return { "data": columna }; });
+            var columnasConfig = columnas.map(function (columna) { return { "data": columna } });
+
+            console.log(columnasConfig)
 
             //Restear las columnas de la tabla
             while (columnasTabla.firstChild) 
                 columnasTabla.removeChild(columnasTabla.firstChild);
-
-            //$('#reportResults thead tr:nth-child(2)').remove(); //Se elimina la fila clonada (2)
                     
 
             //Agregar las nuevas columnas a la tabla
@@ -128,17 +125,6 @@ function updateTable() {
                 fila.textContent = columna.replaceAll("_", " ").toUpperCase();
                 columnasTabla.appendChild(fila);
             });
-
-            /*
-            $('#reportResults thead tr').clone().appendTo('#reportResults thead');
-            $('#reportResults thead tr:eq(1) th').each(function (i) {
-                var title = $(this).text(); //es el nombre de la columna
-                $(this).html( '<input class="p-0 m-0" type="text" style="width:100%" placeholder="'+title+'" />' );                      
-                $( 'input', this ).on( 'keyup change', function () {
-                    if ( $('#reportResults').DataTable().column(i).search() !== this.value)
-                        $('#reportResults').DataTable().column(i).search( this.value).draw();
-                });
-            }); */
 
             //Crear el dataTable con las nuevas configuraciones
             $('#reportResults').DataTable({
@@ -167,59 +153,19 @@ function updateTable() {
                             var empleado= $(this).find('td').eq(2).text();
                             var usuario= $(this).find('td').eq(3).text();
                             var pagoTotal= $(this).find('td').eq(4).text();
-
                             detallVenta(ID, fecha, empleado, usuario, pagoTotal);
                         })
                     }
                 }
             });
 
-            //CODIGO PARA PREPARAR EL CONTENIDO PARA LA GENERACION DEL PDF
-             tabla = ``;
-              // Iterar sobre los datos y crear una fila para cada artículo
+            columnasConfig= '';
 
-             filtroEmpleado = (employeeInput.value == '' || employeeInput.value == '0') ? 'Todos' : employeeInput.value+"-"+data[0].EMPLEADO
-                data.forEach(dato => {
-                     tabla = tabla +  
-                            `<tr class="page-break-avoid">
-                                <td class="my-1 page-break-avoid">${dato.id_venta}</td>
-                                <td class="my-1 page-break-avoid">${dato.fecha}</td>
-                                <td class="my-1 page-break-avoid">${dato.EMPLEADO}</td>
-                                <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.pago_total)).toFixed(2)}</td>
-                            </tr>`;
-                  });
-
-            impresionInventario.innerHTML = `<div id="contenido" class="hojaImpresion" style="font-size:13px;"><!-- Detalles de la salida -->
-                                                    <div class="row border border-dark">
-                                                        <div class="col-6 text-center border-bottom border-dark my-1"><b>Reporte De Ventas</b></div>
-                                                        <div class="col-6 text-center border-bottom border-dark my-1"><b>Periodo:</b> ${(startDate.value == '' || endDate.value == '') ? 'Todos' : ` ${startDate.value} - ${endDate.value}` }</div>
-
-                                                        <div class="col-4 my-1"><b>Tipo:</b> ${(reportType.value == '1') ? 'Solo venta' : 'Solo articulos'}</div>
-                                                        <div class="col-8 my-1"><b>Empleado:</b> ${filtroEmpleado}</div>
-
-                                                        <div class="col-4 my-1"><b>Categoria:</b> ${ (categorySelect.value) == 0 ?  'Todos' :  $('#categorySelect option:selected').text()}</div>
-                                                        <div class="col-8 my-1"><b>Usuario:</b> ${ (userSelect.value) == 0 ? 'Todos' : $('#userSelect option:selected').text()}</div>
-                                                    </div>
-                                                </div>
-
-                                                    <table class="page-break-avoid table mt-1" style="font-size:12px;">
-                                                    <thead class="page-break-avoid">
-                                                        <tr>
-                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cant.</th>
-                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Fecha</th>
-                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Empleado</th>
-                                                            <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="page-break-avoid" style="font-size:12px">
-                                                        ${tabla}
-                                                    </tbody>
-                                                </table>`;
         })
         .catch((error) => {
             console.log(error);
-            $('#tableReportes').DataTable().clear();
-            $('#tableReportes').DataTable().destroy();
+            $('#reportResults').DataTable().clear();
+            $('#reportResults').DataTable().destroy();
             document.getElementById('emptyState').classList.remove('d-none');
             document.getElementById('reportResults').classList.add('d-none');
         }
@@ -277,7 +223,6 @@ function detallVenta (id, fecha, empleado, usuario, pagoTotal){
 }
 
 function imprimirReporteVenta (){
-
     const reportType = document.querySelector('input[name="reportType"]:checked'); //Articulo o Venta
     var formDataFiltros = new FormData;
     formDataFiltros.append('opcion', 1);
@@ -405,13 +350,6 @@ function imprimirReporteVenta (){
                         salto += 0.7;
                     }
                 }
-                
-                // Pie de página
-                    //const fechaGeneracion = new Date();
-                    //doc.setFontSize(8);
-                    //doc.setTextColor(100);
-                    //doc.text(`Generado el: ${fechaGeneracion.toLocaleString()}`, 2, pageHeight - 1);
-                    //doc.text(`Página ${doc.internal.getNumberOfPages()}`, 18, pageHeight - 1, null, null, "right");
                 
                 // Abrir el PDF en una nueva ventana
                 window.open(doc.output('bloburl'), '_blank');

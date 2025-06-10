@@ -1,3 +1,43 @@
+<?php
+include('./api/conexion.php');
+
+//ARTICULOS BAOS DE STOCk
+$stockBajo = $conn->prepare("SELECT id_articulo, nombre,cantidad, talla 
+                                from uni_articulos ua 
+                                    inner join uni_talla ut on ua.id_talla = ut.id_talla  
+                              where cantidad <= stock_min"); 
+$stockBajo->execute();
+
+//ULTIMOS PEDIDOS
+$pedidos = $conn->prepare("SELECT TOP 5 p.num_pedido, pe.pedido_estado, FORMAT(p.fecha_creacion, 'yyyy/MM/dd HH:mm') as fecha_inicio, 
+                                        ISNULL(FORMAT(p.fecha_termino , 'yyyy/MM/dd HH:mm'), '-') fecha_fin
+                                    FROM uni_pedido AS p, uni_pedido_estado AS pe 
+                                WHERE p.status = pe.id_estado 
+                            ORDER BY p.id_pedido DESC");
+$pedidos->execute();
+
+
+//ULTIMAS ENTRADAS
+$entradas = $conn->prepare("SELECT TOP 5 e.id_entrada, FORMAT(e.fecha, 'yyyy/MM:dd HH:mm') as fecha, 
+                                            d.Nombre AS nombre_usuario, 
+                                            e.tipo_entrada
+                                    FROM uni_entrada AS e, DIRECTORIO_0 AS d 
+                                WHERE e.id_usuario = d.ID 
+                            ORDER BY id_entrada DESC");
+
+$entradas->execute();
+
+//ULTIMAS SALIDAS
+$salidas = $conn->prepare("SELECT TOP 5 s.id_salida, FORMAT(s.fecha, 'yyyy/MM:dd HH:mm') AS fecha, 
+                                        ts.tipo_salida, 
+                                        e.usuario AS nombre_empleado, 
+                                        d.Nombre AS nombre_usuario 
+                                    FROM uni_salida AS s, uni_tipo_salida AS ts, empleado AS e, DIRECTORIO_0 AS d 
+                                WHERE e.id_usuario = s.id_empleado AND d.ID = s.id_usuario AND s.tipo_salida = ts.id_tipo_salida 
+                            ORDER BY id_salida DESC"); 
+$salidas->execute();
+?>
+
 <div id="dashboard">
     <!-- Sección de Atajos -->
     <div class="padding-header">
@@ -142,43 +182,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Filas de la tabla aquí -->
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">1</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T XS</td>
-                                    <td data-v-f3a234b4="">XS</td>
-                                    <td data-v-f3a234b4="">3 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">2</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T S</td>
-                                    <td data-v-f3a234b4="">S</td>
-                                    <td data-v-f3a234b4="">22 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">3</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T M</td>
-                                    <td data-v-f3a234b4="">M</td>
-                                    <td data-v-f3a234b4="">13 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">4</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T L</td>
-                                    <td data-v-f3a234b4="">L</td>
-                                    <td data-v-f3a234b4="">19 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">6</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T 2XL</td>
-                                    <td data-v-f3a234b4="">2XL</td>
-                                    <td data-v-f3a234b4="">18 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">7</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Mujer T XS</td>
-                                    <td data-v-f3a234b4="">XS</td>
-                                    <td data-v-f3a234b4="">0 pzas</td>
-                                </tr>
+                                <!-- Filas de la tabla -->
+                                <?php
+                                    while($articulo = $stockBajo->fetch(PDO::FETCH_ASSOC))
+                                    echo '<tr data-v-f3a234b4="" class="header-body">
+                                            <td data-v-f3a234b4="">'.$articulo['id_articulo'].'</td>
+                                            <td data-v-f3a234b4="">'.$articulo['nombre'].'</td>
+                                            <td data-v-f3a234b4="">'.$articulo['cantidad'].'</td>
+                                            <td data-v-f3a234b4="">'.$articulo['talla'].'</td>
+                                        </tr>';
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -207,43 +220,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Filas de la tabla aquí -->
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">1</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T XS</td>
-                                    <td data-v-f3a234b4="">XS</td>
-                                    <td data-v-f3a234b4="">3 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">2</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T S</td>
-                                    <td data-v-f3a234b4="">S</td>
-                                    <td data-v-f3a234b4="">22 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">3</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T M</td>
-                                    <td data-v-f3a234b4="">M</td>
-                                    <td data-v-f3a234b4="">13 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">4</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T L</td>
-                                    <td data-v-f3a234b4="">L</td>
-                                    <td data-v-f3a234b4="">19 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">6</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Hombre T 2XL</td>
-                                    <td data-v-f3a234b4="">2XL</td>
-                                    <td data-v-f3a234b4="">18 pzas</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">7</td>
-                                    <td data-v-f3a234b4="">PLAYERA ML-Mujer T XS</td>
-                                    <td data-v-f3a234b4="">XS</td>
-                                    <td data-v-f3a234b4="">0 pzas</td>
-                                </tr>
+                                 <!-- Filas de la tabla -->
+                                <?php
+                                    while($pedido = $pedidos->fetch(PDO::FETCH_ASSOC))
+                                    echo '<tr data-v-f3a234b4="" class="header-body">
+                                            <td data-v-f3a234b4="">'.$pedido['num_pedido'].'</td>
+                                            <td data-v-f3a234b4="">'.$pedido['pedido_estado'].'</td>
+                                            <td data-v-f3a234b4="">'.$pedido['fecha_inicio'].'</td>
+                                            <td data-v-f3a234b4="">'.$pedido['fecha_fin'].'</td>
+                                        </tr>';
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -273,30 +259,37 @@
                             </thead>
                             <tbody>
                                 <!-- Filas de la tabla aquí -->
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">114</td>
-                                    <td data-v-f3a234b4="">05/02/2025 12:59:01 PM</td>
-                                    <td data-v-f3a234b4="">Por pedido</td>
-                                    <td data-v-f3a234b4=""> SELECCIONAR</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">113</td>
-                                    <td data-v-f3a234b4="">27/01/2025 08:57:36 AM</td>
-                                    <td data-v-f3a234b4="">Por pedido</td>
-                                    <td data-v-f3a234b4=""> SELECCIONAR</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">112</td>
-                                    <td data-v-f3a234b4="">27/01/2025 08:50:04 AM</td>
-                                    <td data-v-f3a234b4="">Por pedido</td>
-                                    <td data-v-f3a234b4=""> SELECCIONAR</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4="">111</td>
-                                    <td data-v-f3a234b4="">19/12/2024 10:10:30 AM</td>
-                                    <td data-v-f3a234b4="">Por pedido</td>
-                                    <td data-v-f3a234b4=""> SELECCIONAR</td>
-                                </tr>
+                                <?php
+                                    while($entrada = $entradas->fetch(PDO::FETCH_ASSOC)){
+                                        switch ($entrada['tipo_entrada']) {
+                                            case '1':
+                                                $tipoEntrada = 'ENTRADA POR PEDIDO';
+                                                break;
+                                            case '2':
+                                                $tipoEntrada = 'ENTRADA POR SALIDA';
+                                                break;
+                                            case '3':
+                                                $tipoEntrada = 'ENTRADA MANUAL';
+                                                break;
+                                            case '4':
+                                                $tipoEntrada = 'ENTRADA DE UNIFORME USADO';
+                                                break;
+                                            case '5':
+                                                $tipoEntrada = 'ENTRADA POR CAMBIO';
+                                                break;
+                                            default:
+                                                $tipoEntrada = '-';
+                                                break;
+                                        }
+
+                                    echo '<tr data-v-f3a234b4="" class="header-body">
+                                            <td data-v-f3a234b4="">'.$entrada['id_entrada'].'</td>
+                                            <td data-v-f3a234b4="">'.$entrada['fecha'].'</td>
+                                            <td data-v-f3a234b4="">'.$tipoEntrada.'</td>
+                                            <td data-v-f3a234b4="">'.$entrada['nombre_usuario'].'</td>
+                                        </tr>';
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -307,14 +300,11 @@
         <!-- Tabla 4: Últimas salidas -->
         <div class="col-12 col-lg-8 my-4 card-dash">
             <div class="q-card">
-                <div class="">
                     <div class="text-h6 title-dash">
                         Últimas salidas
                         <i class="fas fa-sign-out-alt"></i>
                     </div>
-                </div>
-                <div class="">
-                    <div style="overflow: auto scroll; height: 180px;">
+                    <div style="overflow: auto scroll; height: 220px;">
                         <table class="table">
                             <thead class="header-table">
                                 <tr>
@@ -327,38 +317,19 @@
                             </thead>
                             <tbody>
                                 <!-- Filas de la tabla aquí -->
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4=""><b>7285</b></td>
-                                    <td data-v-f3a234b4="">18/02/2025 08:27:55 AM</td>
-                                    <td data-v-f3a234b4="">Venta de uniforme</td>
-                                    <td data-v-f3a234b4="">MARIA SOTO</td>
-                                    <td data-v-f3a234b4="">SALAS CAMPOS FRANCISCO JAVIER </td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4=""><b>7284 </b></td>
-                                    <td data-v-f3a234b4="">18/02/2025 08:22:12 AM</td>
-                                    <td data-v-f3a234b4="">Reposición de uniforme</td>
-                                    <td data-v-f3a234b4="">MARIA SOTO</td>
-                                    <td data-v-f3a234b4="">VALENZUELA ARIAS CARLOS</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4=""><b>7283 </b></td>
-                                    <td data-v-f3a234b4="">18/02/2025 08:20:19 AM</td>
-                                    <td data-v-f3a234b4="">Reposición de uniforme</td>
-                                    <td data-v-f3a234b4="">MARIA SOTO</td>
-                                    <td data-v-f3a234b4="">ACOSTA SOLEDAD ANGEL GABRIEL</td>
-                                </tr>
-                                <tr data-v-f3a234b4="" class="header-body">
-                                    <td data-v-f3a234b4=""><b data-v-f3a234b4=""> 7282 </b></td>
-                                    <td data-v-f3a234b4="">18/02/2025 08:19:23 AM</td>
-                                    <td data-v-f3a234b4="">Reposición de uniforme</td>
-                                    <td data-v-f3a234b4="">MARIA SOTO</td>
-                                    <td data-v-f3a234b4="">SILVA SANTOYO KEVIN EMMANUEL</td>
-                                </tr>
+                                <?php
+                                    while($salida = $salidas->fetch(PDO::FETCH_ASSOC))
+                                        echo '<tr class="header-body">
+                                                <td>'.$salida['id_salida'].'</td>
+                                                <td>'.$salida['fecha'].'</td>
+                                                <td>'.$salida['tipo_salida'].'</td>
+                                                <td>'.$salida['nombre_usuario'].'</td>
+                                                <td>'.$salida['nombre_empleado'].'</td>
+                                            </tr>';
+                                ?>
                             </tbody>
                         </table>
                     </div>
-                </div>
             </div>
         </div>
     </div>

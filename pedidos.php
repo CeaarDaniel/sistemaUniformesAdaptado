@@ -19,16 +19,6 @@
         <!-- Filtros y Búsqueda -->
         <div class="container mt-4">
             <div class="row g-3 align-items-center">
-                <!-- Búsqueda -->
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="busqueda" placeholder="Buscar" style="max-width:200px">
-                        <button class="btn btn-warning">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Mes -->
                 <div class="col-md-2">
                     <select class="form-select" id="mes">

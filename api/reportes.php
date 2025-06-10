@@ -10,7 +10,6 @@ $opcion = $_POST['opcion'];
 
 // OBTENER LOS DATOS DE LAS VENTAS Y ARTICULOS DE VANTAS 
     if ($opcion=='1'){
-
         //VARIABLES PARA LOS FILTROS DE BUSQUEDA 
         $categoria = (isset($_POST['categorySelect']) && !$_POST['categorySelect']=='') ? $_POST['categorySelect'] : 0; 
         $usuario =  (isset($_POST['userSelect']) && !$_POST['userSelect']=='' ) ? $_POST['userSelect'] :  0; //USUARIO QUIEN REGISTRO LA VENTA
@@ -60,13 +59,7 @@ $opcion = $_POST['opcion'];
 
         else 
         if($reportType=='2'){
-                $sql= "SELECT va.id_venta as venta, va.id_articulo, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, va.cantidad, a.nombre from uni_venta_articulo va 
-                                inner join uni_articulos as a on va.id_articulo = a.id_articulo
-                                left join uni_venta as v on v.id_venta= va.id_venta
-                            WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha."  
-                        ORDER BY va.id_articulo
-                        
-                        SELECT va.id_articulo, a.nombre, sum(va.cantidad) as cantidad from uni_venta_articulo va 
+                $sql= "SELECT va.id_articulo, a.nombre, sum(va.cantidad) as cantidad from uni_venta_articulo va 
                                 inner join uni_articulos as a on va.id_articulo = a.id_articulo
                                 left join uni_venta as v on v.id_venta= va.id_venta
                             WHERE 1=1 ".$filtrocategoria."  ".$filtrousuario."  ".$filtroempleado." ".$filtroFecha."

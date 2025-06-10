@@ -121,7 +121,6 @@ include('./api/conexion.php');
             </div>
         </div>
 
-
         <!-- Modal Detalle de Venta -->
         <div class="modal fade" id="modalDetalleVenta" tabindex="-1" aria-labelledby="eliminarArtModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -184,7 +183,6 @@ include('./api/conexion.php');
                 </div>
             </div>
         </div>
-
 
         <div class=" p-0 m-0">
             <div id="impresionInventario" class="hojaImpresion" style="font-size:13px;">
