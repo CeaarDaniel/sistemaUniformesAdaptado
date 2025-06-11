@@ -184,7 +184,7 @@ include('./api/conexion.php');
             </div>
         </div>
 
-        <div class=" p-0 m-0">
+        <div class="d-none p-0 m-0">
             <div id="impresionInventario" class="hojaImpresion" style="font-size:13px;">
             </div>
         </div>

@@ -177,6 +177,6 @@
     </div>
 
     <div class="d-none p-0 m-0">
-        <div id="impresionDetalleSalida" class="hojaImpresion" style="font-size:13px;">
+        <div id="impresionDetalleSalida" class="hojaImpresion" style="font-size:13px;   z-index: 100;">
         </div>
     </div>

@@ -85,54 +85,124 @@
     <div class="controls">
         <button class="my-2" id="downloadBtn">Descargar PDF</button>
     </div>
-    
- 
-        <div id="contenido" class="hojaImpresion" style="font-size:13px;"><!-- Detalles de la salida -->
-              <div class="row border border-dark">
-                <div class="col-6 text-center border-bottom border-dark"><b>Reporte De Ventas</b></div>
-                <div class="col-6 text-center border-bottom border-dark"><b>Periodo:</b> 01-05-2025 - 31-05-2025</div>
-
-                <div class="col-4"><b>Tipo:</b> Solo venta</div>
-                <div class="col-6"><b>Empleado:</b> Todos</div>
-
-                <div class="col-4"><b>Categoria:</b> Todos</div>
-                <div class="col-6"><b>Usuario:</b> Todos</div>
-              </div>
-        </div>
         
-        <iframe id="miIframe" src="./index.php" width="600" height="400"></iframe>
+        <iframe id="miIframe" src="./hojaimpresion.php" style="width:100%; height: 600px;"></iframe>
         <script>
+
+        var elemento;
 
 
         const iframe = document.getElementById('miIframe');
 
         iframe.onload = () => {
             const doc = iframe.contentDocument || iframe.contentWindow.document;
-            const elemento = doc.querySelector('#elemtoPrueba');
+            elemento = doc.querySelector('#impresion');
 
             if (elemento) {
-                elemento.innerHTML = `<div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/salidasPlanta" class="text-decoration-none">
-                    <div class="card-shortcut text-center q-card p-4">
-                        <div class="">
-                            <div class="q-avatar bg-blue-10 text-white">
-                                <i class="far fa-id-card"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <span style="font-size: 16px; font-weight: bold; color:black;">Entrega de uniforme</span>
-                        </div>
-                    </div>
-                </a>
-            </div>`;
+                elemento.innerHTML = `<p class="text-center" style="font-size:15px;"> 
+                                                    <b>SALIDA - UNIFORMES</b>
+                                                </p>
+                                        
+                                                <!-- Detalles de la salida -->
+                                                <div class="mx-5 d-flex justify-content-between">
+                                                    <img src="./imagenes/beyonz.jpg" style="max: width 150px; max-height:50px;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="text-center p-0 border-top border-start border-end border-dark" style="width:100%"><b>&nbsp; NUM SALIDA&nbsp;</b></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-center p-0 border border-dark" style="width:100%"># 13</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Detalles del pedido -->
+                                                <div class="row mt-5">
+                                                    <div class="my-0 col-4"><b>Fecha de elaboración:</b></div>
+                                                    <div class="my-0 col-auto"><label class="mx-0 px-0 text-uppercase"> 2021-05-18 10:20</label></div>
+                                                </div>
+
+                                                <div class="row my-0">
+                                                    <div class="my-0 col-4"><b>Realizado por:</b></div>
+                                                    <div class="my-0 col-auto"><label>RAUL TORRES SANDOVAL</label></div>
+                                                </div>
+
+                                                <div class="row my-0">
+                                                    <div class="my-0 col-4"><b>Entregado a:</b></div>
+                                                    <div class="my-0 col-auto text-uppercase"><label>1138-ALVARADO PUENTES MARIA GUADALUPE   </label></div>
+                                                    </div>
+                                                    
+                                                    <!-- TIPO DE SALIDA -->
+                                                    <div class="row mt-0">
+                                                    <div class="my-0 col-4"><b>Tipo de salida:</b></div>
+                                                    <div class="my-0 col-auto text-uppercase"><label>Entrega de uniforme por vale</label></div>
+                                                    </div>
+
+                                                    <!-- VALE -->
+                                                    <div class="row mt-0"> <div class="my-0 col-4"><b>Vale:</b></div>
+                                    <div class="my-0 col-auto text-uppercase">
+                                        <label id="salidaVale"> OP0024</label>
+                                    </div></div>
+
+                                                    <hr class="my-4" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
+
+                                                    <!--TABLA DE PRODUCTOS -->
+                                                    <p class="text-center fs-7"><b> ARTICULOS </b></p>
+                                                    <div style="max-height: 400px;">
+                                                    <table id="tablaSalidas" class="table table-striped" style="width:100%;">
+                                                        <thead class="sticky-header">
+                                                            <tr>
+                                                                </tr><tr>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Clave</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Cantidad</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Articulo</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Precio unitario</th>
+                                                                    <th class="text-center m-0" style="background-color: rgb(13, 71, 161); color:white">Total</th>
+                                                                </tr>
+                                                            
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Filas de la tabla se llenarán dinámicamente -->
+                                                            <tr class="page-break-avoid">
+                                                    <td>8</td>
+                                                    <td>1</td>
+                                                    <td>PLAYERA ML-Mujer T S</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr><tr class="page-break-avoid">
+                                                    <td>20</td>
+                                                    <td>1</td>
+                                                    <td>PLAYERA MC-Mujer T S</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr><tr class="page-break-avoid">
+                                                    <td>65</td>
+                                                    <td>2</td>
+                                                    <td>PANTALÓN-Mujer T 28</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr><tr class="page-break-avoid">
+                                                    <td>50</td>
+                                                    <td>1</td>
+                                                    <td>CHAMARRA-T S</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                        <div class="mx-3 d-flex justify-content-end" style="font-size:13px">
+                                                            <b>Total:</b> &nbsp; &nbsp; <label>      -</label>
+                                                        </div>
+                                                    </div>`;
             }
         };
                 // Cambiar el contenido del iframe
 
 
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            const element = document.getElementById('contenido');
-            
             // Configuración optimizada para tamaño carta
             const opt = {
                 margin: [10, 13, 10, 13], // márgenes: [top, right, bottom, left]
@@ -161,7 +231,7 @@
             };
 
             // Generar PDF y abrir en nueva pestaña
-            html2pdf().set(opt).from(element).outputPdf('blob')
+            html2pdf().set(opt).from(elemento).outputPdf('blob')
                 .then(function(blob) {
                     const blobUrl = URL.createObjectURL(blob);
                     window.open(blobUrl, '_blank');
@@ -170,36 +240,6 @@
                   console.log(error)
                 });
         });
-
-      /*
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            const element = document.getElementById('contenido');
-            
-            // Configuración para tamaño carta (216x279 mm)
-            const opt = {
-                margin: [10, 15],
-                filename: 'carta_descuento.pdf',
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 5,
-                    useCORS: true,
-                    letterRendering: true
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'letter', 
-                    orientation: 'portrait' 
-                }
-            };
-
-           // html2pdf().set(opt).from(element).save();
-
-            html2pdf().set(opt).from(element).outputPdf('blob').then(function (blob) {
-              const blobUrl = URL.createObjectURL(blob);
-              window.open(blobUrl, '_blank'); // Abre el PDF en una nueva pestaña
-            });
-        }); 
-      */
     </script>
 </body>
 </html>

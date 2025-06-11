@@ -18,7 +18,10 @@
     <link href="./style.css" rel="stylesheet">
 </head>
 <body style="background-color: #f7f7f7">
-            <div id="elemtoPrueba">ELEMENTO DE PRUEBA</div>
+    <div class="p-0 m-0">
+        <div id="impresion" class="hojaImpresion" style="font-size:13px;">
+        </div>
+    </div>
 
     <!-- Bootstrap JS y dependencias -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
