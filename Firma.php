@@ -1,19 +1,6 @@
-<?php
-include_once "../../BD_Conexion.php";
-include_once("Funciones.php");
-
-$ID = $_GET['ID'];
-?>
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <style>
-        .error {
-            color: #FF0000;
-        }
-    </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Firma Trabajadro | Evaluaciones de Desempeño</title>
@@ -21,46 +8,13 @@ $ID = $_GET['ID'];
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-
-    <!-- Theme style -->
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
-
-    <!-- DataTables -->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-
 </head>
-<!--
-`body` tag options:
-  * sidebar-collapse
-  * sidebar-mini
--->
 
 <body class="hold-transition sidebar-collapse">
     <div class="wrapper">
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header  -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-12">
-                            <h1 class="m-0">Firma de Evaluacion Nivel 5</h1>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
-
             <section class="content">
                 <form class="formulario" action="guardar-firma-nivel8?ID=<?php echo $ID ?>" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
                     <div class="card ">
@@ -68,41 +22,17 @@ $ID = $_GET['ID'];
                             <canvas id='canvas' width="700" height="280" style='border: 1px solid #CCC;'>
                                 <p>Tu navegador no soporta canvas</p>
                             </canvas>
-                            <!-- creamos el form para el envio -->
                             <div>
-                                <input type='' name='imagen' id='imagen' hidden />
+                                <img id="preview" alt="Vista previa de la firma" />
                             </div>
                         </div>
-                        <div class="card-footer text-center">
                             <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
                             <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
-                        </div>
                     </div>
                 </form>
             </section>
-
-            <!-- Control Sidebar -->
-            <aside class="control-sidebar control-sidebar-dark">
-                <!-- Control sidebar content goes here -->
-            </aside>
-            <!-- /.control-sidebar -->
-
-            <!-- Main Footer -->
-
-        </div>
     </div>
     <!-- ./wrapper -->
-
-    <!-- REQUIRED SCRIPTS -->
-
-    <!-- jQuery -->
-    <script src="plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- overlayScrollbars -->
-    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/adminlte.min.js"></script>
 
     <!-- Page specific script -->
     <script type="text/javascript">
@@ -217,16 +147,18 @@ $ID = $_GET['ID'];
 
         /* Enviar el trazado */
         function GuardarTrazado() {
-            imagen.value = document.getElementById(idCanvas).toDataURL('image/png');
-            var form = document.forms[idForm];
-            if (form) {
-                form.submit();
-            } else {
-                console.error("El formulario no se encontró en el DOM.");
-            }
+                const canvas = document.getElementById('canvas');
+                const image = canvas.toDataURL('image/png'); // También puedes usar 'image/jpeg'
+                
+                // Mostrar la imagen como vista previa
+                document.getElementById('preview').src = image;
+
+                // Opción: descargar la imagen automáticamente
+                const link = document.createElement('a');
+                link.download = 'firma.png';
+                link.href = image;
+                link.click();
         }
     </script>
-
 </body>
-
 </html>
