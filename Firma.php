@@ -149,15 +149,50 @@
         function GuardarTrazado() {
                 const canvas = document.getElementById('canvas');
                 const image = canvas.toDataURL('image/png'); // También puedes usar 'image/jpeg'
+
+                //SE TRANFORMA A BLOB LA IMAGEN GENERADA
+                const imageBlob = dataURLtoBlob(image);
                 
-                // Mostrar la imagen como vista previa
+                const formData = new FormData();
+                formData.append('image', imageBlob, 'firma.png'); // 'image' será la clave en PHP
+
+                fetch('./api/salidas.php', { //CAMBIAR ESTA RUTA A LA CARPETA DE LAS FIRMAS
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(result => {
+                    console.log('Respuesta del servidor:', result);
+                })
+                .catch(error => {
+                    console.error('Error al enviar la imagen:', error);
+                });
+
+             /* 
+                Mostrar la imagen como vista previa
                 document.getElementById('preview').src = image;
 
                 // Opción: descargar la imagen automáticamente
                 const link = document.createElement('a');
                 link.download = 'firma.png';
                 link.href = image;
-                link.click();
+                link.click(); 
+              */
+        }
+
+        //Funcion para tranformar a blob la imagen canvas y enviar como archivo en un fromData
+        function dataURLtoBlob(dataURL) {
+            const parts = dataURL.split(';base64,');
+            const contentType = parts[0].split(':')[1];
+            const byteCharacters = atob(parts[1]);
+            const byteArrays = [];
+
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteArrays.push(byteCharacters.charCodeAt(i));
+            }
+
+            const byteArray = new Uint8Array(byteArrays);
+            return new Blob([byteArray], { type: contentType });
         }
     </script>
 </body>
