@@ -353,3 +353,11 @@ SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EM
             WHERE 1=1 AND v.id_usuario = '2357'
 			group by va.id_articulo, a.nombre
         ORDER BY va.id_articulo
+
+
+		select* from uni_tipo_salida
+		select* from uni_salida order by tipo_salida
+
+
+		SELECT pa.id_articulo from uni_pedido as p, uni_pedido_articulo AS pa WHERE (p.status = 1 OR p.status = 2) AND p.id_pedido = pa.id_pedido GROUP BY id_articulo
+SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c.abrev, t.talla, g.genero FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
