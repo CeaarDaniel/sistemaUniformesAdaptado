@@ -130,6 +130,12 @@
                                             if(seleccionadosGlobal.includes(dataId)) {
                                                 $checkbox.prop('checked', true);
                                             }
+
+                                      
+                                        //Se muestra en rojo el texto de la fila para identificar si el articulo ya ha sido cargado en algun otro pedido
+                                        if(data.en_pedido == 1) 
+                                            $(row).css('color', 'red'); // Cambia color del texto
+                                           
                                         },
                                         /* Este es necesario para marcar los check sin generar el pedido*/
                                         /*Si no se usa se guardan los datos y se agregan al row pero no se dibujan por lo que aparecen como no marcados hasta que se genera el pedido*/
@@ -167,17 +173,17 @@
 
     function setChek(){
          const table = $('#tablaArticulos').DataTable();
-        table.rows().every(function() {
-        var data = this.data();
+            table.rows().every(function() {
+            var data = this.data();
 
-        // Si ese ID está en los seleccionados globales
-        if (seleccionadosGlobal.includes(data.id)) {
-            data.check = true;
-        } else {
-            data.check = false;
-        }
+            // Si ese ID está en los seleccionados globales
+            if (seleccionadosGlobal.includes(data.id)) {
+                data.check = true;
+            } else {
+                data.check = false;
+            }
 
-    });
+        });
     }
 
     // Renderizar los artículos y el número de pedido al cargar la página
