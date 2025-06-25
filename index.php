@@ -79,9 +79,13 @@
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
 
     <script>
-        //Funcion para la navegacion entre ventanas
-      
 
+        //Mostrar el tooltip
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        //Fin mostrar el tooltipe
+
+        //Funcion para la navegacion entre ventanas
         function navegar(pagina, id, pagsus) {
             
             var contenido = document.getElementById(pagsus);

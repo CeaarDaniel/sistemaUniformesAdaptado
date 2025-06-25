@@ -34,6 +34,9 @@
                         <tr>
                             <th class="text-center">ID</th>
                             <th class="text-center">Cantidad</th>
+                            <th class="text-center">Nombre</th>
+                            <th class="text-center">Categoria</th> 
+                            <th class="text-center">Talla</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>

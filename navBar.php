@@ -71,7 +71,11 @@
 
                         <!-- Avatar y Cerrar sesión -->
                         <li class="nav-item">
-                        <div class="text-white d-flex align-items-center justify-content-center p-0" style="background-color: #1976d2; border-radius:50%; width: 40px; height: 40px; display: inline-block;"><b style="font-size:18px;">M</b></div>
+                            <div class="text-white d-flex align-items-center justify-content-center p-0" 
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="MIGUEL ALEJANDRO GOMEZ ASPEITIA"
+                                style="background-color: #1976d2; border-radius:50%; width: 40px; height: 40px; display: inline-block;">
+                                <b style="font-size:18px;">M</b>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link p-0" style="font-size:25px;">

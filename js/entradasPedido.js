@@ -91,7 +91,6 @@
             .then((response) => response.json())
             .then((data) => { 
                               datos = data.map(item => Number(item.id_articulo));
-                              
 
                                 $('#tablaArticulos').DataTable().destroy(); //Restaurar la tablas
                 
@@ -111,9 +110,9 @@
                                         { "data": "id_articulo" },
                                         { "data": "cantidad" },
                                         { "data": "nombre" },
+                                        { "data": "categoria" },
                                         { "data": "talla" },
                                         { "data": "genero" },
-                                        { "data": "categoria" },
                                     ],
                                     columnDefs: [
                                         {
@@ -134,7 +133,7 @@
                                       
                                         //Se muestra en rojo el texto de la fila para identificar si el articulo ya ha sido cargado en algun otro pedido
                                         if(data.en_pedido == 1) 
-                                            $(row).css('color', 'red'); // Cambia color del texto
+                                            $(row).css('color', 'red');
                                            
                                         },
                                         /* Este es necesario para marcar los check sin generar el pedido*/
@@ -152,7 +151,6 @@
                                                 $checkbox.prop('checked', false);
                                             }
                                             });
-
                                         } 
                                 });
                             })

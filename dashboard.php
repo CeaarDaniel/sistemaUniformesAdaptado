@@ -188,9 +188,9 @@ $salidas->execute();
                                     echo '<tr data-v-f3a234b4="" class="header-body">
                                             <td data-v-f3a234b4="">'.$articulo['id_articulo'].'</td>
                                             <td data-v-f3a234b4="">'.$articulo['nombre'].'</td>
-                                            <td data-v-f3a234b4="">'.$articulo['cantidad'].'</td>
                                             <td data-v-f3a234b4="">'.$articulo['talla'].'</td>
-                                        </tr>';
+                                            <td data-v-f3a234b4="">'.$articulo['cantidad'].'</td>
+                                            </tr>';
                                 ?>
                             </tbody>
                         </table>

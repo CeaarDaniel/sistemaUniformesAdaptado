@@ -153,7 +153,7 @@
                         if(dato.check_valor == null && dato.check_nombre == 'check_1'){
                             descuentosModal.innerHTML =`<div class="py-4 form-section">
                                                             <div class="form-check text-center">
-                                                                <label class="textlabelVentas">SI REGISTRO DE DESCUENTO</label>
+                                                                <label class="textlabelVentas">SIN REGISTRO DE DESCUENTO</label>
                                                             </div>
                                                         </div>`;
                                     return '';
@@ -222,7 +222,6 @@
                 }
             }
         }
-
 
         async function verFirma(event) {
              const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento

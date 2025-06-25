@@ -363,12 +363,23 @@ SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EM
 SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c.abrev, t.talla, g.genero FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
 
 
-SELECT ua.id_articulo, ua.cantidad, ua.nombre, uc.categoria, ut.talla, ug.genero
+	SELECT ua.id_articulo, (ua.stock_max - ua.cantidad) as cantidad, 
+		   ua.nombre, uc.categoria, ut.talla, ug.genero,  CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM uni_pedido p 
+                INNER JOIN uni_pedido_articulo pa ON p.id_pedido = pa.id_pedido
+                WHERE p.status IN (1, 2) 
+                AND pa.id_articulo = ua.id_articulo
+            ) THEN 1
+            ELSE 0
+        END AS en_pedido
         from uni_articulos as ua
-		inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
-		inner join uni_genero as ug on ua.genero = ug.id_genero
-		inner join uni_talla as ut on ua.id_talla = ut.id_talla
-		where cantidad <= stock_min
+			inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
+			inner join uni_genero as ug on ua.genero = ug.id_genero
+			inner join uni_talla as ut on ua.id_talla = ut.id_talla
+		where (ua.cantidad < 10 or ua.cantidad < stock_min) AND (ua.stock_max - ua.cantidad) > 0
+		--where cantidad <= stock_min and (ua.stock_max - ua.cantidad) > 0
 
 
 	SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS pedidos, a.cantidad, stock_min, stock_max, c.abrev, t.talla, g.genero, 
