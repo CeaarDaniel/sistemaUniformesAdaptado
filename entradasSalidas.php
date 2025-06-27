@@ -28,7 +28,7 @@
             </div>
 
         <div class="d-flex justify-content-center" style="width:100%">
-            <div id="tableContainer" style="width:650px;">
+            <div id="tableContainer" style="width:100%;">
                 <table id="tableBody" class="table-striped responsive">
                     <thead>
                         <tr>
@@ -37,6 +37,7 @@
                             <th class="text-center">Nombre</th>
                             <th class="text-center">Categoria</th> 
                             <th class="text-center">Talla</th>
+                            <th class="text-center">Genero</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>

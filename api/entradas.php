@@ -67,9 +67,15 @@ else
                                 ? $filtroFecha = " AND FORMAT(us.fecha, 'yyyy/MM/dd') between :startDate and :endDate " 
                                 : $filtroFecha = '';
 
-        $sql = "SELECT id_articulo, SUM(cantidad) as cantidad from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
-                    where 1=1 ".$filtroFecha." 
-                 group by id_articulo order by id_articulo";
+        $sql =  "SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero
+                     from uni_salida as us 
+                            inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
+                            inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
+                            inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
+                            inner join uni_talla ut on ua.id_talla = ut.id_talla
+                            inner join uni_genero ug on ua.genero = ug.id_genero
+                     where 1=1 ".$filtroFecha." 
+                  group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero  order by id_articulo";
         
         $articulos = $conn->prepare($sql); 
 
@@ -83,6 +89,10 @@ else
             while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
                 $response[]= array( 'id_articulo' => $articulo['id_articulo'],
                                     'cantidad' => $articulo['cantidad'],
+                                    'categoria' => $articulo['categoria'],
+                                    'talla' => $articulo['talla'],
+                                    'nombre' => $articulo['nombre'],
+                                    'genero' => $articulo['genero'],
                                     'boton' => "<button class='btn btn-danger my-0 mx-1 btn-eliminar' data-id='".$articulo['id_articulo']."'><i class='fas fa-trash'></i></button>");
         }
 

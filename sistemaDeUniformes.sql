@@ -378,7 +378,7 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 			inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
 			inner join uni_genero as ug on ua.genero = ug.id_genero
 			inner join uni_talla as ut on ua.id_talla = ut.id_talla
-		where (ua.cantidad < 10 or ua.cantidad < stock_min) AND (ua.stock_max - ua.cantidad) > 0
+		where (ua.cantidad < 10 or ua.cantidad < stock_min) AND (ua.stock_max - ua.cantidad) > 0 order by en_pedido desc
 		--where cantidad <= stock_min and (ua.stock_max - ua.cantidad) > 0
 
 
@@ -395,3 +395,14 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
         END AS en_pedido
             FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g 
 	 WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
+
+
+	 SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre 
+		 from uni_salida as us 
+				inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
+				inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
+				inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
+				inner join uni_talla ut on ua.id_talla = ut.id_talla
+        where 1=1 group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre  order by id_articulo
+
+		select* from empleado order by id_usuario

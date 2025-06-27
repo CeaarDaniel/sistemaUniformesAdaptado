@@ -35,13 +35,17 @@
                             //Crear el dataTable con las nuevas configuraciones
                              var tabla = $('#tableBody').DataTable({
                                 responsive: true,
-                                scrollX: (500),
+                                scrollX: true,
                                 scrollY: 340,
                                 scrollCollapse: true,
                                 data: data,
                                 columns: [
                                     { "data": "id_articulo" },  
                                     { "data": "cantidad" },
+                                    { "data": "nombre" },
+                                    { "data": "categoria" },
+                                    { "data": "talla" }, 
+                                    { "data": "genero" }, 
                                     { "data": "boton" },
                                 ], 
                                 "render": function(data, type, row) {
@@ -96,14 +100,11 @@
     });
 }
 
-
-
     async function generarPedido() {
         if (state.pedido.length === 0) {
             mostrarAlerta('¡No se puede realizar un pedido sin artículos!', 'danger');
             return;
-        }
-        
+        }   
     }
 
     function mostrarAlerta(mensaje, tipo) {
@@ -111,10 +112,8 @@
         alerta.className = `alert alert-${tipo} alert-dismissible fade show fixed-top m-3`;
         alerta.innerHTML = `
             ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
         document.body.prepend(alerta);
     }
-
 
     inicializar();

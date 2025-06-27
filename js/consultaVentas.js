@@ -36,7 +36,6 @@
                                                 { "data": "aplicados"},
                                                 { "data": "concretar"},
                                                 { "data": "firma"}
-
                                             ], 
                                             columnDefs: [
                                                 {
@@ -47,7 +46,6 @@
                                                     targets: [1],
                                                     render: function(dato, type, row) {
                                                         if (type === 'display' || type === 'filter') {
-
                                                             let fechaHora = dato;
                                                             let partes = fechaHora.split(" "); // Divide la cadena en fecha y hora
                                                             let fecha = partes[0]; // Obtiene la parte de la fecha

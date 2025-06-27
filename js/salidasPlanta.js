@@ -1,7 +1,20 @@
         var empleado = document.getElementById('empleadoInput');
         var valeInput = document.getElementById('valeInput');
         var emptyState = document.getElementById('emptyState');
-        let datos = []
+        var confirmarBtn = document.getElementById('confirmarBtn');
+        var radioEntrega = document.getElementsByName('tipoEntrega');
+    
+        let datos = [];
+
+        $("input[name='tipoEntrega']").change(function() {
+            let valor = $("input[name='tipoEntrega']:checked").val(); //VECARIO OBSEQUIO
+
+            if(valor == 0)
+                document.getElementById('empleadoInput').value= 'BECARIO';
+
+            else 
+                if( valor == 567) document.getElementById('empleadoInput').value= 'OBSEQUIO';
+        });
 
     
     // Fuente de datos inicial
@@ -14,7 +27,6 @@
         var nombre = document.getElementById('nombre');
         var precio = document.getElementById('precio');
         var cantidad = document.getElementById('cantidadArt');
-
 
         const table = $('#tablaArticulos').DataTable();
 
@@ -156,100 +168,106 @@
             })
     }
     
-        function agregarArticulo() {
-            var fmamantenimiento = document.getElementById("formAgregarArticulo");
-            var isValidfm = fmamantenimiento.reportValidity();
-                    if (isValidfm) {
-                        if(cantidad.max <= 0)
-                            alert('No hay suficientes unidades para este artículo')
+    function agregarArticulo() {
+        var fmamantenimiento = document.getElementById("formAgregarArticulo");
+        var isValidfm = fmamantenimiento.reportValidity();
+                if (isValidfm) {
+                    if(cantidad.max <= 0)
+                        alert('No hay suficientes unidades para este artículo')
 
-                        else
-                            if (idArticulo.value == '' || idArticulo === null || !idArticulo || !idArticulo.value)
-                                alert("Este artículo no esta disponible o no existe")
+                    else
+                        if (idArticulo.value == '' || idArticulo === null || !idArticulo || !idArticulo.value)
+                            alert("Este artículo no esta disponible o no existe")
 
-                            else {
+                        else {
+                            const tabla = $('#tablaArticulos').DataTable();
+                            const nuevoId = Number(document.getElementById("id").value);
+                            const nuevaCantidad = Number(document.getElementById("cantidadArt").value);
 
-                                const tabla = $('#tablaArticulos').DataTable();
-                                const nuevoId = Number(document.getElementById("id").value);
-                                const nuevaCantidad = Number(document.getElementById("cantidadArt").value);
+                            // Buscar en todas las filas (incluyendo páginas no visibles)
+                            let filaExistente = null;
+                            tabla.rows().every(function (index) {
+                                const filaData = this.data();
+                                if (filaData.id === nuevoId) {
+                                    filaExistente = this;
+                                    return false; // Detener la iteración
+                                }
+                            });
 
-                                // Buscar en todas las filas (incluyendo páginas no visibles)
-                                let filaExistente = null;
-                                tabla.rows().every(function (index) {
-                                    const filaData = this.data();
-                                    if (filaData.id === nuevoId) {
-                                        filaExistente = this;
-                                        return false; // Detener la iteración
-                                    }
+                            if (!filaExistente) {
+                                // Agregar nuevo artículo
+                                const nuevoArticulo = {
+                                    id: nuevoId,
+                                    nombre: document.getElementById("nombre").value,
+                                    tipo: document.getElementById("tipo").value,
+                                    cantidad: nuevaCantidad,
+                                    precio: Number(document.getElementById("precio").value),
+                                    boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
+                                };
+
+                                datos.push(nuevoArticulo);
+                                tabla.row.add(nuevoArticulo).draw(false);
+                                document.querySelectorAll("input").forEach(input => input.value = "");
+                                document.querySelectorAll("select").forEach(select => {
+                                    select.selectedIndex = 0; // selecciona la primera opción
                                 });
+                            } else {
+                                // Actualizar cantidad en fila existente
+                                const datosActualizados = filaExistente.data();
+                                
 
-                                if (!filaExistente) {
-                                    // Agregar nuevo artículo
-                                    const nuevoArticulo = {
-                                        id: nuevoId,
-                                        nombre: document.getElementById("nombre").value,
-                                        tipo: document.getElementById("tipo").value,
-                                        cantidad: nuevaCantidad,
-                                        precio: Number(document.getElementById("precio").value),
-                                        boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
-                                    };
+                                if (parseInt(datosActualizados.cantidad + nuevaCantidad) > parseInt(cantidad.max)) {
+                                    alert(
+                                        `Has alcanzado la cantidad máxima permitida para este artículo.\n` +
+                                        `➤ Cantidad agregada: ${datosActualizados.cantidad}\n` +
+                                        `➤ Cantidad por agregar: ${nuevaCantidad}\n\n` +
+                                        `➤ Cantidad total: ${datosActualizados.cantidad + nuevaCantidad}\n` +
+                                        `➤ Máximo permitido: ${cantidad.max}\n` +
+                                        `No es posible agregar estas unidades al pedido.`
+                                    );
+                                }
 
-                                    datos.push(nuevoArticulo);
-                                    tabla.row.add(nuevoArticulo).draw(false);
+                                else {
+                                    datosActualizados.cantidad += nuevaCantidad;
+                                    // Actualizar ambas fuentes de datos
+                                    filaExistente.data(datosActualizados);
+
+                                    // Actualizar el array original
+                                    const indexOriginal = datos.findIndex(item => item.id === nuevoId);
+                                    if (indexOriginal !== -1) {
+                                        datos[indexOriginal].cantidad = datosActualizados.cantidad;
+                                    }
+
+                                    tabla.draw(false); // Redibujar manteniendo paginación/orden
+
                                     document.querySelectorAll("input").forEach(input => input.value = "");
                                     document.querySelectorAll("select").forEach(select => {
                                         select.selectedIndex = 0; // selecciona la primera opción
                                     });
-                                } else {
-                                    // Actualizar cantidad en fila existente
-                                    const datosActualizados = filaExistente.data();
-                                    
-
-                                    if (parseInt(datosActualizados.cantidad + nuevaCantidad) > parseInt(cantidad.max)) {
-                                        alert(
-                                            `Has alcanzado la cantidad máxima permitida para este artículo.\n` +
-                                            `➤ Cantidad agregada: ${datosActualizados.cantidad}\n` +
-                                            `➤ Cantidad por agregar: ${nuevaCantidad}\n\n` +
-                                            `➤ Cantidad total: ${datosActualizados.cantidad + nuevaCantidad}\n` +
-                                            `➤ Máximo permitido: ${cantidad.max}\n` +
-                                            `No es posible agregar estas unidades al pedido.`
-                                        );
-                                    }
-
-                                    else {
-                                        datosActualizados.cantidad += nuevaCantidad;
-                                        // Actualizar ambas fuentes de datos
-                                        filaExistente.data(datosActualizados);
-
-                                        // Actualizar el array original
-                                        const indexOriginal = datos.findIndex(item => item.id === nuevoId);
-                                        if (indexOriginal !== -1) {
-                                            datos[indexOriginal].cantidad = datosActualizados.cantidad;
-                                        }
-
-                                        tabla.draw(false); // Redibujar manteniendo paginación/orden
-
-                                        document.querySelectorAll("input").forEach(input => input.value = "");
-                                        document.querySelectorAll("select").forEach(select => {
-                                            select.selectedIndex = 0; // selecciona la primera opción
-                                        });
-                                    }
                                 }
-                                    ocultarMostrarTabla();
                             }
-                    }
-        }
-
-        function ocultarMostrarTabla(){
-                if (datos.length === 0) {
-                    document.getElementById('emptyState').classList.remove('d-none');
-                    document.getElementById('contenedorTabla').classList.add('d-none');
+                                ocultarMostrarTabla();
+                        }
                 }
+    }
 
-                else {
-                    document.getElementById('emptyState').classList.add('d-none');
-                    document.getElementById('contenedorTabla').classList.remove('d-none');
-                }
-        }
+    function ocultarMostrarTabla(){
+            if (datos.length === 0) {
+                document.getElementById('emptyState').classList.remove('d-none');
+                document.getElementById('contenedorTabla').classList.add('d-none');
+            }
+
+            else {
+                document.getElementById('emptyState').classList.add('d-none');
+                document.getElementById('contenedorTabla').classList.remove('d-none');
+            }
+    }
+
+    //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
+    function registrarSalida(){ 
+        //TIPO DE ENTRREGA
+         let tipoEntrega = $("input[name='tipoEntrega']:checked").val(); //VECARIO OBSEQUIO
+         datos;
+    }
 
 actualizarVista();
