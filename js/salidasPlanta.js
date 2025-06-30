@@ -32,6 +32,8 @@
 
     btnAgregarArticulo.addEventListener('click', agregarArticulo)
 
+    confirmarBtn.addEventListener('click', registrarSalida)
+
     eliminarBtn.addEventListener('click', function(){
         datos= []; 
         actualizarVista();
@@ -267,6 +269,7 @@
     function registrarSalida(){ 
         //TIPO DE ENTRREGA
          let tipoEntrega = $("input[name='tipoEntrega']:checked").val(); //VECARIO OBSEQUIO
+         console.log(tipoEntrega);
          datos;
     }
 

@@ -14,7 +14,7 @@ include('./api/conexion.php');
 
         <div class="padding-header">
             <div class="row mb-4">
-                <h1 class="title">Entrega de uniforme</h1>
+                <h1 class="title">Entrega de uniforme usado</h1>
             </div>
             
             <div class="row g-3 align-items-center mb-4">

@@ -12,7 +12,7 @@ select* from uni_pedido_estado
 select* from uni_roles_sesion
 select* from uni_bitacora_sesion
 select* from uni_vale
-select* from uni_venta 
+select* from uni_venta order by id_empleado
 select* from uni_venta_articulo order by id_venta
 select* from DIRECTORIO_0
 select* from uni_vale
@@ -330,10 +330,6 @@ SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EM
                                 WHERE 1=1
                         group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total 
 
-
-
-
-
 		SELECT a.nombre, SUM(va.cantidad) AS piezas, a.id_articulo
         FROM uni_venta AS v, uni_venta_articulo AS va, uni_articulos AS a
         WHERE 1=1
@@ -353,10 +349,6 @@ SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EM
             WHERE 1=1 AND v.id_usuario = '2357'
 			group by va.id_articulo, a.nombre
         ORDER BY va.id_articulo
-
-
-		select* from uni_tipo_salida
-		select* from uni_salida order by tipo_salida
 
 
 		SELECT pa.id_articulo from uni_pedido as p, uni_pedido_articulo AS pa WHERE (p.status = 1 OR p.status = 2) AND p.id_pedido = pa.id_pedido GROUP BY id_articulo
@@ -397,12 +389,24 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 	 WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
 
 
-	 SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre 
+	 SELECT ug.genero
 		 from uni_salida as us 
 				inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
 				inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
 				inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
 				inner join uni_talla ut on ua.id_talla = ut.id_talla
-        where 1=1 group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre  order by id_articulo
+				inner join uni_genero ug on ua.genero = ug.id_genero
+        where 1=1 group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre
 
 		select* from empleado order by id_usuario
+		select* from uni_salida order by id_empleado
+
+
+	select id_vale, barcode as barcode 
+		from uni_vale group by id_vale, barcode
+
+	select* from uni_vale
+	select* from empleado order by id_usuario
+
+
+	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
