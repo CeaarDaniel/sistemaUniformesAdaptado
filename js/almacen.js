@@ -76,58 +76,13 @@
                                                 //Botón para Excel
                                                 extend: 'excel',
                                                 title: 'Reporte de Inventario',
-                                                exportOptions: {columns: [0, 1, 4, 7, 8]}, // Excluye la última columna (la de los botones)
+                                                exportOptions: {columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}, // Excluye la última columna (la de los botones)
                                                 filename: 'Reporte de Inventario',
                                                 //Aquí es donde generas el botón personalizado
                                                 text: `<button class="btn btn-success" style="background-color: #1b5e20">
                                                             <i class="fas fa-file-excel"></i> Exportar Excel
                                                         </button>`,
                                                 className: 'unset' //ELIMINAMOS TODO LOS ESTILOS POR DEFECTO
-                                            }, 
-                                            {
-                                                extend: 'pdf',
-                                                className: 'unset',
-                                                exportOptions: {columns: [0, 1, 4, 7, 8]},  //exportOptions: {columns: ':not(:last-child)' }, // Excluye la última columna (la de los botones)
-                                                text: '<button class="btn btn-danger" style="color: white;" ><i class="fas fa-file-pdf"></i> Exportar PDF</button>',
-                                                title: 'Reporte de Inventario',
-                                                filename: 'Reporte de Inventario',
-                                                customize: function(doc) {
-                                                        // Centrar el título
-                                                        doc.title = {
-                                                            text: 'Reporte de Inventario',
-                                                            alignment: 'center',
-                                                            margin: [0, 0, 0, 15] // [left, top, right, bottom]
-                                                        };
-                                                        
-                                                        // Centrar toda la tabla
-                                                        doc.content.forEach(function(item) {
-                                                            if (item.table) {
-                                                                item.alignment = 'center';
-                                                                item.margin = [0, 5, 0, 15]; // [left, top, right, bottom]
-                                                                
-                                                                // Ajustar el ancho de la tabla para que no quede pegado a los bordes
-                                                                item.table.widths = Array(item.table.body[0].length).fill('*');
-                                                                
-                                                                // Opcional: Centrar el texto en todas las celdas
-                                                                item.table.body.forEach(function(row) {
-                                                                    row.forEach(function(cell) {
-                                                                        if (cell.text) {
-                                                                            cell.alignment = 'center';
-                                                                        }
-                                                                    });
-                                                                });
-                                                            }
-                                                        });
-                                                        
-                                                        // Estilos adicionales para el PDF
-                                                        doc.defaultStyle = {
-                                                            fontSize: 10,
-                                                            alignment: 'center'
-                                                        };
-                                                        
-                                                        // Margen de la página (opcional)
-                                                        doc.pageMargins = [40, 60, 40, 60]; // [left, top, right, bottom]
-                                                    }
                                             },
                                         ]
                                         }

@@ -275,7 +275,7 @@ function imprimirReporteVenta (){
                 doc.setFont("helvetica", "bold");
                 doc.text("Empleado: ", 9, 3);
                 doc.setFont("helvetica", "normal");
-                doc.text(`${filtroEmpleado}`, 11.1, 3);
+                doc.text(`${(employeeInput.value == '') ? 'Todos': employeeInput.value}`, 11.1, 3);
                 
                 doc.setFont("helvetica", "bold");
                 doc.text("Usuario: ", 9, 3.7);

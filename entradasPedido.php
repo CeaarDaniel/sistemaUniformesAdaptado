@@ -21,10 +21,10 @@ include('./api/conexion.php');
         }
 ?>
 
-<div id="entradasPedido" class="my-3">
+        <div id="entradasPedido" class="my-3">
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="title">Entradas por Pedidos</h1>
+                        <h1 class="title">Entradas por pedidos</h1>
                     </div>
                 </div>
 
@@ -60,7 +60,7 @@ include('./api/conexion.php');
                 <tbody>
                 </tbody>
             </table>
-        <p class="my-0"> <b class="text-danger">*</b> Los artículos remarcados en rojo son artículos que ya están en un pedido creado</p>
+            <p class="my-0"> <b class="text-danger">*</b> Los artículos remarcados en rojo son artículos que ya están en un pedido creado</p>
 
 
     <!-- Modal de confirmación de generar pedido -->
@@ -81,4 +81,3 @@ include('./api/conexion.php');
             </div>
         </div>
     </div>
-
