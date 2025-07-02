@@ -1,9 +1,9 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-header("Allow: GET, POST, OPTIONS, PUT, DELETE");
-include('./conexion.php'); 
+    header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+    header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+    include('./conexion.php'); 
 
 
 $opcion = $_POST['opcion'];
@@ -99,91 +99,120 @@ else
         else 
             $response = array('error' => $articulos->errorInfo()[2]);
 
-    echo json_encode($response);
+        echo json_encode($response);
     }
 
-    //Obtener los generos y tallas de las categorias
-    else 
-        if($opcion == '3'){
-             $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : 0;
-             $consultaGenero = "SELECT ug.id_genero, ug.genero from uni_articulos as ua 
-                                        left join uni_genero as ug on ua.genero = ug.id_genero 
-                                    where id_categoria= :categoria
-                                group by id_categoria, ug.genero, ug.id_genero";
+//Obtener los generos y tallas de las categorias
+else 
+    if($opcion == '3'){
+            $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : 0;
+            $consultaGenero = "SELECT ug.id_genero, ug.genero from uni_articulos as ua 
+                                    left join uni_genero as ug on ua.genero = ug.id_genero 
+                                where id_categoria= :categoria
+                            group by id_categoria, ug.genero, ug.id_genero";
 
-             $consultaTalla = "SELECT ua.id_talla, ut.talla from uni_articulos ua
-                			    	    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
-                                    where id_categoria= :categoria
-                                group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla";
+            $consultaTalla = "SELECT ua.id_talla, ut.talla from uni_articulos ua
+                                    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
+                                where id_categoria= :categoria
+                            group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla";
 
-             $listaTallas = null;
-             $listaGeneros = null;
+            $listaTallas = null;
+            $listaGeneros = null;
 
-              $talla = $conn->prepare($consultaTalla); 
-              $genero = $conn->prepare($consultaGenero); 
-
-
-                $talla->bindparam(':categoria', $categoria);
-                $genero->bindparam(':categoria', $categoria);
+            $talla = $conn->prepare($consultaTalla); 
+            $genero = $conn->prepare($consultaGenero); 
 
 
-                if($talla->execute()){
-                    while($tallas = $talla->fetch(PDO::FETCH_ASSOC)){
-                        $listaTallas[] = $tallas;
-                    }
+            $talla->bindparam(':categoria', $categoria);
+            $genero->bindparam(':categoria', $categoria);
 
-                    $response['tallas'] = $listaTallas;
+
+            if($talla->execute()){
+                while($tallas = $talla->fetch(PDO::FETCH_ASSOC)){
+                    $listaTallas[] = $tallas;
                 }
 
-                else 
-                    $response['tallas'] = array('error' => $talla->errorInfo()[2]);
+                $response['tallas'] = $listaTallas;
+            }
 
-                if($genero->execute()){
-                    while($generos = $genero->fetch(PDO::FETCH_ASSOC)){
-                        $listaGeneros[] = $generos;
-                    }
+            else 
+                $response['tallas'] = array('error' => $talla->errorInfo()[2]);
 
-                    $response['generos'] = $listaGeneros;
+            if($genero->execute()){
+                while($generos = $genero->fetch(PDO::FETCH_ASSOC)){
+                    $listaGeneros[] = $generos;
                 }
 
-                else 
-                    $response['generos'] = array('error' => $talla->errorInfo()[2]);
+                $response['generos'] = $listaGeneros;
+            }
+
+            else 
+                $response['generos'] = array('error' => $talla->errorInfo()[2]);
+
+        echo json_encode($response);
+    }
+
+//Consulta para obtener el articulo que se agregara el pedido
+else 
+    if($opcion == '4'){
+            $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : "";
+            $talla = (isset($_POST['talla']) && !empty($_POST['talla'])) ? $_POST['talla'] : "";
+            $genero = (isset($_POST['genero']) && !empty($_POST['genero'])) ? $_POST['genero'] : "";
+
+            $consultaArticulo = "SELECT id_articulo, nombre, cantidad, precio from uni_articulos where id_talla = :id_talla and genero= :genero and id_categoria= :id_categoria and eliminado = 0 ";
+
+            $articulo = $conn->prepare($consultaArticulo); 
+
+
+            $articulo->bindparam(':id_talla', $talla);
+            $articulo->bindparam(':id_categoria', $categoria);
+            $articulo->bindparam(':genero', $genero);
+
+
+            if ($articulo->execute()) {
+                $fila = $articulo->fetch(PDO::FETCH_ASSOC);
+
+                // Verificar si la consulta devolvió alguna fila
+                if ($fila !== false) {
+                // Hay resultado
+                $response['articulo'] = $fila;
+            } else {
+                // No hay resultado
+                $response['articulo'] = null;
+            }
+            } else {
+                // Error en la consulta
+                $response['error'] = $articulo->errorInfo()[2];
+            }
 
             echo json_encode($response);
-        }
+    }
+
+//REGISTRO DE ENTRADA POR PEDIDO
+else 
+    if($opcion== '5'){
+        $articulos_pedido = $_POST[''];
+        $_POST[''];
+        $_POST[''];
+        $_POST[''];
+    } 
+
+//REGISTRO DE ENTRADA POR SALIDA
+else 
+    if($opcion== '6'){
+
+        
+    }
     
-       else 
-        if($opcion == '4'){
-             $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : "";
-             $talla = (isset($_POST['talla']) && !empty($_POST['talla'])) ? $_POST['talla'] : "";
-             $genero = (isset($_POST['genero']) && !empty($_POST['genero'])) ? $_POST['genero'] : "";
+//REGISTRO DE UNA ENTRADA MANUAL
+else 
+    if($opcion == '7'){
 
-             $consultaArticulo = "SELECT id_articulo, nombre, cantidad, precio from uni_articulos where id_talla = :id_talla and genero= :genero and id_categoria= :id_categoria and eliminado = 0 ";
+}
 
-              $articulo = $conn->prepare($consultaArticulo); 
+//REGISTRO DE UNA ENTRADA DE UNIFORME USADO
+else 
+    if($opcion == '8'){
 
-
-                $articulo->bindparam(':id_talla', $talla);
-                $articulo->bindparam(':id_categoria', $categoria);
-                $articulo->bindparam(':genero', $genero);
-
-
-                if ($articulo->execute()) {
-                    $fila = $articulo->fetch(PDO::FETCH_ASSOC);
-
-                    // Verificar si la consulta devolvió alguna fila
-                    if ($fila !== false) {
-                    // Hay resultado
-                    $response['articulo'] = $fila;
-                } else {
-                    // No hay resultado
-                    $response['articulo'] = null;
-                }
-                } else {
-                    // Error en la consulta
-                    $response['error'] = $articulo->errorInfo()[2];
-                }
-
-                echo json_encode($response);
-        }
+}
 ?>
