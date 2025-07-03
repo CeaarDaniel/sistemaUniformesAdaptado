@@ -2,11 +2,12 @@
     const confirmarPedidoBtn = document.getElementById("confirmarPedidoBtn");
     var seleccionadosGlobal = [];
     const checkPadre = document.getElementById("checkPadre");
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
     let datos;
 
         // Evento para abrir el modal de confirmación de generar pedido
         generarPedidoBtn.addEventListener("click", () => {
-            const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+            
             confirmModal.show();
 
             const table = $('#tablaArticulos').DataTable();
@@ -43,7 +44,7 @@
     confirmarPedidoBtn.addEventListener("click", () => {
         // Lógica para generar el pedido
         alert("Pedido generado");
-        const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+        //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
         confirmModal.hide();
     });
 

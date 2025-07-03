@@ -190,11 +190,28 @@ else
 
 //REGISTRO DE ENTRADA POR PEDIDO
 else 
-    if($opcion== '5'){
-        $articulos_pedido = $_POST[''];
-        $_POST[''];
-        $_POST[''];
-        $_POST[''];
+    if($opcion== '5'){         
+        $articulosPedido = (isset($_POST['articulosPedido']) && !empty($_POST['articulosPedido']) ) ? $_POST['articulosPedido'] : '';
+        $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
+
+        //GENERACION DEL ID PARA EL REGISTRO DEL PEDIDO
+            $sql= "SELECT  FORMAT(GETDATE(), 'yyyy/MM') 
+				+ '/' 
+				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
+										WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) 
+			as num_pedido";
+            
+            //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
+            //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
+            //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
+
+            $numPedido = $conn->prepare($sql); 
+            $pedido = '';
+
+            //$articulos->bindparam(':id_salida', $id_salida);
+                if($numPedido->execute()){
+                    $pedido = $numPedido->fetch(PDO::FETCH_ASSOC); 
+                }
     } 
 
 //REGISTRO DE ENTRADA POR SALIDA

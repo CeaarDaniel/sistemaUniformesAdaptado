@@ -20,6 +20,7 @@ select* from uni_vale_uniforme
 select* from uni_tipo_vale
 select* from uni_roles_sesion
 select* from uni_rol
+select* from uni_entrada
 --Usuarios del sistema de uniformes
 select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
 
@@ -410,3 +411,38 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 
 
 	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
+
+
+	select* from uni_entrada
+	select up.*, ue.id_entrada, ue.tipo_entrada from uni_pedido up inner join uni_entrada ue on up.id_entrada = ue.id_entrada 
+			order by up.id_pedido
+
+			select* from uni_pedido
+			select* from uni_entrada
+			select* from uni_pedido_articulo  where id_pedido='1068'
+			select* from uni_entrada_articulo where id_entrada = '115'
+
+			--codigo de la etiqueta de master de nuevo numero de parte
+			--id_pedido
+			--fecha_creacion
+			--fecha_termino
+			--status
+			--num_pedido
+			--consecutivo
+			--id_usuario
+			--id_entrada
+
+	select* from uni_venta
+	select* from uni_salida where tipo_salida = '5'
+	select* from uni_entrada where tipo_entrada='5'
+	select* from uni_venta
+
+	2021-05-18 10:48:32.000
+2021-06-02 16:43:45.000
+
+	select* from uni_salida_articulo
+
+
+	
+	select* from uni_entrada ue inner join uni_entrada_articulo ae on ue.id_entrada = ae.id_entrada order by fecha
+	select* from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where  id_empleado = '149' order by fecha
