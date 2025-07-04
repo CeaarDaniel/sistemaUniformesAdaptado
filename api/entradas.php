@@ -192,26 +192,63 @@ else
 else 
     if($opcion== '5'){         
         $articulosPedido = (isset($_POST['articulosPedido']) && !empty($_POST['articulosPedido']) ) ? $_POST['articulosPedido'] : '';
-        $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
+        $datos = json_decode($_POST['articulosPedido'], true);
+        $fecha_creacion = date("Y-m-d H:i:s");
+        $status = '1';
+      
+        //Cambiar al valor de la session
+        $id_usuario = '89'; 
 
-        //GENERACION DEL ID PARA EL REGISTRO DEL PEDIDO
-            $sql= "SELECT  FORMAT(GETDATE(), 'yyyy/MM') 
-				+ '/' 
+        //GENERACION DEL num_pedido PARA EL REGISTRO DEL PEDIDO
+            $sql= "SELECT  FORMAT(GETDATE(), 'yyyy/MM') + '/' 
 				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
-										WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) 
-			as num_pedido";
-            
-            //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
-            //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
-            //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
+				  WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) as num_pedido";
 
             $numPedido = $conn->prepare($sql); 
             $pedido = '';
 
-            //$articulos->bindparam(':id_salida', $id_salida);
-                if($numPedido->execute()){
+                if($numPedido->execute())
                     $pedido = $numPedido->fetch(PDO::FETCH_ASSOC); 
-                }
+        $num_pedido = $pedido['num_pedido'];
+
+
+        //CREAMOS PRIMERO EL PEDIDO PARA PODER AGREGAR LOS ARTICULOS
+        $registrarPedido = "INSERT INTO uni_pedido(fecha_creacion, status, num_pedido, id_usuario) 
+                        VALUES (:fecha_creacion, :status, :num_pedido, :id_usuario)";
+
+        $stmt = $conn->prepare($registrarPedido);
+
+        $stmt->bindParam(':fecha_creacion',$fecha_creacion);
+        $stmt->bindParam(':status',$status);
+        $stmt->bindParam(':num_pedido',$num_pedido);
+        $stmt->bindParam(':id_usuario',$id_usuario);
+
+            // Ejecuta la consulta
+            if ($stmt->execute()) 
+                $respuesta = array($articulosPedido);
+            else 
+                $respuesta = array('error' => $stmt->errorInfo()[2]);
+
+
+      if (is_array($datos)) {
+             foreach ($datos as $dato) {
+                $response[]=  $dato;
+            }
+
+               echo json_encode($response);
+        }
+
+        else {
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "Datos invalidos"]);
+        }
+                    
+         
+
+        //CONSULTA PARA AGREGAR LOS ARTICULOS DEL PEDIDO
+
+
+        //
     } 
 
 //REGISTRO DE ENTRADA POR SALIDA
@@ -232,4 +269,65 @@ else
     if($opcion == '8'){
 
 }
+
+//CONCRETAR PEDIDO
+else if($opcion=='9') {
+    //fecha_termino
+    //id_entrada  se genera cuando el pedido es concretado
+    //Casi todas las entradas son registradas como entradas por pedido (1), a menos que sea por cambio (5)
+    $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
+
+                //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
+            //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
+            //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
+
+}
+
+
+
+
+//INSERTAR MULTIPLES REGISTROS USANDO INSERT
+try {
+    $pdo = new PDO("sqlsrv:Server=localhost;Database=mi_base", "usuario", "contraseña");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Suponiendo que $data es tu arreglo de objetos decodificado desde JSON
+    $pdo->beginTransaction();
+
+    $stmt = $pdo->prepare("INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES (?, ?, ?, ?, ?)");
+
+    foreach ($data as $item) {
+        $stmt->execute([
+            $item['id_articulo'],
+            $item['nombre'],
+            $item['cantidad'],
+            $item['genero'],
+            $item['talla']
+        ]);
+    }
+
+    $pdo->commit();
+    echo json_encode(["status" => "ok", "message" => "Registros insertados."]);
+} catch (Exception $e) {
+    $pdo->rollBack();
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+}
+
+
+//INSERTAR MULTIPLES REGISTROS USANDO IMPLODE 
+$values = [];
+$params = [];
+foreach ($data as $item) {
+    $values[] = "(?, ?, ?, ?, ?)";
+    $params[] = $item['id_articulo'];
+    $params[] = $item['nombre'];
+    $params[] = $item['cantidad'];
+    $params[] = $item['genero'];
+    $params[] = $item['talla'];
+}
+
+$sql = "INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES " . implode(',', $values);
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 ?>

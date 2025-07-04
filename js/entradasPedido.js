@@ -7,9 +7,12 @@
 
         // Evento para abrir el modal de confirmación de generar pedido
         generarPedidoBtn.addEventListener("click", () => {
-            
             confirmModal.show();
 
+        });
+
+    // Evento para confirmar la generación del pedido
+    confirmarPedidoBtn.addEventListener("click", () => {
             const table = $('#tablaArticulos').DataTable();
             var allRows = table.rows().nodes();
 
@@ -37,14 +40,28 @@
             });
 
             // Mostrar los datos filtrados
-            console.log(datosFiltrados);
-        });
+            console.log("datos filtrados: ", datosFiltrados);
 
-    // Evento para confirmar la generación del pedido
-    confirmarPedidoBtn.addEventListener("click", () => {
-        // Lógica para generar el pedido
-        alert("Pedido generado");
-        //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+            if(datosFiltrados.length === 0) alert("Aún no ha agregado artículos al pedido ")
+
+            else {
+                    var formData = new FormData;
+                    formData.append("opcion", "5"); 
+                    formData.append('articulosPedido',JSON.stringify(datosFiltrados))
+                
+                    fetch("./api/entradas.php", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then((response) => response.text())
+                        .then((data) => { 
+                                        console.log(data)
+                                        })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
+                }
+                //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
         confirmModal.hide();
     });
 
@@ -124,8 +141,8 @@
                                      createdRow: function(row, data , dataIndex) {
                                             // Marcar checkbox si está en seleccionadosGlobal
                                              $(row).attr('data-id', dataIndex);
-                                             const $checkbox = $('input[type="checkbox"]', row);
-                                            const dataId = $checkbox.data('id');
+                                                const $checkbox = $('input[type="checkbox"]', row);
+                                                const dataId = $checkbox.data('id');
                                             
                                             if(seleccionadosGlobal.includes(dataId)) {
                                                 $checkbox.prop('checked', true);

@@ -418,6 +418,7 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 			order by up.id_pedido
 
 			select* from uni_pedido
+			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-04'
 			select* from uni_entrada
 			select* from uni_pedido_articulo  where id_pedido='1068'
 			select* from uni_entrada_articulo where id_entrada = '115'
@@ -437,12 +438,14 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 	select* from uni_entrada where tipo_entrada='5'
 	select* from uni_venta
 
-	2021-05-18 10:48:32.000
-2021-06-02 16:43:45.000
-
 	select* from uni_salida_articulo
 
 
 	
 	select* from uni_entrada ue inner join uni_entrada_articulo ae on ue.id_entrada = ae.id_entrada order by fecha
 	select* from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where  id_empleado = '149' order by fecha
+
+
+	     SELECT  FORMAT(GETDATE(), 'yyyy/MM') + '/' 
+				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
+				  WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) as num_pedido
