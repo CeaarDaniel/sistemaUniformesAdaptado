@@ -1,26 +1,25 @@
 
     // Inicializar tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(t => new bootstrap.Tooltip(t));
+    //const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    //tooltipTriggerList.map(t => new bootstrap.Tooltip(t));
 
     var datos;
+     var tabla
+    var datosActuales;
     var generarPedidoBtn= document.getElementById('generarPedidoBtn');
-
-    generarPedidoBtn.addEventListener('click', actualizarVista)
-
-    // Funciones principales
-    async function inicializar() {
-        actualizarVista();
-    }
+    var btnactualizartabla = document.getElementById('btnactualizartabla');
+    btnactualizartabla.addEventListener('click', actualizarVista);
+    
+    generarPedidoBtn.addEventListener('click', generarPedido);
 
     function actualizarVista() {
-        var ancho = window.innerWidth;
+                //var ancho = window.innerWidth;
                 var formData = new FormData;
                 formData.append("opcion", "2");
                 formData.append('startDate',  document.getElementById('startDate').value);
                 formData.append('endDate',  document.getElementById('endDate').value);
 
-                console.log(" startr"+ document.getElementById('startDate').value+ " end" +document.getElementById('endDate').value)
+                //console.log(" startr"+ document.getElementById('startDate').value+ " end" +document.getElementById('endDate').value)
             
                 fetch("./api/entradas.php", {
                         method: "POST",
@@ -28,12 +27,11 @@
                     })
                     .then((response) => response.json())
                     .then((data) => {
-
                             datos = data.map(item => item.id_articulo);
-                            console.log(datos)
+    
                             $('#tableBody').DataTable().destroy(); //Restaurar la tablas
                             //Crear el dataTable con las nuevas configuraciones
-                             var tabla = $('#tableBody').DataTable({
+                             tabla = $('#tableBody').DataTable({
                                 responsive: true,
                                 scrollX: true,
                                 scrollY: 340,
@@ -42,6 +40,7 @@
                                 columns: [
                                     { "data": "id_articulo" },  
                                     { "data": "cantidad" },
+                                    { "data": "costo", visible:false},
                                     { "data": "nombre" },
                                     { "data": "categoria" },
                                     { "data": "talla" }, 
@@ -58,7 +57,6 @@
                                     },
                                 ],
                                 "drawCallback": function(settings) {
-
                                     var api = this.api();
                                      // Delegar evento a los botones de eliminar en la página actual
                                     api.rows({ page: 'current' }).nodes().each(function(row, index) {
@@ -78,14 +76,6 @@
                                             }
 
                                             fila.remove().draw(false);
-
-                                            console.log(datos);
-
-                                            // Luego de eliminar una fila o cuando lo necesites
-                                                var datosActuales = tabla.rows().data().toArray();
-
-                                                console.log("Datos actuales en el DataTable:", datosActuales);
-
                                         });
                                     });
                                 }
@@ -100,20 +90,31 @@
     });
 }
 
-    async function generarPedido() {
-        if (state.pedido.length === 0) {
-            mostrarAlerta('¡No se puede realizar un pedido sin artículos!', 'danger');
-            return;
-        }   
+    function generarPedido() {
+         datosActuales = tabla.rows().data().toArray();
+       if(datosActuales.length <= 0)
+            alert('¡No se puede realizar un pedido sin artículos!');   
+
+       else {
+            var formData = new FormData;
+            formData.append("opcion", "5"); 
+            formData.append('articulosPedido',JSON.stringify(datosActuales))
+        
+            fetch("./api/entradas.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then((response) => response.json())
+                .then((data) => { 
+                        alert(data.response)
+                        location.reload();
+                    })
+                .catch((error) => {
+                    console.log(error);
+                }); 
+            //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+            //confirmModal.hide();
+       }
     }
 
-    function mostrarAlerta(mensaje, tipo) {
-        const alerta = document.createElement('div');
-        alerta.className = `alert alert-${tipo} alert-dismissible fade show fixed-top m-3`;
-        alerta.innerHTML = `
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
-        document.body.prepend(alerta);
-    }
-
-    inicializar();
+    actualizarVista();

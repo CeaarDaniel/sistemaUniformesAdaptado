@@ -24,6 +24,9 @@
                     <button class="btn btn-success" id="generarPedidoBtn">
                         <i class="bi bi-file-earmark-plus"></i> Generar pedido
                     </button>
+                    <button id="btnactualizartabla" class="btn btn-primary">
+                        <i class="fas fa-refresh"></i> Actualizar tabla
+                    </button>
                 </div>
             </div>
 
@@ -34,6 +37,7 @@
                         <tr>
                             <th class="text-center">ID</th>
                             <th class="text-center">Cantidad</th>
+                            <th class="text-center">Costo</th>
                             <th class="text-center">Nombre</th>
                             <th class="text-center">Categoria</th> 
                             <th class="text-center">Talla</th>

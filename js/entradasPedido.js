@@ -40,7 +40,7 @@
             });
 
             // Mostrar los datos filtrados
-            console.log("datos filtrados: ", datosFiltrados);
+            //console.log("datos filtrados: ", datosFiltrados);
 
             if(datosFiltrados.length === 0) alert("Aún no ha agregado artículos al pedido ")
 
@@ -53,13 +53,14 @@
                             method: "POST",
                             body: formData,
                         })
-                        .then((response) => response.text())
+                        .then((response) => response.json())
                         .then((data) => { 
-                                        console.log(data)
-                                        })
-                                    .catch((error) => {
-                                        console.log(error);
-                                    });
+                                alert(data.response)
+                                location.reload();
+                            })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 }
                 //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
         confirmModal.hide();
@@ -125,8 +126,9 @@
                                             "data": "check",
                                             "orderable": false
                                         },
-                                        { "data": "id_articulo" },
+                                        { "data": "id_articulo"},
                                         { "data": "cantidad" },
+                                        { "data": "costo",  visible: false},
                                         { "data": "nombre" },
                                         { "data": "categoria" },
                                         { "data": "talla" },
@@ -174,7 +176,6 @@
                             })
                         .catch((error) => {
                             console.log(error);
-
                             $('#tablaArticulos').DataTable().clear();
                             $('#tablaArticulos').DataTable().destroy();
                             $('#tablaArticulos').DataTable();

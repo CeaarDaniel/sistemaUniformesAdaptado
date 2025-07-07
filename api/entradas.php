@@ -19,7 +19,7 @@ if($opcion=='1'){
             where cantidad <= stock_min";
         */
 
-    $sql= "SELECT ua.id_articulo, (ua.stock_max - ua.cantidad) as cantidad, 
+    $sql= "SELECT ua.id_articulo, (ua.stock_max - ua.cantidad) as cantidad, ua.costo,
 		   ua.nombre, uc.categoria, ut.talla, ug.genero,
            CASE 
             WHEN EXISTS (
@@ -44,6 +44,7 @@ if($opcion=='1'){
                 $response[]= array( 'check' => "<input type='checkbox' class='select-checkbox' data-id='" . $articulo['id_articulo'] . "'>",
                                    'id_articulo' => $articulo['id_articulo'],
                                    'cantidad' => $articulo['cantidad'], 
+                                   'costo' => $articulo['costo'], 
                                    'nombre' => $articulo['nombre'], 
                                    'categoria' => $articulo['categoria'], 
                                    'talla' => $articulo['talla'],  
@@ -67,7 +68,7 @@ else
                                 ? $filtroFecha = " AND FORMAT(us.fecha, 'yyyy/MM/dd') between :startDate and :endDate " 
                                 : $filtroFecha = '';
 
-        $sql =  "SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero
+        $sql =  "SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo
                      from uni_salida as us 
                             inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
                             inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
@@ -75,7 +76,7 @@ else
                             inner join uni_talla ut on ua.id_talla = ut.id_talla
                             inner join uni_genero ug on ua.genero = ug.id_genero
                      where 1=1 ".$filtroFecha." 
-                  group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero  order by id_articulo";
+                  group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo order by id_articulo";
         
         $articulos = $conn->prepare($sql); 
 
@@ -89,6 +90,7 @@ else
             while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
                 $response[]= array( 'id_articulo' => $articulo['id_articulo'],
                                     'cantidad' => $articulo['cantidad'],
+                                    'costo' => $articulo['costo'],
                                     'categoria' => $articulo['categoria'],
                                     'talla' => $articulo['talla'],
                                     'nombre' => $articulo['nombre'],
@@ -192,7 +194,6 @@ else
 else 
     if($opcion== '5'){         
         $articulosPedido = (isset($_POST['articulosPedido']) && !empty($_POST['articulosPedido']) ) ? $_POST['articulosPedido'] : '';
-        $datos = json_decode($_POST['articulosPedido'], true);
         $fecha_creacion = date("Y-m-d H:i:s");
         $status = '1';
       
@@ -214,7 +215,7 @@ else
 
         //CREAMOS PRIMERO EL PEDIDO PARA PODER AGREGAR LOS ARTICULOS
         $registrarPedido = "INSERT INTO uni_pedido(fecha_creacion, status, num_pedido, id_usuario) 
-                        VALUES (:fecha_creacion, :status, :num_pedido, :id_usuario)";
+                            VALUES (:fecha_creacion, :status, :num_pedido, :id_usuario)";
 
         $stmt = $conn->prepare($registrarPedido);
 
@@ -224,31 +225,66 @@ else
         $stmt->bindParam(':id_usuario',$id_usuario);
 
             // Ejecuta la consulta
-            if ($stmt->execute()) 
-                $respuesta = array($articulosPedido);
-            else 
-                $respuesta = array('error' => $stmt->errorInfo()[2]);
+            if ($stmt->execute()) {
+                 $lastID = $conn->lastInsertId();
+                //Se revisa que la estructura de los datos sea un arreglo para poder generar la consulta 
+                if (is_array(json_decode($articulosPedido, true))) {
+                        $articulosPedido = json_decode($articulosPedido, true);
 
+                        //INSERTAR MULTIPLES REGISTROS USANDO INSERT
+                        try {
+                            //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-      if (is_array($datos)) {
-             foreach ($datos as $dato) {
-                $response[]=  $dato;
+                            // Suponiendo que $data es tu arreglo de objetos decodificado desde JSON
+                            $conn->beginTransaction();
+
+                            $stmt = $conn->prepare("INSERT INTO uni_pedido_articulo (id_pedido, id_articulo, cantidad, costo) VALUES (?, ?, ?, ?)");
+
+                            foreach ($articulosPedido as $item) {
+                                $stmt->execute([
+                                    $lastID,
+                                    $item['id_articulo'],
+                                    $item['cantidad'],
+                                    $item['costo'],
+                                ]);
+                            }
+
+                            $conn->commit();
+                            $respuesta = array('response' => 'Pedido registrado');
+
+                        } catch (Exception $e) {
+                            $conn->rollBack(); 
+                            $respuesta = array("response" => "error: ".$e->getMessage());
+                        }
+                }
+
+                else 
+                    $respuesta = array("response" => "Datos invalidos");
             }
 
-               echo json_encode($response);
-        }
-
-        else {
-            http_response_code(400);
-            echo json_encode(["status" => "error", "message" => "Datos invalidos"]);
-        }
+            else 
+                $respuesta = array('response' => $stmt->errorInfo()[2]);
                     
-         
+         echo json_encode($respuesta);
 
         //CONSULTA PARA AGREGAR LOS ARTICULOS DEL PEDIDO
+        /*
+            //INSERTAR MULTIPLES REGISTROS USANDO IMPLODE 
+            $values = [];
+            $params = [];
+            foreach ($data as $item) {
+                $values[] = "(?, ?, ?, ?, ?)";
+                $params[] = $item['id_articulo'];
+                $params[] = $item['nombre'];
+                $params[] = $item['cantidad'];
+                $params[] = $item['genero'];
+                $params[] = $item['talla'];
+            }
 
+            $sql = "INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES " . implode(',', $values);
 
-        //
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params); */
     } 
 
 //REGISTRO DE ENTRADA POR SALIDA
@@ -282,52 +318,4 @@ else if($opcion=='9') {
             //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
 
 }
-
-
-
-
-//INSERTAR MULTIPLES REGISTROS USANDO INSERT
-try {
-    $pdo = new PDO("sqlsrv:Server=localhost;Database=mi_base", "usuario", "contraseña");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Suponiendo que $data es tu arreglo de objetos decodificado desde JSON
-    $pdo->beginTransaction();
-
-    $stmt = $pdo->prepare("INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES (?, ?, ?, ?, ?)");
-
-    foreach ($data as $item) {
-        $stmt->execute([
-            $item['id_articulo'],
-            $item['nombre'],
-            $item['cantidad'],
-            $item['genero'],
-            $item['talla']
-        ]);
-    }
-
-    $pdo->commit();
-    echo json_encode(["status" => "ok", "message" => "Registros insertados."]);
-} catch (Exception $e) {
-    $pdo->rollBack();
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-}
-
-
-//INSERTAR MULTIPLES REGISTROS USANDO IMPLODE 
-$values = [];
-$params = [];
-foreach ($data as $item) {
-    $values[] = "(?, ?, ?, ?, ?)";
-    $params[] = $item['id_articulo'];
-    $params[] = $item['nombre'];
-    $params[] = $item['cantidad'];
-    $params[] = $item['genero'];
-    $params[] = $item['talla'];
-}
-
-$sql = "INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES " . implode(',', $values);
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
 ?>

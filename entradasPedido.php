@@ -51,6 +51,7 @@ include('./api/conexion.php');
                         <th></th>
                         <th>ID</th>
                         <th>Cantidad</th>
+                        <th>Costo</th>
                         <th>Nombre</th>
                         <th>Categoría</th>
                         <th>Talla</th>
