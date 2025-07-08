@@ -1,5 +1,6 @@
 use beyonz;
 
+select* from SCI_linea
 SELECT * FROM Fotos order by FOTOS_NN
 
 --CONSULTAS INDIVIDUALES DE LAS TABLAS
@@ -417,10 +418,14 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 	select up.*, ue.id_entrada, ue.tipo_entrada from uni_pedido up inner join uni_entrada ue on up.id_entrada = ue.id_entrada 
 			order by up.id_pedido
 
-			select* from uni_pedido
-			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-04'
+			select* from uni_pedido order by id_pedido
+			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-08'
+
+			select* from uni_pedido_articulo
+			delete from uni_pedido_articulo where id_pedido > 1130
+
 			select* from uni_entrada
-			select* from uni_pedido_articulo  where id_pedido='1068'
+		
 			select* from uni_entrada_articulo where id_entrada = '115'
 
 			--codigo de la etiqueta de master de nuevo numero de parte
@@ -444,8 +449,22 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 	
 	select* from uni_entrada ue inner join uni_entrada_articulo ae on ue.id_entrada = ae.id_entrada order by fecha
 	select* from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where  id_empleado = '149' order by fecha
-
+	select* from uni_salida_articulo
 
 	     SELECT  FORMAT(GETDATE(), 'yyyy/MM') + '/' 
 				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
 				  WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) as num_pedido
+
+
+SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo
+                     from uni_salida as us 
+                            inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
+                            inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
+                            inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
+                            inner join uni_talla ut on ua.id_talla = ut.id_talla
+                            inner join uni_genero ug on ua.genero = ug.id_genero
+                     where 1=1   group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo  order by id_articulo
+
+
+
+					 1079	

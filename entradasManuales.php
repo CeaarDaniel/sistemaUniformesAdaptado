@@ -12,7 +12,6 @@ include('./api/conexion.php');
 ?>
 
 <div id="entradasUsado">
-
             <div class="row align-items-center my-3">
                 <div class="col">
                     <h1 class="title">Entradas manuales</h1>
@@ -25,7 +24,7 @@ include('./api/conexion.php');
             
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-auto">
-                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="tooltip" title="Confirmar entrada (alt + c)">
+                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="modal" data-bs-target="#confirmarEntradaModal">
                         <i class="bi bi-box-arrow-in-down"></i> Generar entrada
                     </button>
                 </div>
@@ -61,8 +60,23 @@ include('./api/conexion.php');
             <!-- Contenido del modal de eliminación -->
         </div>
 
+        <!-- Contenido del modal de confirmación -->
         <div class="modal fade" id="confirmarEntradaModal">
-            <!-- Contenido del modal de confirmación -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar pedido</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de generar un pedido con los artículos seleccionados?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="generarPedidoBtn">Confirmar</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Modal para selección de artículos -->

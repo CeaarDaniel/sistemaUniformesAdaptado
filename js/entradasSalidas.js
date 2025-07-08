@@ -1,4 +1,3 @@
-
     // Inicializar tooltips
     //const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     //tooltipTriggerList.map(t => new bootstrap.Tooltip(t));
@@ -8,6 +7,7 @@
     var datosActuales;
     var generarPedidoBtn= document.getElementById('generarPedidoBtn');
     var btnactualizartabla = document.getElementById('btnactualizartabla');
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
     btnactualizartabla.addEventListener('click', actualizarVista);
     
     generarPedidoBtn.addEventListener('click', generarPedido);
@@ -92,8 +92,11 @@
 
     function generarPedido() {
          datosActuales = tabla.rows().data().toArray();
-       if(datosActuales.length <= 0)
-            alert('¡No se puede realizar un pedido sin artículos!');   
+       if(datosActuales.length <= 0) {
+            alert('¡No se puede realizar un pedido sin artículos!'); 
+            
+            confirmModal.hide();  
+       }
 
        else {
             var formData = new FormData;
@@ -108,9 +111,11 @@
                 .then((data) => { 
                         alert(data.response)
                         location.reload();
+                        confirmModal.hide();
                     })
                 .catch((error) => {
                     console.log(error);
+                    confirmModal.hide();
                 }); 
             //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
             //confirmModal.hide();

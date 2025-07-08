@@ -10,7 +10,7 @@
         var nombre = document.getElementById('nombre');
         var precio = document.getElementById('precio');
         var cantidad = document.getElementById('cantidadArt');
-
+        const confirmModal = new bootstrap.Modal(document.getElementById("confirmarEntradaModal"));
 
         const table = $('#tablaArticulos').DataTable();
 
@@ -63,7 +63,6 @@
                 }
             ],
             "drawCallback": function (settings) {
-
                 var api = this.api();
                 // Delegar evento a los botones de eliminar en la página actual
                 api.rows({ page: 'current' }).nodes().each(function (row, index) {
@@ -82,7 +81,6 @@
 
     //Esta funcion obtiene las tallas y generos de la categoria seleccionada
     function actualizarFormulario(){
-        
         var formDataGet = new FormData;
         formDataGet.append('opcion', 3);
         formDataGet.append('categoria', categoria.value);
@@ -204,7 +202,7 @@
             console.log("Filas anteriores: ",filas)
             console.log("Fila modificada ",  tabla.rows(indice).data().toArray());
             } 
-        */
+    */
 
         function agregarArticulo() {
             var fmamantenimiento = document.getElementById("formAgregarArticulo");
@@ -272,6 +270,37 @@
                                 }
                             }
                     }
+        }
+
+        function generarPedido(){
+               datosActuales = tabla.rows().data().toArray();
+                if(datosActuales.length <= 0) {
+                        alert('¡No se puede realizar un pedido sin artículos!'); 
+                        confirmModal.hide();  
+                }
+
+                else {
+                        var formData = new FormData;
+                        formData.append("opcion", "5"); 
+                        formData.append('articulosPedido',JSON.stringify(datosActuales))
+                    
+                        fetch("./api/entradas.php", {
+                                method: "POST",
+                                body: formData,
+                            })
+                            .then((response) => response.json())
+                            .then((data) => { 
+                                    alert(data.response)
+                                    location.reload();
+                                    confirmModal.hide();
+                                })
+                            .catch((error) => {
+                                console.log(error);
+                                confirmModal.hide();
+                            }); 
+                        //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+                        //confirmModal.hide();
+                }
         }
 
 actualizarVista();

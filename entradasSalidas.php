@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="col-auto text-end">
-                    <button class="btn btn-success" id="generarPedidoBtn">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">
                         <i class="bi bi-file-earmark-plus"></i> Generar pedido
                     </button>
                     <button id="btnactualizartabla" class="btn btn-primary">
@@ -63,7 +63,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" id="confirmarBtn">Confirmar</button>
+                        <button type="button" class="btn btn-primary" id="generarPedidoBtn">Confirmar</button>
                     </div>
                 </div>
             </div>
