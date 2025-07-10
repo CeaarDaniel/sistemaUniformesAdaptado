@@ -419,7 +419,7 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 			order by up.id_pedido
 
 			select* from uni_pedido order by id_pedido
-			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-08'
+			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-09'
 
 			select* from uni_pedido_articulo
 			delete from uni_pedido_articulo where id_pedido > 1130
@@ -468,3 +468,15 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
 
 
 					 1079	
+					 select* from uni_pedido 
+					 select* from uni_pedido_articulo where id_pedido = '1069'
+
+
+					 select* from uni_estado
+					 select* from uni_articulos
+
+
+					 select* from uni_categoria
+					 select* from uni_talla
+				
+				

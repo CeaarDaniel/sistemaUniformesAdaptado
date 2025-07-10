@@ -89,13 +89,17 @@ function actualizarTallasAltaChips() { //Esta funcion actualiza la vista de las 
 // Función para confirmar la agregación de la categoría
 function confirmarAgregarCategoria() {
     const nombre = document.getElementById('nombre').value;
-    if (nombre.trim() === '') { //Evalua si no esta vacio el input de nobre
+    if (nombre.trim() === '') { //Evalua si no esta vacio el input de nombre
         alert('El nombre de la categoría no puede estar vacío.');
         return;
     }
     if (mostrarAltaTallas && tallasAlta.length === 0) { //Si se selecciona la opcion de crear tallas mostrarAltasTallas cambia a true, por lo que si es true el arreglo tallasAlta debe de tener porlomenos una talla osea un un valor en el array
         alert('Debes agregar al menos una talla.');
         return;
+    }
+    else if(!mostrarAltaTallas && tallaLabel.value == '') {
+      alert('Debes seleccionar una talla');
+      return;
     }
     document.getElementById('nombreCategoria').textContent = nombre;
     new bootstrap.Modal(document.getElementById('confirmModal')).show();

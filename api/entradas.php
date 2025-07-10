@@ -154,14 +154,20 @@ else
         echo json_encode($response);
     }
 
-//Consulta para obtener el articulo que se agregara el pedido
+//Consulta para obtener el articulo que se agregara el pedido, esta consulta se usa en entradas y salidas
 else 
     if($opcion == '4'){
             $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : "";
             $talla = (isset($_POST['talla']) && !empty($_POST['talla'])) ? $_POST['talla'] : "";
             $genero = (isset($_POST['genero']) && !empty($_POST['genero'])) ? $_POST['genero'] : "";
+            $usado = (isset($_POST['estado']) && !empty($_POST['estado'])) ? $_POST['estado'] : 0;
+            
+            //Filtro para buscar un articulo nuevo o usado
+            $filtroEstado = ($usado != 0) ? ' AND id_estado = :id_estado ' : '';
 
-            $consultaArticulo = "SELECT id_articulo, nombre, cantidad, precio from uni_articulos where id_talla = :id_talla and genero= :genero and id_categoria= :id_categoria and eliminado = 0 ";
+            $consultaArticulo = "SELECT id_articulo, nombre, cantidad, costo, precio from uni_articulos 
+                                    where id_talla = :id_talla and genero= :genero and id_categoria= :id_categoria 
+                                            and eliminado = 0 ".$filtroEstado;
 
             $articulo = $conn->prepare($consultaArticulo); 
 
@@ -169,20 +175,22 @@ else
             $articulo->bindparam(':id_talla', $talla);
             $articulo->bindparam(':id_categoria', $categoria);
             $articulo->bindparam(':genero', $genero);
+            ($usado != 0) ? $articulo->bindParam(':id_estado', $usado) : '';
 
 
             if ($articulo->execute()) {
                 $fila = $articulo->fetch(PDO::FETCH_ASSOC);
-
-                // Verificar si la consulta devolvió alguna fila
-                if ($fila !== false) {
-                // Hay resultado
-                $response['articulo'] = $fila;
-            } else {
-                // No hay resultado
-                $response['articulo'] = null;
-            }
-            } else {
+                    // Verificar si la consulta devolvió alguna fila
+                    if ($fila !== false) {
+                        // Hay resultado
+                        $response['articulo'] = $fila;
+                    } 
+                    else {
+                        // No hay resultado
+                        $response['articulo'] = null;
+                    }
+            } 
+            else {
                 // Error en la consulta
                 $response['error'] = $articulo->errorInfo()[2];
             }
@@ -287,7 +295,7 @@ else
             $stmt->execute($params); */
     } 
 
-//REGISTRO DE ENTRADA POR SALIDA
+//REGISTRO DE UNIFORME USADO
 else 
     if($opcion== '6'){
 

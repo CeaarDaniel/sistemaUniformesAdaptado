@@ -11,7 +11,7 @@ include('./api/conexion.php');
         $articulos->execute()
 ?>
 
-<div id="entradasUsado">
+    <div id="entradasUsado">
             <div class="row align-items-center my-3">
                 <div class="col">
                     <h1 class="title">Entradas manuales</h1>
@@ -24,7 +24,7 @@ include('./api/conexion.php');
             
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-auto">
-                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="modal" data-bs-target="#confirmarEntradaModal">
+                    <button class="btn btn-success" id="" data-bs-toggle="modal" data-bs-target="#confirmarEntradaModal">
                         <i class="bi bi-box-arrow-in-down"></i> Generar entrada
                     </button>
                 </div>
@@ -45,9 +45,10 @@ include('./api/conexion.php');
                     <tr>
                         <th>ID</th>
                         <th>nombre</th>
-                        <th>Tipo</th>
+                        <th>Talla</th>
+                        <th>Genero</th>
                         <th>Cantidad</th>
-                        <th>Precio</th>
+                        <th>Costo</th>
                         <th>Boton</th>
                     </tr>
                 </thead>
@@ -66,7 +67,9 @@ include('./api/conexion.php');
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Confirmar pedido</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i>
+                        </button>
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de generar un pedido con los artículos seleccionados?
@@ -145,9 +148,10 @@ include('./api/conexion.php');
                                     <div class="col-md-6">
                                             <label class="form-label">
                                                 <i class="bi bi-currency-exchange bi-icon"></i>
-                                                Precio
+                                                Costo
                                             </label>
-                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
+                                            <!--EL ID DE PRECIO HACER REGERENCIA AL VALOR DEL COSTO -->
+                                            <input type="number" id="precio" class="form-control" placeholder="Costo" step="0.01" readonly>
                                     </div>
 
                                     <div class="col-md-6">
@@ -159,13 +163,12 @@ include('./api/conexion.php');
                                             <input type="number" id="cantidadArt" class="form-control" placeholder="Cantidad" required>
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
-                                        <!--
-                                            <label class="form-label">
-                                                <i class="bi bi-key-fill bi-icon"></i> ID
-                                            </label> 
-                                        -->
+                                            <!--
+                                                <label class="form-label">
+                                                    <i class="bi bi-key-fill bi-icon"></i> ID
+                                                </label> 
+                                            -->
                                             <input id="id" class="form-control d-none" type="text" >
                                     </div>
 

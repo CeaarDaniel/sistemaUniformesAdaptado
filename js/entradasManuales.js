@@ -1,6 +1,7 @@
 
     // Fuente de datos inicial
         let datos = [];
+        var tabla;
         var  btnAgregarArticulo = document.getElementById('btnAgregarArticulo');
         var  eliminarBtn = document.getElementById('eliminarBtn');
         var categoria = document.getElementById('tipo') //Select de Categoria
@@ -10,9 +11,10 @@
         var nombre = document.getElementById('nombre');
         var precio = document.getElementById('precio');
         var cantidad = document.getElementById('cantidadArt');
+        var generarPedidoBtn = document.getElementById('generarPedidoBtn');
         const confirmModal = new bootstrap.Modal(document.getElementById("confirmarEntradaModal"));
 
-        const table = $('#tablaArticulos').DataTable();
+       // const table = $('#tablaArticulos').DataTable();
 
     btnAgregarArticulo.addEventListener('click', agregarArticulo)
 
@@ -35,14 +37,15 @@
 
     selectTalla.addEventListener('change', actualizarArticulo);
     selectGenero.addEventListener('change', actualizarArticulo);
+    generarPedidoBtn.addEventListener('click', generarPedido)
     
 
     function actualizarVista() {
         var ancho = window.innerWidth;
 
-        $('#tablaArticulos').DataTable().destroy(); //Restaurar la tablas
+        $('#tablaArticulos').DataTable().destroy();
         //Crear el dataTable con las nuevas configuraciones
-        var tabla = $('#tablaArticulos').DataTable({
+            tabla = $('#tablaArticulos').DataTable({
             responsive: true,
             scrollX: ancho-100,
             scrollY: 340,
@@ -51,10 +54,12 @@
             columns: [
                 { "data": "id" },
                 { "data": "nombre" },
-                { "data": "tipo" },
+                { "data": "talla" },
+                { "data": "genero" },
                 { "data": "cantidad" },
-                { "data": "precio" },
-                { "data": "boton"}
+                { "data": "costo" },
+                { "data": "boton"},
+                { "data": "id_articulo", visible:false}
             ], 
             columnDefs :  [ 
                 {
@@ -72,7 +77,7 @@
                         fila.remove().draw();
 
                         // Luego de eliminar una fila o cuando lo necesites
-                        var datosActuales = tabla.rows().data().toArray();
+                        //var datosActuales = tabla.rows().data().toArray();
                     });
                 });
             }
@@ -92,8 +97,8 @@
             .then((response) => response.json())
             .then((data) => {
 
-                console.log("Tallas: ", data.tallas);
-                console.log("Generos: ", data.generos);
+                //console.log("Tallas: ", data.tallas);
+                //console.log("Generos: ", data.generos);
 
                 var tallas = '<option value="" selected>Seleccione una talla</option>';
                 var generos = '<option value="" selected>Seleccione género</option>';
@@ -135,7 +140,7 @@
                 else {
                     btnAgregarArticulo.disabled= false
                     nombre.value = data.articulo.nombre;
-                    precio.value= data.articulo.precio;
+                    precio.value= data.articulo.costo;
                     //cantidad.max = data.articulo.cantidad;
                     cantidad.min = 1;
                     $('#id').val(data.articulo.id_articulo);
@@ -204,103 +209,106 @@
             } 
     */
 
-        function agregarArticulo() {
-            var fmamantenimiento = document.getElementById("formAgregarArticulo");
-            var isValidfm = fmamantenimiento.reportValidity();
-                    if (isValidfm) {
-                        //if(cantidad.max <= 0)
-                            //alert('No hay suficientes unidades para este artículo')
+    function agregarArticulo() {
+        var fmamantenimiento = document.getElementById("formAgregarArticulo");
+        var isValidfm = fmamantenimiento.reportValidity();
+                if (isValidfm) {
+                    //if(cantidad.max <= 0)
+                        //alert('No hay suficientes unidades para este artículo')
 
-                        //else
-                            if (idArticulo.value == '' || idArticulo === null || !idArticulo || !idArticulo.value)
-                                alert("Este artículo no esta disponible o no existe")
+                    //else
+                        if (idArticulo.value == '' || idArticulo === null || !idArticulo || !idArticulo.value)
+                            alert("Este artículo no esta disponible o no existe")
 
-                            else {
+                        else {
 
-                                const tabla = $('#tablaArticulos').DataTable();
-                                const nuevoId = Number(document.getElementById("id").value);
-                                const nuevaCantidad = Number(document.getElementById("cantidadArt").value);
+                            const tabla = $('#tablaArticulos').DataTable();
+                            const nuevoId = Number(document.getElementById("id").value);
+                            const nuevaCantidad = Number(document.getElementById("cantidadArt").value);
 
-                                // Buscar en todas las filas (incluyendo páginas no visibles)
-                                let filaExistente = null;
-                                tabla.rows().every(function (index) {
-                                    const filaData = this.data();
-                                    if (filaData.id === nuevoId) {
-                                        filaExistente = this;
-                                        return false; // Detener la iteración
-                                    }
+                            // Buscar en todas las filas (incluyendo páginas no visibles)
+                            let filaExistente = null;
+                            tabla.rows().every(function (index) {
+                                const filaData = this.data();
+                                if (filaData.id === nuevoId) {
+                                    filaExistente = this;
+                                    return false; // Detener la iteración
+                                }
+                            });
+
+                            if (!filaExistente) {
+                                // Agregar nuevo artículo
+                                const nuevoArticulo = {
+                                    id: nuevoId,
+                                    nombre: document.getElementById("nombre").value,
+                                    tipo: document.getElementById("tipo").value,
+                                    cantidad: nuevaCantidad,
+                                    costo: Number(document.getElementById("precio").value),
+                                    talla: $('#talla option:selected').text(),
+                                    genero: $('#genero option:selected').text(),
+                                    boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>",
+                                    id_articulo: nuevoId
+                                };
+
+                                datos.push(nuevoArticulo);
+                                tabla.row.add(nuevoArticulo).draw(false);
+                                document.querySelectorAll("input").forEach(input => input.value = "");
+                                document.querySelectorAll("select").forEach(select => {
+                                    select.selectedIndex = 0; // selecciona la primera opción
                                 });
+                            } else {
+                                // Actualizar cantidad en fila existente
+                                const datosActualizados = filaExistente.data();
+                                    datosActualizados.cantidad += nuevaCantidad;
+                                    // Actualizar ambas fuentes de datos
+                                    filaExistente.data(datosActualizados);
 
-                                if (!filaExistente) {
-                                    // Agregar nuevo artículo
-                                    const nuevoArticulo = {
-                                        id: nuevoId,
-                                        nombre: document.getElementById("nombre").value,
-                                        tipo: document.getElementById("tipo").value,
-                                        cantidad: nuevaCantidad,
-                                        precio: Number(document.getElementById("precio").value),
-                                        boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
-                                    };
+                                    // Actualizar el array original
+                                    const indexOriginal = datos.findIndex(item => item.id === nuevoId);
+                                    if (indexOriginal !== -1) {
+                                        datos[indexOriginal].cantidad = datosActualizados.cantidad;
+                                    }
 
-                                    datos.push(nuevoArticulo);
-                                    tabla.row.add(nuevoArticulo).draw(false);
+                                    tabla.draw(false); // Redibujar manteniendo paginación/orden
+
                                     document.querySelectorAll("input").forEach(input => input.value = "");
                                     document.querySelectorAll("select").forEach(select => {
                                         select.selectedIndex = 0; // selecciona la primera opción
                                     });
-                                } else {
-                                    // Actualizar cantidad en fila existente
-                                    const datosActualizados = filaExistente.data();
-                                        datosActualizados.cantidad += nuevaCantidad;
-                                        // Actualizar ambas fuentes de datos
-                                        filaExistente.data(datosActualizados);
-
-                                        // Actualizar el array original
-                                        const indexOriginal = datos.findIndex(item => item.id === nuevoId);
-                                        if (indexOriginal !== -1) {
-                                            datos[indexOriginal].cantidad = datosActualizados.cantidad;
-                                        }
-
-                                        tabla.draw(false); // Redibujar manteniendo paginación/orden
-
-                                        document.querySelectorAll("input").forEach(input => input.value = "");
-                                        document.querySelectorAll("select").forEach(select => {
-                                            select.selectedIndex = 0; // selecciona la primera opción
-                                        });
-                                }
                             }
-                    }
+                        }
+                }
+    }
+
+    function generarPedido(){
+        articulosPedido = tabla.rows().data().toArray();
+        if(articulosPedido.length <= 0) {
+                alert('¡No se puede realizar un pedido sin artículos!'); 
+                confirmModal.hide();  
         }
 
-        function generarPedido(){
-               datosActuales = tabla.rows().data().toArray();
-                if(datosActuales.length <= 0) {
-                        alert('¡No se puede realizar un pedido sin artículos!'); 
-                        confirmModal.hide();  
-                }
-
-                else {
-                        var formData = new FormData;
-                        formData.append("opcion", "5"); 
-                        formData.append('articulosPedido',JSON.stringify(datosActuales))
-                    
-                        fetch("./api/entradas.php", {
-                                method: "POST",
-                                body: formData,
-                            })
-                            .then((response) => response.json())
-                            .then((data) => { 
-                                    alert(data.response)
-                                    location.reload();
-                                    confirmModal.hide();
-                                })
-                            .catch((error) => {
-                                console.log(error);
-                                confirmModal.hide();
-                            }); 
-                        //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
-                        //confirmModal.hide();
-                }
+        else { //console.log(articulosPedido) 
+                var formData = new FormData;
+                formData.append("opcion", "5"); 
+                formData.append('articulosPedido',JSON.stringify(articulosPedido))
+                fetch("./api/entradas.php", {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then((response) => response.json())
+                    .then((data) => { 
+                            console.log(data)
+                            alert(data.response)
+                            confirmModal.hide();
+                            location.reload();
+                        })
+                    .catch((error) => {
+                        console.log(error);
+                        confirmModal.hide();
+                    });
+                //const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+                //confirmModal.hide();
         }
+    }
 
 actualizarVista();

@@ -25,7 +25,7 @@ include('./api/conexion.php');
             
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-auto">
-                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="tooltip" title="Confirmar entrada (alt + c)">
+                    <button class="btn btn-success" id="generarEntradaBtn" data-bs-toggle="modal" data-bs-target="#confirmarEntradaModal">
                         <i class="bi bi-box-arrow-in-down"></i> Generar entrada
                     </button>
                 </div>
@@ -47,9 +47,10 @@ include('./api/conexion.php');
                     <tr>
                         <th>ID</th>
                         <th>nombre</th>
-                        <th>Tipo</th>
+                        <th>Talla</th>
+                        <th>Genero</th>
                         <th>Cantidad</th>
-                        <th>Precio</th>
+                        <th>Costo</th>
                         <th>Boton</th>
                     </tr>
                 </thead>
@@ -58,12 +59,25 @@ include('./api/conexion.php');
         </div>
 
         <!-- Modales -->
-        <div class="modal fade" id="confirmarEliminarModal">
-            <!-- Contenido del modal de eliminación -->
-        </div>
-
+        <!-- Contenido del modal de confirmación -->
         <div class="modal fade" id="confirmarEntradaModal">
-            <!-- Contenido del modal de confirmación -->
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar pedido</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de generar un pedido con los artículos seleccionados?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="generarPedidoBtn">Confirmar</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Modal para selección de artículos -->
@@ -78,7 +92,18 @@ include('./api/conexion.php');
                         <div class="form-container">
                             <form id="formAgregarArticulo" class="form-control">
                                 <h3><i class="bi bi-box-seam"></i> Agregar Artículo</h3>
-                                
+                                 
+                                <!--SELECT PARA DEFINIR POR DEFECTO EL ESTADO DEL ARTICULO COMO USADO -->
+                                <div class="row g-3 d-none">
+                                    <div class="col-md-6">
+                                        <div class="">
+                                            <select class="form-select" name="estado" id="estado">
+                                                <option value='2' selected>Usado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="">
@@ -132,9 +157,9 @@ include('./api/conexion.php');
                                     <div class="col-md-6">
                                             <label class="form-label">
                                                 <i class="bi bi-currency-exchange bi-icon"></i>
-                                                Precio
+                                                Costo
                                             </label>
-                                            <input type="number" id="precio" class="form-control" placeholder="Precio" step="0.01" readonly>
+                                            <input type="number" id="precio" class="form-control" placeholder="Costo" step="0.01" readonly>
                                     </div>
 
                                     <div class="col-md-6">
