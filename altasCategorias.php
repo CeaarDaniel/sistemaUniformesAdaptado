@@ -44,7 +44,7 @@ $categorias->execute();
                     <div id="tallasSection">
                         <!-- Opción 1: Usar tipo de talla existente -->
                         <div id="tallasExistente">
-                            <select class="form-select mb-3" id="tipoTalla" onchange="buscarTallas()">
+                            <select class="form-select mb-3" id="tipoTalla">
                                 <option value="-1">--Seleccionar--</option>
                                     <?php
                                         while($tipoTalla = $categorias->fetch(PDO::FETCH_ASSOC))
@@ -58,9 +58,11 @@ $categorias->execute();
                         <div id="tallasNuevas" style="display: none;">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" id="tallaLabel" placeholder="Ej. SM" maxlength="25">
-                                <span class="input-group-text" data-bs-toggle="tooltip" data-bs-placement="top" title="Para ir agregando tallas, escribe una y en seguida presiona enter para agregarla, agrega las tallas de menor a mayor tamaño de preferencia.">
+                                <span class="input-group-text" data-bs-toggle="tooltip" data-bs-placement="top" 
+                                      title="Para ir agregando tallas, escribe una y en seguida presiona enter para agregarla, agrega las tallas de menor a mayor tamaño de preferencia.">
                                     <i class="fas fa-question-circle"></i>
                                 </span>
+                                <small id="nombreHelpTextA" class="form-text text-muted ms-3" style="font-size:12px">Para ir agregando tallas, escribe una y en seguida presiona enter para agregarla, agrega las tallas de menor a mayor tamaño de preferencia.</small>
                             </div>
                             <div id="tallasAltaChips" class="chip-container"></div>
                         </div>
@@ -92,7 +94,7 @@ $categorias->execute();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Ok</button>
+                    <button id = "btnCrearCategoria" type="button" class="btn btn-primary">Ok</button>
                 </div>
             </div>
         </div>

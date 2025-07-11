@@ -70,12 +70,13 @@ else
         $abrev = $_POST['abrev'];
         $nombresAbrev= $conn->prepare("select 1 as exist from uni_categoria where abrev = :abrev");
         $nombresAbrev -> bindParam(':abrev' , $abrev); 
+
             if($nombresAbrev->execute()){
                 $abrevs = $nombresAbrev->fetch(PDO::FETCH_ASSOC);
                 echo json_encode ($abrevs);
             }
 
-            else {
+            else { 
                 $response = array('error'=> $nombresAbrev->errorInfo()[2]);
                 echo json_encode ($response);
             }
@@ -85,13 +86,56 @@ else
 else 
     if($opcion == '5'){
         $abrev = (isset($_POST['abrev']) && !empty($_POST['abrev'])) ? $_POST['abrev'] : null; 
-        $categoria = (isset($_POST['nombre']) && !empty($_POST['nombre'])) ? $_POST['nombre'] : null;
-        $tipoTalla = (isset($_POST['tipoTalla']) && !empty($_POST['tipoTalla'])) ? $_POST['tipoTalla'] : null;
+        $nombre = (isset($_POST['nombre']) && !empty($_POST['nombre'])) ? $_POST['nombre'] : null;
+        $tipoTalla = (isset($_POST['tallas']) && $_POST['tallas'] != '') ? $_POST['tallas'] : null; // empty(0) = empty (null)
 
-        if($tipoTalla == null){
-             $tallasNuevas = (isset($_POST['tallas']) && !empty($_POST['tallas'])) ? $_POST['tallas'] : null;
+           if (is_array(json_decode($tipoTalla, true))) {
+                $tipoTalla = json_decode($tipoTalla, true);
+                try {
+                        $conn->beginTransaction();
+                        // Obtener el último valor y calcular el siguiente tipo_talla
+                        $lastValue = $conn->query("SELECT ISNULL(MAX(tipo_talla), 0) FROM uni_talla WITH (TABLOCKX)")->fetchColumn();
+                        $newTalla = $lastValue + 1;
+
+                        $stmt = $conn->prepare("INSERT INTO uni_talla(talla, tipo_talla) VALUES (?, ?)");
+
+                        foreach ($tipoTalla as $item) {
+                            $stmt->execute([
+                                $item['label'],
+                                $newTalla
+                            ]);
+                        }
+
+                        $conn->commit();
+                        $tipoTalla = $newTalla;
+                } 
+                catch (Exception $e) {
+                $conn->rollBack(); 
+                $respuesta = array("response" => "error: ".$e->getMessage());
+                die();
+            }
         }
 
+    
+        //REGISTRO DE LA NUEVA CATEGORIA
+        $registrarCategoria = "INSERT INTO uni_categoria(abrev, categoria, tipo_talla) 
+                                    VALUES (:abrev, :categoria, :tipoTalla)";
+
+        $stmt = $conn->prepare($registrarCategoria);
+
+        $stmt->bindParam(':abrev',$abrev);
+        $stmt->bindParam(':categoria',$nombre);
+        $stmt->bindParam(':tipoTalla',$tipoTalla);
+
+            // Ejecuta la consulta
+            if ($stmt->execute()) 
+                    $response = array('response' => 'Categoria registrada');
+      
+            else 
+                $response = array('response' => $stmt->errorInfo()[2]);
+
+    echo json_encode($response);
+    
     }
 
 //REGISTRO DE UN ARTICULO

@@ -3,17 +3,20 @@ let tallasAlta = [];
 let mostrarAltaTallas = false;
 let mostrar = false;
 var btnAgregarCategoria = document.getElementById('btnAgregarCategoria');
+var btnCrearCategoria = document.getElementById('btnCrearCategoria')
 var tipoTalla = document.getElementById('tipoTalla');
 var nombre = document.getElementById('nombre');  
 var abrev = document.getElementById('abrev');
 var btnChangeTalla = document.getElementById('btnChangeTalla');
 var tallaLabel = document.getElementById('tallaLabel');
+const modalConfirmar = new bootstrap.Modal(document.getElementById('confirmModal'));
 
 //VALORES PARA LA ACTIVACION DEL BOTON DD CREAR CATEGORIA
 let nombreB = false;
 let abrevB = false;
 
 btnAgregarCategoria.addEventListener('click', confirmarAgregarCategoria);
+btnCrearCategoria.addEventListener  ('click', agregarCategoria);
 nombre.addEventListener('change', validarCategoria);  
 tipoTalla.addEventListener('change', mostrarTallas); 
 abrev.addEventListener('change', validarAbrev);
@@ -97,27 +100,13 @@ function confirmarAgregarCategoria() {
         alert('Debes agregar al menos una talla.');
         return;
     }
-    else if(!mostrarAltaTallas && tallaLabel.value == '') {
+    else if(!mostrarAltaTallas && tipoTalla.value == -1) {
       alert('Debes seleccionar una talla');
+      //console.log(tipoTalla.value)
       return;
     }
     document.getElementById('nombreCategoria').textContent = nombre;
-    new bootstrap.Modal(document.getElementById('confirmModal')).show();
-}
-
-// Función para agregar la categoría
-function agregarCategoria() {
-    const nombre = document.getElementById('nombre').value;
-    const abrev = document.getElementById('abrev').value;
-    const tipoTalla = document.getElementById('tipoTalla').value;
-
-    if (mostrarAltaTallas) 
-        console.log('Categoría agregada con tallas personalizadas:', { nombre, abrev, tallas: tallasAlta });
-     else 
-        console.log('Categoría agregada con tipo de talla existente:', { nombre, abrev, tipoTalla });
-    
-    alert('Categoría agregada correctamente');
-    new bootstrap.Modal(document.getElementById('confirmModal')).hide();
+    modalConfirmar.show();
 }
 
 //Funcion para mostrar las tallas correspondientes a la categoria seleccionada
@@ -147,7 +136,6 @@ function mostrarTallas(){
     });
 }
 
-
 //Funcior para validar el duplicado del nombre de la categoria
 function validarCategoria(){
     var nombreHelpText = document.getElementById('nombreHelpTextC');
@@ -173,8 +161,7 @@ function validarCategoria(){
         }
 
         $('#btnAgregarCategoria').prop('disabled', (Boolean(nombreB) || Boolean(abrevB)) ? true : false);
-
-        console.log(Boolean(nombreB * abrevB))
+       // console.log(Boolean(nombreB * abrevB))
       })
       .catch((error) => {
         console.log(error);
@@ -209,9 +196,37 @@ function validarAbrev(){
             }
 
             $('#btnAgregarCategoria').prop('disabled', (Boolean(nombreB) || Boolean(abrevB)) ? true : false);
-            console.log(Boolean(nombreB * abrevB))
+            //console.log(Boolean(nombreB * abrevB))
           })
           .catch((error) => {
             console.log(error);
           });
+}
+
+// Función para agregar la categoría
+function agregarCategoria() {
+    const nombre = document.getElementById('nombre').value;
+    const abrev = document.getElementById('abrev').value;
+    const tipoTalla = document.getElementById('tipoTalla').value;
+    console.log(tallasAlta)
+      var formData = new FormData; 
+      formData.append("nombre", nombre);
+      formData.append("abrev", abrev);
+      formData.append("tallas", (mostrar) ? JSON.stringify(tallasAlta) : tipoTalla); //false Seleccoinar tallas TRUE )crear tallas
+      formData.append("opcion", "5");
+
+      fetch("./api/altas.php", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+                alert(data);
+                //agregar funcion para recargar la pagina
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    
+    modalConfirmar.hide();
 }

@@ -466,11 +466,8 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
                      where 1=1   group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo  order by id_articulo
 
 
-
-					 1079	
-					 select* from uni_pedido 
-					 select* from uni_pedido_articulo where id_pedido = '1069'
-
+					 select* from uni_pedido;
+					 select* from uni_pedido_articulo where id_pedido = '1069';
 
 					 select* from uni_estado
 					 select* from uni_articulos

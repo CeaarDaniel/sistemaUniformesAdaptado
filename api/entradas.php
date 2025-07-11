@@ -302,20 +302,9 @@ else
         
     }
     
-//REGISTRO DE UNA ENTRADA MANUAL
-else 
-    if($opcion == '7'){
-
-}
-
-//REGISTRO DE UNA ENTRADA DE UNIFORME USADO
-else 
-    if($opcion == '8'){
-
-}
 
 //CONCRETAR PEDIDO
-else if($opcion=='9') {
+else if($opcion=='7') {
     //fecha_termino
     //id_entrada  se genera cuando el pedido es concretado
     //Casi todas las entradas son registradas como entradas por pedido (1), a menos que sea por cambio (5)
