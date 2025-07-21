@@ -1,9 +1,25 @@
-  // Función para actualizar el nombre del artículo
+    const frmAltaArticulo = document.getElementById('frmAltaArticulo');
+    const modalConfirmar = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const btnCrearArticulo = document.getElementById('btnCrearArticulo');
+
+     btnCrearArticulo.addEventListener('click', function() {
+            event.preventDefault();
+            if(frmAltaArticulo.reportValidity()) 
+                modalConfirmar.show();
+            
+
+            else  
+                alert("Debe completar los campos requeridos para el registro del articulo")
+    });
+
+
+// Función para actualizar el nombre del artículo
   function modificarNombre() {
     const categoria = (document.getElementById('categoria').options[document.getElementById('categoria').selectedIndex]).getAttribute('data-abrev');
     const talla = document.getElementById('talla').options[document.getElementById('talla').selectedIndex].text;
     const genero = document.getElementById('genero').options[document.getElementById('genero').selectedIndex].text;
     const estado = document.getElementById('estado').options[document.getElementById('estado').selectedIndex].text;
+
 
     const nombre = `${categoria}-${genero==='No aplica' ? '' : `${genero} `}T ${talla} ${estado === 'Usado' ? '(usado)' : ''}`;
     document.getElementById('nombre').value = nombre; //Se cambia el valor del input nombre

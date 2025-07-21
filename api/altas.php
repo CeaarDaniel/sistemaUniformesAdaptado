@@ -89,6 +89,7 @@ else
         $nombre = (isset($_POST['nombre']) && !empty($_POST['nombre'])) ? $_POST['nombre'] : null;
         $tipoTalla = (isset($_POST['tallas']) && $_POST['tallas'] != '') ? $_POST['tallas'] : null; // empty(0) = empty (null)
 
+            //REGISTRO DE LAS TALLAS PARA EL NUEVO TIPO DE TALLA
            if (is_array(json_decode($tipoTalla, true))) {
                 $tipoTalla = json_decode($tipoTalla, true);
                 try {
@@ -110,9 +111,9 @@ else
                         $tipoTalla = $newTalla;
                 } 
                 catch (Exception $e) {
-                $conn->rollBack(); 
-                $respuesta = array("response" => "error: ".$e->getMessage());
-                die();
+                    $conn->rollBack(); 
+                    $respuesta = array("response" => "error: ".$e->getMessage());
+                    die();
             }
         }
 
@@ -134,13 +135,27 @@ else
             else 
                 $response = array('response' => $stmt->errorInfo()[2]);
 
-    echo json_encode($response);
+        echo json_encode($response);
     
     }
 
 //REGISTRO DE UN ARTICULO
 else 
     if($opcion == '6'){
-        
+         $nombre = (isset($_POST['nombre']) && !empty($_POST['nombre'])) ? $_POST['nombre'] : null; 
+         $clvComercial = (isset($_POST['clvComercial'])) ? $_POST['clvComercial'] : ''; 
+         $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : '';
+         $categoria = (isset($_POST['categoria'])) ? $_POST['categoria'] : null;
+         $talla = (isset($_POST['talla'])) ? $_POST['talla'] : null;
+         $genero = (isset($_POST['genero'])) ? $_POST['genero'] : null;
+         $estado = (isset($_POST['estado'])) ? $_POST['estado'] : null;
+         $costo = (isset($_POST['costo'])) ? $_POST['costo'] : null;
+         $precio = (isset($_POST['precio'])) ? $_POST['precio'] : null;
+         $stock_max = (isset($_POST['stock_max'])) ? $_POST['stock_max'] : null;
+         $stock_min = (isset($_POST['stock_min'])) ? $_POST['stock_min'] : null;
+
+         $activo = 1; 
+         $eliminado = 0;
+         $cantidad = 0;
     }
 ?>

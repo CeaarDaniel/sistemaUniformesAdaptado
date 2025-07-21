@@ -24,7 +24,7 @@ $estado->execute();
 
     <!-- Formulario -->
     <div class="form-container my-1">
-        <div class="row">
+        <form id="frmAltaArticulo" class="row"> 
             <!-- Columna 1 -->
             <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
                 <!-- Nombre -->
@@ -38,7 +38,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="categoria" class="form-label">Categoría</label>
                     <div class="d-flex">
-                        <select class="form-select" id="categoria" style="max-width:300px">
+                        <select class="form-select" id="categoria" style="max-width:300px" required>
                             <!-- <option value="">--- SELECCIONE UNA OPCIÓN ---</option> -->
                             <?php
                                 while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
@@ -57,7 +57,7 @@ $estado->execute();
                 <!-- Talla -->
                 <div class="mb-3">
                     <label for="talla" class="form-label">Talla</label>
-                    <select class="form-select" id="talla">
+                    <select class="form-select" id="talla" required>
                        <!--  <option value="">--- SELECCIONE UNA CATEGORÍA ---</option> -->
                     </select>
                 </div>
@@ -65,7 +65,7 @@ $estado->execute();
                 <!-- Género -->
                 <div class="mb-3">
                     <label for="genero" class="form-label">Género</label>
-                    <select class="form-select" id="genero">
+                    <select class="form-select" id="genero" required>
                         <?php
                             while($genero = $generos->fetch(PDO::FETCH_ASSOC))
                             echo '<option value="'.$genero['id_genero'].'">'.$genero['genero'].'</option>';
@@ -76,7 +76,7 @@ $estado->execute();
                 <!-- Estado -->
                 <div class="mb-3">
                     <label for="estado" class="form-label">Estado</label>
-                    <select class="form-select" id="estado">
+                    <select class="form-select" id="estado" required>
                         <?php
                             while($dato = $estado->fetch(PDO::FETCH_ASSOC))
                             echo '<option value="'.$dato['id_estado'].'">'.$dato['estado'].'</option>';
@@ -104,7 +104,7 @@ $estado->execute();
                     <label for="costo" class="form-label">Costo</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="costo">
+                        <input min=0 type="number" class="form-control" id="costo" required>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@ $estado->execute();
                     <label for="precio" class="form-label">Precio</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="precio">
+                        <input min=0 type="number" class="form-control" id="precio" required>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_max" class="form-label">Stock máximo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_max" readonly>
+                        <input min=0 type="number" class="form-control" id="stock_max" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_min" class="form-label">Stock mínimo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_min">
+                        <input min=0 type="number" class="form-control" id="stock_min" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ $estado->execute();
                         </button>
                     </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Modal de Confirmación -->
