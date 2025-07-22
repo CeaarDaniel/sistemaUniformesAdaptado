@@ -230,3 +230,5 @@ function agregarCategoria() {
     
     modalConfirmar.hide();
 }
+
+  

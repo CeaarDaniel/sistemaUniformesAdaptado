@@ -96,7 +96,7 @@ $estado->execute();
                 <!-- Clave Comercial -->
                 <div class="mb-3">
                     <label for="clvComercial" class="form-label">Clave Comercial</label>
-                    <input type="text" class="form-control" id="clvComercial">
+                    <input type="text" class="form-control" id="clvComercial" placeholder = "Clave comercial">
                 </div>
 
                 <!-- Costo -->
@@ -104,7 +104,7 @@ $estado->execute();
                     <label for="costo" class="form-label">Costo</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="costo" required>
+                        <input min=0 type="number" class="form-control" id="costo" placeholder="Costo" required>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@ $estado->execute();
                     <label for="precio" class="form-label">Precio</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="precio" required>
+                        <input min=0 type="number" class="form-control" id="precio" placeholder ="Precio" required>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_max" class="form-label">Stock máximo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_max" required>
+                        <input min=0 type="number" class="form-control" id="stock_max" placeholder="Stock maximo" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_min" class="form-label">Stock mínimo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_min" required>
+                        <input min=0 type="number" class="form-control" id="stock_min" placeholder="Stock minimo" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>
@@ -139,8 +139,6 @@ $estado->execute();
                     <div class="col-4 ms-auto">
                         <button id="btnCrearArticulo"
                                 class="btn btn-primary btn-submit" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#confirmModal" 
                                 style="color:white; background-color:rgb(25, 118, 210);">
                                 CREAR ARTÍCULO
                         </button>
@@ -162,7 +160,7 @@ $estado->execute();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Ok</button>
+                    <button id="btnModalConfirm" type="button" class="btn btn-primary">Ok</button>
                 </div>
             </div>
         </div>

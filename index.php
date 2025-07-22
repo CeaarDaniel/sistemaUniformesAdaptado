@@ -176,6 +176,19 @@
             navegar(nuevaSeccion,'0','mainContent')
             animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
         }.bind(this), 400);
+
+        document.querySelectorAll('.modal.show').forEach(modalEl => {
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+
+        // Eliminar cualquier backdrop que quedó
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style = '';
+
     });
 
     // Cargar la página correcta al cargar la SPA
