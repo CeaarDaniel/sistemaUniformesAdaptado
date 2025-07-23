@@ -3,7 +3,6 @@
         var emptyState = document.getElementById('emptyState');
         var confirmarBtn = document.getElementById('confirmarBtn');
         var radioEntrega = document.getElementsByName('tipoEntrega');
-    
         let datos = [];
 
         $("input[name='tipoEntrega']").change(function() {
@@ -153,7 +152,7 @@
             .then((data) => {
 
                 if(data.articulo == null) {
-                    $('#btnAgregarArticulo').prop('disabled', false);
+                    $('#btnAgregarArticulo').prop('disabled', true);
                 }
                 else {
                     btnAgregarArticulo.disabled= false

@@ -103,7 +103,7 @@ $opcion = $_POST['opcion'];
     }
 
     //Obtneer los datos de un articulo 
-    else
+     else
     if($opcion == '2'){
         $id_articulo = $_POST['id_articulo'];
 
@@ -127,7 +127,7 @@ $opcion = $_POST['opcion'];
     }
 
     //Consulta para obtener solamente los datos de los articulos
-    else 
+     else 
         if($opcion == '3'){
             $sql= "select id_articulo, nombre, clave_comercial, descripcion, precio, costo, stock_max, stock_min, cantidad from uni_articulos";
             $articulos = $conn->prepare($sql);
@@ -142,4 +142,64 @@ $opcion = $_POST['opcion'];
             
             echo json_encode($response);
         }
+
+    //Actualizar los datos de un articulo del almacen
+     else 
+        if($opcion == '4'){
+            $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : null; 
+            $costo = (isset($_POST['costo'])) ? $_POST['costo'] : null; 
+            $precio = (isset($_POST['precio'])) ? $_POST['precio'] : null; 
+            $stock_max = (isset($_POST['stock_max'])) ? $_POST['stock_max'] : null; 
+            $stock_min = (isset($_POST['stock_min'])) ? $_POST['stock_min'] : null;
+            $campos;
+
+            ($descripcion) ? $campos[] = 'descripcion = :descripcion' : '';
+            ($costo) ? $campos[] = 'costo = :costo' : '';
+            ($precio) ? $campos[] = 'precio = :precio' : '';
+            ($stock_max) ? $campos[] = 'stock_max = :stock_max' : '';
+            ($stock_min) ? $campos[] = 'stock_min = :stock_min' : '';
+
+            if (!empty($campos)) {
+                $sql = 'UPDATE uni_articulos set '.implode(', ', $campos).' WHERE id_articulo = :id_articulo';
+            }
+        }
+?>
+
+<?php
+// Datos para ejemplo
+$id = 1; // ID del registro a actualizar
+$campos = [];
+$valores = [];
+
+// Solo agregamos los campos que no están vacíos
+if (!empty($_POST['nombre'])) {
+    $campos[] = "nombre = :nombre";
+    $valores[':nombre'] = $_POST['nombre'];
+}
+
+if (!empty($_POST['email'])) {
+    $campos[] = "email = :email";
+    $valores[':email'] = $_POST['email'];
+}
+
+if (!empty($_POST['telefono'])) {
+    $campos[] = "telefono = :telefono";
+    $valores[':telefono'] = $_POST['telefono'];
+}
+
+// Verificamos que haya algo que actualizar
+if (!empty($campos)) {
+    // Armamos la consulta dinámica
+    $sql = "UPDATE usuarios SET " . implode(", ", $campos) . " WHERE id = :id";
+    $valores[':id'] = $id;
+
+    // Conexión PDO
+    $pdo = new PDO("sqlsrv:Server=localhost;Database=tu_base", "usuario", "contraseña");
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($valores);
+
+    echo "Registro actualizado.";
+} else {
+    echo "No se enviaron datos para actualizar.";
+}
 ?>

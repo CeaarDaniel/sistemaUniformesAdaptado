@@ -30,7 +30,7 @@ $estado->execute();
                 <!-- Nombre -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" readonly>
+                    <input type="text" class="form-control" id="nombre" name="nombre" readonly>
                     <small id="nombreHelpText" class="form-text text-muted ms-3">El nombre se genera automáticamente</small>
                 </div>
 
@@ -38,7 +38,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="categoria" class="form-label">Categoría</label>
                     <div class="d-flex">
-                        <select class="form-select" id="categoria" style="max-width:300px" required>
+                        <select class="form-select" id="categoria" name="categoria" style="max-width:300px" required>
                             <!-- <option value="">--- SELECCIONE UNA OPCIÓN ---</option> -->
                             <?php
                                 while($categoria = $categorias->fetch(PDO::FETCH_ASSOC))
@@ -57,7 +57,7 @@ $estado->execute();
                 <!-- Talla -->
                 <div class="mb-3">
                     <label for="talla" class="form-label">Talla</label>
-                    <select class="form-select" id="talla" required>
+                    <select class="form-select" id="talla" name="talla" required>
                        <!--  <option value="">--- SELECCIONE UNA CATEGORÍA ---</option> -->
                     </select>
                 </div>
@@ -65,7 +65,7 @@ $estado->execute();
                 <!-- Género -->
                 <div class="mb-3">
                     <label for="genero" class="form-label">Género</label>
-                    <select class="form-select" id="genero" required>
+                    <select class="form-select" id="genero" name="genero" required>
                         <?php
                             while($genero = $generos->fetch(PDO::FETCH_ASSOC))
                             echo '<option value="'.$genero['id_genero'].'">'.$genero['genero'].'</option>';
@@ -76,7 +76,7 @@ $estado->execute();
                 <!-- Estado -->
                 <div class="mb-3">
                     <label for="estado" class="form-label">Estado</label>
-                    <select class="form-select" id="estado" required>
+                    <select class="form-select" id="estado" name="estado" required>
                         <?php
                             while($dato = $estado->fetch(PDO::FETCH_ASSOC))
                             echo '<option value="'.$dato['id_estado'].'">'.$dato['estado'].'</option>';
@@ -87,7 +87,7 @@ $estado->execute();
                 <!-- Descripción -->
                 <div class="mb-3">
                     <label for="descripcion" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="descripcion" rows="3" maxlength=500></textarea>
+                    <textarea class="form-control" id="descripcion"  name="descripcion" rows="3" maxlength=500></textarea>
                 </div>
             </div>
 
@@ -96,7 +96,7 @@ $estado->execute();
                 <!-- Clave Comercial -->
                 <div class="mb-3">
                     <label for="clvComercial" class="form-label">Clave Comercial</label>
-                    <input type="text" class="form-control" id="clvComercial" placeholder = "Clave comercial">
+                    <input type="text" class="form-control" id="clvComercial" name="clvComercial" placeholder = "Clave comercial">
                 </div>
 
                 <!-- Costo -->
@@ -104,7 +104,7 @@ $estado->execute();
                     <label for="costo" class="form-label">Costo</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="costo" placeholder="Costo" required>
+                        <input min=0 type="number" class="form-control" id="costo" name="costo" step="0.01" placeholder="Costo" required>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@ $estado->execute();
                     <label for="precio" class="form-label">Precio</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input min=0 type="number" class="form-control" id="precio" placeholder ="Precio" required>
+                        <input min=0 type="number" class="form-control" id="precio" name="precio" step="0.01" placeholder="Precio" required>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_max" class="form-label">Stock máximo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_max" placeholder="Stock maximo" required>
+                        <input min=0 type="number" class="form-control" id="stock_max" name="stock_max" placeholder="Stock maximo" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ $estado->execute();
                 <div class="mb-3">
                     <label for="stock_min" class="form-label">Stock mínimo</label>
                     <div class="input-group">
-                        <input min=0 type="number" class="form-control" id="stock_min" placeholder="Stock minimo" required>
+                        <input min=0 type="number" class="form-control" id="stock_min" name="stock_min" placeholder="Stock minimo" required>
                         <span class="input-group-text">pzas</span>
                     </div>
                 </div>

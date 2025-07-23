@@ -477,3 +477,5 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
 					 select* from uni_talla
 			Declare @tipoTalla INT;
 				SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
+				SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+						where  TABLE_NAME = 'uni_articulos';

@@ -117,7 +117,6 @@ else
             }
         }
 
-    
         //REGISTRO DE LA NUEVA CATEGORIA
         $registrarCategoria = "INSERT INTO uni_categoria(abrev, categoria, tipo_talla) 
                                     VALUES (:abrev, :categoria, :tipoTalla)";
@@ -136,13 +135,12 @@ else
                 $response = array('response' => $stmt->errorInfo()[2]);
 
         echo json_encode($response);
-    
     }
 
 //REGISTRO DE UN ARTICULO
 else 
     if($opcion == '6'){
-         $nombre = (isset($_POST['nombre']) && !empty($_POST['nombre'])) ? $_POST['nombre'] : null; 
+         $nombre = (isset($_POST['nombre'])) ? $_POST['nombre'] : null; 
          $clvComercial = (isset($_POST['clvComercial'])) ? $_POST['clvComercial'] : ''; 
          $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : '';
          $categoria = (isset($_POST['categoria'])) ? $_POST['categoria'] : null;
@@ -157,5 +155,42 @@ else
          $activo = 1; 
          $eliminado = 0;
          $cantidad = 0;
+
+         if($nombre === null || $categoria === null || $talla === null || $genero === null || $estado === null || $costo === null || $precio === null || $stock_max === null || $stock_min === null){
+                $response = array('response' => "NO SE HAN COMPLETADO TODOS LOS CAMPOS");
+                  echo json_encode($response);
+                 exit();
+         }
+
+         $sql= 'INSERT INTO UNI_ARTICULOS (nombre, clave_comercial, descripcion, precio, costo, stock_max,
+                                            stock_min, genero, cantidad, id_estado, id_talla, id_categoria, activo, eliminado) 
+                VALUES(:nombre, :clave_comercial, :descripcion, :precio, :costo, :stock_max,
+                        :stock_min, :genero, :cantidad, :id_estado, :id_talla, :id_categoria, :activo, :eliminado)';
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bindParam(':nombre',$nombre);
+        $stmt->bindParam(':clave_comercial',$clvComercial);
+        $stmt->bindParam(':descripcion',$descripcion);
+        $stmt->bindParam(':precio',$precio);
+        $stmt->bindParam(':costo',$costo);
+        $stmt->bindParam(':stock_max',$stock_max);
+        $stmt->bindParam(':stock_min',$stock_min);
+        $stmt->bindParam(':genero',$genero);
+        $stmt->bindParam(':cantidad',$cantidad);
+        $stmt->bindParam(':id_estado',$estado);
+        $stmt->bindParam(':id_talla',$talla);
+        $stmt->bindParam(':id_categoria',$categoria);
+        $stmt->bindParam(':activo',$activo);
+        $stmt->bindParam(':eliminado',$eliminado);
+
+        if($stmt->execute()){ 
+            $response = array("response" => "Articulo registrado correctamente");
+        }
+
+        else 
+            $response = array("response" => $stmt->errorInfo()[2]);
+
+        echo json_encode($response);
     }
 ?>

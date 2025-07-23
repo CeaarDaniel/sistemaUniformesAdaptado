@@ -1,6 +1,7 @@
     const frmAltaArticulo = document.getElementById('frmAltaArticulo');
     const modalConfirmar = new bootstrap.Modal(document.getElementById('confirmModal'));
-    const btnCrearArticulo = document.getElementById('btnCrearArticulo');
+    const btnCrearArticulo = document.getElementById('btnCrearArticulo'); 
+    const btnModalConfirm = document.getElementById('btnModalConfirm');
 
      btnCrearArticulo.addEventListener('click', function() {
             event.preventDefault();
@@ -11,6 +12,8 @@
             else  
                 alert("Debe completar los campos requeridos para el registro del articulo")
     });
+
+    btnModalConfirm.addEventListener('click', guardarArticulo)
 
 
 // Función para actualizar el nombre del artículo
@@ -85,7 +88,24 @@ function modificarTalla(){
 }
 // Función para guardar el artículo
 function guardarArticulo() {
-    alert('Artículo guardado correctamente');
+
+    var formData = new FormData(frmAltaArticulo); 
+    formData.append("opcion", 6);
+     fetch("./api/altas.php", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+                  alert( data.response);
+                  location.reload();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+          
+    modalConfirmar.hide();
+
     // Aquí puedes agregar la lógica para enviar los datos al servidor
 }
 

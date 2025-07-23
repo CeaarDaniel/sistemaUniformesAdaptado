@@ -134,8 +134,11 @@
             .then((response) => response.json())
             .then((data) => {
 
-                if(data.articulo == null) {
-                    $('#btnAgregarArticulo').prop('disabled', false);
+                if(data.articulo === null) {
+                    $('#btnAgregarArticulo').prop('disabled', true);
+                    //console.log(data.articulo)
+                    $('#nombre').val('')
+                    $('#nombre').attr('placeholder', 'Artículo no valido');
                 }
                 else {
                     btnAgregarArticulo.disabled= false

@@ -219,10 +219,10 @@ function agregarCategoria() {
           method: "POST",
           body: formData,
         })
-          .then((response) => response.text())
+          .then((response) => response.json())
           .then((data) => {
-                alert(data);
-                //agregar funcion para recargar la pagina
+                alert(data.response);
+               location.reload();
           })
           .catch((error) => {
             console.log(error);

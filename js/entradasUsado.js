@@ -21,7 +21,7 @@
 
 
     btnAgregarArticulo.addEventListener('click', agregarArticulo)
-    generarPedidoBtn.addEventListener('click', generarPedido);
+    generarPedidoBtn.addEventListener('click', generarEntrada);
 
     eliminarBtn.addEventListener('click', function(){
         datos= []; 
@@ -142,7 +142,9 @@
             .then((response) => response.json())
             .then((data) => {
                 if(data.articulo == null) {
-                    $('#btnAgregarArticulo').prop('disabled', false);
+                    $('#btnAgregarArticulo').prop('disabled', true);
+                    $('#nombre').val('')
+                    $('#nombre').attr('placeholder', 'Artículo no valido');
                 }
                 else {
                     btnAgregarArticulo.disabled= false
@@ -229,16 +231,18 @@
                 }
     }
 
-    //Cambiar por generar entrada
-    function generarPedido(){
+    //En los pedidos de uniforme usado generar la entrada directamente sin el pedido
+    function generarEntrada(){
+        let table = $('#tablaArticulos').DataTable();
         articulosPedido = table.rows().data().toArray();
-        console.log(articulosPedido)
+        //console.log(articulosPedido)
        if(articulosPedido.length <= 0) {
             alert('¡No se puede realizar un pedido sin artículos!'); 
-            confirmModal.hide();  
+            confirmModal.hide();
        }
 
        else {
+        /*
             var formData = new FormData;
             formData.append("opcion", "5"); 
             formData.append('articulosPedido',JSON.stringify(articulosPedido))
@@ -256,7 +260,10 @@
                 .catch((error) => {
                     console.log(error);
                     confirmModal.hide();
-                }); 
+                });  
+        */
+                alert("Pedido generado")
+                confirmModal.hide(); 
        }
     }
 
