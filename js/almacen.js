@@ -4,6 +4,7 @@
   var generoCat = document.getElementById('generoCat');
   var btnImprimirAlmacen = document.getElementById('btnImprimirAlmacen');
   var impresionInventario = document.getElementById('impresionInventario');
+  var btnEditarArticulo = document.getElementById('btnEditarArticulo');
 
   const tabla= $('#tablaArticulos').DataTable();
 
@@ -12,6 +13,27 @@
   generoCat.addEventListener('change', renderTable)
   btnImprimirAlmacen.addEventListener('click', imprimirTabla);
 
+  //Funcion para actualizar los campos modificados
+  btnEditarArticulo.addEventListener('click', function() {
+     let formEditarArticulo = document.getElementById('formEditarArticulo');
+
+    if (formEditarArticulo && formEditarArticulo.reportValidity()){
+        var formData = new FormData(formEditarArticulo);
+        formData.append("opcion", 4);
+        fetch("./api/almacen.php", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                alert(data.response)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+    
+  })
   if (btnactualizartabla) btnactualizartabla.addEventListener('click', refresh)
 
     // Funciones de manejo de eventos
@@ -135,28 +157,28 @@
                                                                                             <!-- Nombre -->
                                                                                             <div class="mb-3">
                                                                                                 <label for="nombre" class="form-label">Nombre</label>
-                                                                                                <input type="text" class="form-control" id="nombre" value="${data.nombre}" readonly style="background-color:#3f51b521">
+                                                                                                <input type="text" class="form-control" id="nombre" name="nombre" value="${data.nombre}" readonly style="background-color:#3f51b521">
                                                                                                 <small id="nombreHelpText" class="form-text text-muted ms-3">El nombre no se puede modificar</small>
                                                                                             </div>
 
                                                                                             <!-- Categoría -->
                                                                                             <div class="mb-3">
                                                                                                 <label for="categoria" class="form-label">Categoría</label>
-                                                                                                <input class="form-select" id="categoria" value="${data.categoria}" readonly style="background-color:#3f51b521; max-width:300px;">
+                                                                                                <input class="form-select" id="categoria" name="categoria" value="${data.categoria}" readonly style="background-color:#3f51b521; max-width:300px;">
                                                                                                 <small id="nombreHelpText" class="form-text text-muted ms-3">La categoría no se puede modificar</small>
                                                                                             </div>
 
                                                                                             <!-- Talla -->
                                                                                             <div class="mb-3">
                                                                                                 <label for="talla" class="form-label">Talla</label>
-                                                                                                <input class="form-select" id="talla" value="${data.talla}" readonly style="background-color:#3f51b521">
+                                                                                                <input class="form-select" id="talla" name="talla" value="${data.talla}" readonly style="background-color:#3f51b521">
                                                                                                 <small id="nombreHelpText" class="form-text text-muted ms-3">La talla no se puede modificar</small>
                                                                                             </div>
 
                                                                                             <!-- Género -->
                                                                                             <div class="mb-3">
                                                                                                 <label for="genero" class="form-label">Género</label>
-                                                                                                <input class="form-select" id="genero" value="${data.genero}" readonly style="background-color:#3f51b521">
+                                                                                                <input class="form-select" id="genero" name="genero" value="${data.genero}" readonly style="background-color:#3f51b521">
                                                                                                 <small id="nombreHelpText" class="form-text text-muted ms-3">El género no se puede modificar</small>
                                                                                             </div>
                                                                                         </div>
@@ -166,7 +188,7 @@
                                                                                             <!-- Descripción -->
                                                                                             <div class="mb-3">
                                                                                                 <label for="descripcion" class="form-label">Descripción</label>
-                                                                                                <textarea class="form-control" id="descripcion" rows="3" maxlength=500>${data.descripcion}</textarea>
+                                                                                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" maxlength=500>${data.descripcion}</textarea>
                                                                                             </div>
 
                                                                                             <!-- Costo -->
@@ -174,7 +196,7 @@
                                                                                                 <label for="costo" class="form-label">Costo</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="costo" step="0.01" min="0" max="100000" value="${data.costo}">
+                                                                                                    <input min=0 type="number" class="form-control" id="costo" name="costo" step="0.01" min="0" max="100000" value="${data.costo}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -183,7 +205,7 @@
                                                                                                 <label for="precio" class="form-label">Precio</label>
                                                                                                 <div class="input-group">
                                                                                                     <span class="input-group-text">$</span>
-                                                                                                    <input min=0 type="number" class="form-control" id="precio" step="0.01" min="0" max="100000" value="${data.precio}">
+                                                                                                    <input min=0 type="number" class="form-control" id="precio" name="precio" step="0.01" min="0" max="100000" value="${data.precio}">
                                                                                                 </div>
                                                                                             </div>
 
@@ -191,7 +213,7 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_max" class="form-label">Stock máximo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" step="1" min="0" max="100000" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_max" name="stock_max" step="1" min="0" max="100000" value="${data.stock_max}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>
@@ -200,11 +222,12 @@
                                                                                             <div class="mb-3">
                                                                                                 <label for="stock_min" class="form-label">Stock mínimo</label>
                                                                                                 <div class="input-group">
-                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" step="1" min="0" max="100000" value="${data.stock_max}">
+                                                                                                    <input min=0 type="number" class="form-control" id="stock_min" name="stock_min" step="1" min="0" max="100000" value="${data.stock_min}">
                                                                                                     <span class="input-group-text">pzas</span>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
+                                                                                        <input type="hidden" id="id_articulo" name="id_articulo"  value="${data.id_articulo}">
                                                                                     </div>
                                                                                 </form>`;
                     myModal.show();
@@ -218,7 +241,25 @@
     function eliminarArticulo(event) {
         const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
         var idArt = boton.getAttribute('data-id');
-        const respuesta = confirm(`¿Estás seguro de que deseas eliminar artículo con ID: ${idArt}`);
+        const respuesta = confirm(`¿Estás seguro de que deseas eliminar este artículo ${idArt}`);
+
+        if(respuesta){
+            var formData = new FormData();
+            formData.append("opcion", 5);
+            formData.append("id_articulo", idArt)
+            fetch("./api/almacen.php", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert(data.response)
+                    renderTable();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     }
 
     function refresh(){

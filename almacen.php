@@ -133,7 +133,7 @@
                     <div class="modal-body py-1" id='modalModificarArticulo'>
                     </div>
                     <div class="modal-footer">
-                        <button id="btnCrearArticulo" class="btn" style="color:white; background-color:#21ba45;">
+                        <button id="btnEditarArticulo" class="btn" style="color:white; background-color:#21ba45;">
                             Modificar
                         </button>                                                          
                     </div>

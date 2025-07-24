@@ -3,7 +3,7 @@
     const btnCrearArticulo = document.getElementById('btnCrearArticulo'); 
     const btnModalConfirm = document.getElementById('btnModalConfirm');
 
-     btnCrearArticulo.addEventListener('click', function() {
+     btnCrearArticulo.addEventListener('click', function(event) {
             event.preventDefault();
             if(frmAltaArticulo.reportValidity()) 
                 modalConfirmar.show();

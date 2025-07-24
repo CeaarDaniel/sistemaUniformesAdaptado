@@ -43,7 +43,7 @@ $opcion = $_POST['opcion'];
                         left join ( select distinct(id_articulo) as id_articulo, SUM(cantidad) as cantTran from uni_pedido as up 
 										inner join uni_pedido_articulo as upa on up.id_pedido = upa.id_pedido 
 									where status='2' group by id_articulo) as atr on a.id_articulo= atr.id_articulo
-                    where 1=1 ".$filtroCategoria." ".$filtroEstado." ".$filtroGenero;
+                    where a.activo = 1 and 1=1 ".$filtroCategoria." ".$filtroEstado." ".$filtroGenero;
 
         $articulosAlmacen = $conn->prepare($sql);
 
@@ -129,7 +129,8 @@ $opcion = $_POST['opcion'];
     //Consulta para obtener solamente los datos de los articulos
      else 
         if($opcion == '3'){
-            $sql= "select id_articulo, nombre, clave_comercial, descripcion, precio, costo, stock_max, stock_min, cantidad from uni_articulos";
+            $sql= "SELECT id_articulo, nombre, clave_comercial, descripcion, precio, costo, stock_max, stock_min, cantidad 
+                    from uni_articulos WHERE activo = 1";
             $articulos = $conn->prepare($sql);
 
             if ($articulos ->execute()){
@@ -146,11 +147,14 @@ $opcion = $_POST['opcion'];
     //Actualizar los datos de un articulo del almacen
      else 
         if($opcion == '4'){
-            $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : null; 
             $costo = (isset($_POST['costo'])) ? $_POST['costo'] : null; 
             $precio = (isset($_POST['precio'])) ? $_POST['precio'] : null; 
             $stock_max = (isset($_POST['stock_max'])) ? $_POST['stock_max'] : null; 
             $stock_min = (isset($_POST['stock_min'])) ? $_POST['stock_min'] : null;
+            $id_articulo = (isset($_POST['id_articulo'])) ? $_POST['id_articulo'] : ''; 
+            $descripcion = (isset($_POST['descripcion'])) ? $_POST['descripcion'] : null; 
+            $clave_comercial = (isset($_POST['clave_comercial'])) ? $_POST['clave_comercial'] : null; 
+
             $campos;
 
             ($descripcion) ? $campos[] = 'descripcion = :descripcion' : '';
@@ -158,48 +162,74 @@ $opcion = $_POST['opcion'];
             ($precio) ? $campos[] = 'precio = :precio' : '';
             ($stock_max) ? $campos[] = 'stock_max = :stock_max' : '';
             ($stock_min) ? $campos[] = 'stock_min = :stock_min' : '';
+            ($clave_comercial) ? $campos[] = 'clave_comercial = :clave_comercial ' : '';
+
+            /*
+                $datos = [
+                        'descripcion' => $descripcion,
+                        'costo' => $costo,
+                        'precio' => $precio,
+                        'stock_max' => $stock_max,
+                        'stock_min' => $stock_min
+                    ];
+
+                    $campos = [];
+
+                    // se toma el valor de la clave y el valor asociado
+                    foreach ($datos as $campo => $valor) {
+                        if (!empty($valor)) {
+                            $campos[] = "$campo = :$campo";
+                        }
+                    }
+            */
 
             if (!empty($campos)) {
-                $sql = 'UPDATE uni_articulos set '.implode(', ', $campos).' WHERE id_articulo = :id_articulo';
+                 $sql = 'UPDATE uni_articulos set '.implode(', ', $campos).' WHERE id_articulo = :id_articulo';
+
+                 $update = $conn->prepare($sql);
+
+                  ($descripcion) ? $update->bindparam(':descripcion', $descripcion) : '';
+                  ($costo) ? $update->bindparam(':costo', $costo) : '';
+                  ($precio) ? $update->bindparam(':precio', $precio) : '';
+                  ($stock_max) ? $update->bindparam(':stock_max', $stock_max) : '';
+                  ($stock_min) ? $update->bindparam(':stock_min', $stock_min) : '';
+                  ($clave_comercial) ? $update->bindparam(':clave_comercial', $clave_comercial) : '';
+                  $update->bindparam(':id_articulo', $id_articulo);
+
+                 if($update->execute())
+                     $response = array("response" => 'se ha actualizado la información del articulo',
+                                       'modificado' => true);
+
+                 else
+                     $response = array('response'=> $update->errorInfo()[2], 
+                                       'modificado' => false);
             }
+
+            else 
+                 $response = array('response'=> "Debe ingresar al menos un valor válido para actualizar el registro. La actualización no se realiza si el campo está vacío, en blanco, o con valor de 0",
+                                    'modificado' => false);
+
+        echo json_encode ($response);
+                
         }
-?>
 
-<?php
-// Datos para ejemplo
-$id = 1; // ID del registro a actualizar
-$campos = [];
-$valores = [];
+     //Eliminar un articulo del almacen
+     else 
+        if($opcion == '5'){
+            $id_articulo = (isset($_POST['id_articulo'])) ? $_POST['id_articulo'] : null;
+            $sql = 'UPDATE uni_articulos set activo=0, eliminado = 1  WHERE id_articulo = :id_articulo';
 
-// Solo agregamos los campos que no están vacíos
-if (!empty($_POST['nombre'])) {
-    $campos[] = "nombre = :nombre";
-    $valores[':nombre'] = $_POST['nombre'];
-}
+            $update = $conn->prepare($sql);
+            $update->bindparam(':id_articulo', $id_articulo);
 
-if (!empty($_POST['email'])) {
-    $campos[] = "email = :email";
-    $valores[':email'] = $_POST['email'];
-}
+                if($update->execute())
+                    $response = array("response" => 'se a dado de baja el articulo');
 
-if (!empty($_POST['telefono'])) {
-    $campos[] = "telefono = :telefono";
-    $valores[':telefono'] = $_POST['telefono'];
-}
+                else
+                    $response = array('response'=> $update->errorInfo()[2]);
+           
 
-// Verificamos que haya algo que actualizar
-if (!empty($campos)) {
-    // Armamos la consulta dinámica
-    $sql = "UPDATE usuarios SET " . implode(", ", $campos) . " WHERE id = :id";
-    $valores[':id'] = $id;
-
-    // Conexión PDO
-    $pdo = new PDO("sqlsrv:Server=localhost;Database=tu_base", "usuario", "contraseña");
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($valores);
-
-    echo "Registro actualizado.";
-} else {
-    echo "No se enviaron datos para actualizar.";
-}
+            echo json_encode ($response);
+                
+        }
 ?>

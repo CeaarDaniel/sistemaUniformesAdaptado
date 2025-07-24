@@ -56,7 +56,6 @@
                                             var campoModificado = "";
 
                                             if (columnasPermitidas.includes(columnIndex)) {
-
                                                 switch (columnIndex){
                                                     case 2:  
                                                             //Evaluar que no exista el input, si no reiniciara los valroes de la celda al presionar clic sobre el input
@@ -137,28 +136,49 @@
                                                     else 
                                                         if( (columnIndex == 4  || columnIndex == 5  || columnIndex == 6 || columnIndex == 7  || columnIndex == 8) && Number(newValue) < 0)
                                                             cell.html(cellValue);
-                                                            
+
                                                     else 
                                                         {
                                                             var actualizar = confirm("Esta seguro que desea modificar este campo?");
                                                             if (actualizar) {
                                                                 //El valor del precio y el costo solo debe contener 2 decimales
-                                                                    if(columnIndex == 4 || columnIndex == 5)  newValue =  Number(newValue).toFixed(2)
+                                                                    if(columnIndex == 4 || columnIndex == 5)  newValue =  Number(Number(newValue).toFixed(2))
 
-                                                                    else 
-                                                                        //Los valoes de costo stock min y stock max, no deben de contener decimales por lo que se truncan
+                                                                    else //Los valoes de costo stock min y stock max, no deben de contener decimales por lo que se truncan
                                                                         if(columnIndex == 6 || columnIndex == 7 || columnIndex == 8)
                                                                              newValue = Math.trunc(Number(newValue)); 
                                                                             //Math.round(Number(newValue));
 
-                                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
-                                                                    console.log(campoModificado+":"+newValue) 
+                                                                    //console.log(campoModificado+":"+newValue) 
+                                                                    //console.log("id del valor modificado",valorColumna0)
+
+
+                                                                    var formData = new FormData();
+                                                                        formData.append(campoModificado,newValue)
+                                                                        formData.append('id_articulo', valorColumna0)
+                                                                        formData.append("opcion", 4);
+                                                                    
+                                                                        fetch("./api/almacen.php", {
+                                                                            method: "POST",
+                                                                            body: formData,
+                                                                        })
+                                                                            .then((response) => response.json())
+                                                                            .then((data) => {
+                                                                                alert(data.response)
+                                                                                if(data.modificado)
+                                                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
+                                                                                
+                                                                                else 
+                                                                                    cell.html(cellValue);
+                                                                            })
+                                                                            .catch((error) => {
+                                                                                console.log(error);
+                                                                            });
                                                                 }
                                                             else
                                                                 cell.html(cellValue);
                                                         }
                                                 });
-
                                                 //escuchar el evento 'Enter' para confirmar la edición
                                                 input.on('keypress', function(event) {
                                                     if (event.which === 13) { // Tecla Enter
@@ -167,11 +187,27 @@
                                                                   cell.html(cellValue);
 
                                                         else 
-                                                           {
-                                                                var actualizar = confirm("Esta seguro que desea modificar este campo?");
+                                                            if( (columnIndex == 4  || columnIndex == 5  || columnIndex == 6 || columnIndex == 7  || columnIndex == 8) && Number(newValue) < 0)
+                                                                cell.html(cellValue);
 
-                                                                if (actualizar)
-                                                                    cell.html(newValue); // Reemplazar el input por el nuevo valor
+                                                        else {
+                                                                var actualizar = confirm("Esta seguro que desea modificar este campo?");
+                                                                if (actualizar) { //El valor del precio y el costo solo debe contener 2 decimales
+                                                                    if(columnIndex == 4 || columnIndex == 5)  newValue =  Number(newValue).toFixed(2)
+
+                                                                    else //Los valoes de costo stock min y stock max, no deben de contener decimales por lo que se truncan
+                                                                        if(columnIndex == 6 || columnIndex == 7 || columnIndex == 8)
+                                                                             newValue = Math.trunc(Number(newValue)); 
+                                                                            //Math.round(Number(newValue));
+
+                                                                    //console.log(campoModificado+":"+newValue) 
+                                                                    //console.log("id del valor modificado",valorColumna0)
+                                                                    if (actualizarRegistro(valorColumna0, campoModificado, newValue))
+                                                                            cell.html(newValue); // Reemplazar el input por el nuevo valor
+
+                                                                      else
+                                                                        cell.html(cellValue);
+                                                                }
 
                                                                 else
                                                                     cell.html(cellValue);
@@ -194,3 +230,25 @@
     }
 
     renderTable();
+
+    function  actualizarRegistro(id_articulo, columna, valor){
+        var formData = new FormData();
+        formData.append(columna,valor)
+        formData.append('id_articulo', id_articulo)
+        formData.append("opcion", 4);
+      
+        fetch("./api/almacen.php", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                alert(data.response)
+                return(data.modificado)
+            })
+            .catch((error) => {
+                console.log(error);
+                return false;
+            });
+    
+    }
