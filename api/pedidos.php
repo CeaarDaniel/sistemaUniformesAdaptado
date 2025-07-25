@@ -32,7 +32,7 @@ $opcion = $_POST['opcion'];
         else 
             $filtrostatus=' ';    
 
-        $sql= "SELECT p.id_pedido, p.num_pedido, p.fecha_creacion, e.pedido_estado, d.nombre from uni_pedido as p 
+        $sql= "SELECT p.id_pedido, p.num_pedido, p.fecha_creacion, p.status, e.pedido_estado, d.nombre from uni_pedido as p 
                     inner join DIRECTORIO_0 AS d on p.id_usuario = d.ID
                     inner join uni_pedido_estado as e on p.status = e.id_estado
                 WHERE 1=1 
@@ -43,38 +43,104 @@ $opcion = $_POST['opcion'];
         $pedidos = $conn->prepare($sql);
 
         if ($pedidos ->execute()){
-            while($pedido = $pedidos->fetch(PDO::FETCH_ASSOC))
+            $acciones = '';
+            while($pedido = $pedidos->fetch(PDO::FETCH_ASSOC)){
+
+                switch($pedido['status']){
+                    case 1: $acciones = '<button class="btn btnCancelar"
+                                                    data-id="'.$pedido['id_pedido'].'">
+                                                    <i class="fas fa-times" style="font-size:20px; color:red; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnVer"
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'"
+                                                >
+                                                    <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnImprimir p-0 my-0 mx-1" 
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'">
+                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                            </button>';
+                                    break;
+                    case 2: $acciones =  '<button class="btn btnConcretar" data-id="'.$pedido['id_pedido'].'">
+                                                <i class="fas fa-check" style="font-size:20px; color:#198754; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnVer"
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'"
+                                                >
+                                                    <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnImprimir p-0 my-0 mx-1" 
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'">
+                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                            </button>'; 
+                                break;
+                        case 3: $acciones = '<button class="btn btnVer"
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'"
+                                                >
+                                                    <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnImprimir p-0 my-0 mx-1" 
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'">
+                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                            </button>'; break;
+                        case 4: $acciones = '<button class="btn btnVer"
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'"
+                                                >
+                                                    <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
+                                            </button>
+                                            <button class="btn btnImprimir p-0 my-0 mx-1" 
+                                                data-id="'.$pedido['id_pedido'].'"
+                                                data-numPedido="'.$pedido['num_pedido'].'"
+                                                data-fechaCreacion="'.$pedido['fecha_creacion'].'"
+                                                data-estado="'.$pedido['pedido_estado'].'"
+                                                data-nombre="'.$pedido['nombre'].'">
+                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                            </button>';
+                                break;
+                }
+
+                //1	Creado
+                //2	En transito
+                //3	Cancelado
+                //4	Concretado
+                //5	Todos
+
                 $response[] = array ( 'id_pedido' => $pedido['id_pedido'],
                                       'num_pedido' => $pedido['num_pedido'],
                                       'fecha_creacion' => $pedido['fecha_creacion'],
                                       'pedido_estado' => $pedido['pedido_estado'],
                                       'nombre' => $pedido['nombre'], 
-                                      'acciones' => '<button class="btn btnConcretar"
-                                                                    data-id="'.$pedido['id_pedido'].'">
-                                                        <i class="fas fa-check" style="font-size:20px; color:#198754; background-color:none"></i>
-                                                    </button>
-                                                     <button class="btn btnCancelar"
-                                                             data-id="'.$pedido['id_pedido'].'">
-                                                        <i class="fas fa-times" style="font-size:20px; color:red; background-color:none"></i>
-                                                    </button>
-                                                    <button class="btn btnVer"
-                                                            data-id="'.$pedido['id_pedido'].'"
-                                                            data-numPedido="'.$pedido['num_pedido'].'"
-                                                            data-fechaCreacion="'.$pedido['fecha_creacion'].'"
-                                                            data-estado="'.$pedido['pedido_estado'].'"
-                                                            data-nombre="'.$pedido['nombre'].'"
-                                                            >
-                                                        <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
-                                                    </button>
-                                                    <button class="btn btnImprimir p-0 my-0 mx-1" 
-                                                            data-id="'.$pedido['id_pedido'].'"
-                                                            data-numPedido="'.$pedido['num_pedido'].'"
-                                                            data-fechaCreacion="'.$pedido['fecha_creacion'].'"
-                                                            data-estado="'.$pedido['pedido_estado'].'"
-                                                            data-nombre="'.$pedido['nombre'].'">
-                                                        <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
-                                                    </button>'
+                                      'acciones' => $acciones
                                     );
+            }
         }
 
         else

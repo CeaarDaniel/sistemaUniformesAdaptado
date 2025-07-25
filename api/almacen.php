@@ -149,6 +149,7 @@ $opcion = $_POST['opcion'];
         if($opcion == '4'){
             $costo = (isset($_POST['costo'])) ? $_POST['costo'] : null; 
             $precio = (isset($_POST['precio'])) ? $_POST['precio'] : null; 
+            $cantidad = (isset($_POST['cantidad'])) ? $_POST['cantidad'] : null; 
             $stock_max = (isset($_POST['stock_max'])) ? $_POST['stock_max'] : null; 
             $stock_min = (isset($_POST['stock_min'])) ? $_POST['stock_min'] : null;
             $id_articulo = (isset($_POST['id_articulo'])) ? $_POST['id_articulo'] : ''; 
@@ -157,12 +158,13 @@ $opcion = $_POST['opcion'];
 
             $campos;
 
-            ($descripcion) ? $campos[] = 'descripcion = :descripcion' : '';
             ($costo) ? $campos[] = 'costo = :costo' : '';
             ($precio) ? $campos[] = 'precio = :precio' : '';
+            ($cantidad) ? $campos[] = 'cantidad = :cantidad' : '';
             ($stock_max) ? $campos[] = 'stock_max = :stock_max' : '';
             ($stock_min) ? $campos[] = 'stock_min = :stock_min' : '';
-            ($clave_comercial) ? $campos[] = 'clave_comercial = :clave_comercial ' : '';
+            ($descripcion) ? $campos[] = 'descripcion = :descripcion' : '';
+            ($clave_comercial) ? $campos[] = 'clave_comercial = :clave_comercial' : '';
 
             /*
                 $datos = [
@@ -188,11 +190,12 @@ $opcion = $_POST['opcion'];
 
                  $update = $conn->prepare($sql);
 
-                  ($descripcion) ? $update->bindparam(':descripcion', $descripcion) : '';
                   ($costo) ? $update->bindparam(':costo', $costo) : '';
+                  ($cantidad) ? $update->bindparam(':cantidad', $cantidad) : '';
                   ($precio) ? $update->bindparam(':precio', $precio) : '';
                   ($stock_max) ? $update->bindparam(':stock_max', $stock_max) : '';
                   ($stock_min) ? $update->bindparam(':stock_min', $stock_min) : '';
+                  ($descripcion) ? $update->bindparam(':descripcion', $descripcion) : '';
                   ($clave_comercial) ? $update->bindparam(':clave_comercial', $clave_comercial) : '';
                   $update->bindparam(':id_articulo', $id_articulo);
 
@@ -209,8 +212,7 @@ $opcion = $_POST['opcion'];
                  $response = array('response'=> "Debe ingresar al menos un valor válido para actualizar el registro. La actualización no se realiza si el campo está vacío, en blanco, o con valor de 0",
                                     'modificado' => false);
 
-        echo json_encode ($response);
-                
+            echo json_encode ($response);
         }
 
      //Eliminar un articulo del almacen
@@ -229,7 +231,6 @@ $opcion = $_POST['opcion'];
                     $response = array('response'=> $update->errorInfo()[2]);
            
 
-            echo json_encode ($response);
-                
+            echo json_encode ($response);       
         }
 ?>
