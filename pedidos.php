@@ -158,10 +158,11 @@
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de cancelar este pedido?
+                        <input type="text" id="modalCancelarId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-danger">Sí, cancelar</button>
+                        <button type="button" id="btnModalCancelar" class="btn btn-danger">Sí, cancelar</button>
                     </div>
                 </div>
             </div>

@@ -47,6 +47,7 @@ $opcion = $_POST['opcion'];
             while($pedido = $pedidos->fetch(PDO::FETCH_ASSOC)){
 
                 switch($pedido['status']){
+                    //Creado
                     case 1: $acciones = '<button class="btn btnCancelar"
                                                     data-id="'.$pedido['id_pedido'].'">
                                                     <i class="fas fa-times" style="font-size:20px; color:red; background-color:none"></i>
@@ -60,15 +61,17 @@ $opcion = $_POST['opcion'];
                                                 >
                                                     <i class="fas fa-eye" style="font-size:20px; color:blue; background-color:none"></i>
                                             </button>
-                                            <button class="btn btnImprimir p-0 my-0 mx-1" 
+                                            <button class="btn btnConfirmar p-0 my-0 mx-1" 
                                                 data-id="'.$pedido['id_pedido'].'"
+                                                data-status="'.$pedido['status'].'"
                                                 data-numPedido="'.$pedido['num_pedido'].'"
                                                 data-fechaCreacion="'.$pedido['fecha_creacion'].'"
                                                 data-estado="'.$pedido['pedido_estado'].'"
                                                 data-nombre="'.$pedido['nombre'].'">
-                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                                    <i class="fas fa-print" style="font-size:20px; color:#00542C; background-color:none"></i>
                                             </button>';
                                     break;
+                    //En transito
                     case 2: $acciones =  '<button class="btn btnConcretar" data-id="'.$pedido['id_pedido'].'">
                                                 <i class="fas fa-check" style="font-size:20px; color:#198754; background-color:none"></i>
                                             </button>
@@ -87,9 +90,10 @@ $opcion = $_POST['opcion'];
                                                 data-fechaCreacion="'.$pedido['fecha_creacion'].'"
                                                 data-estado="'.$pedido['pedido_estado'].'"
                                                 data-nombre="'.$pedido['nombre'].'">
-                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                                    <i class="fa-solid fa-file-lines" style="font-size:20px; color:black; background-color:none"></i>
                                             </button>'; 
                                 break;
+                        //Cancelado
                         case 3: $acciones = '<button class="btn btnVer"
                                                 data-id="'.$pedido['id_pedido'].'"
                                                 data-numPedido="'.$pedido['num_pedido'].'"
@@ -105,8 +109,10 @@ $opcion = $_POST['opcion'];
                                                 data-fechaCreacion="'.$pedido['fecha_creacion'].'"
                                                 data-estado="'.$pedido['pedido_estado'].'"
                                                 data-nombre="'.$pedido['nombre'].'">
-                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
-                                            </button>'; break;
+                                                    <i class="fa-solid fa-file-lines" style="font-size:20px; color:black; background-color:none"></i>
+                                            </button>'; 
+                                break;
+                        //Concretado
                         case 4: $acciones = '<button class="btn btnVer"
                                                 data-id="'.$pedido['id_pedido'].'"
                                                 data-numPedido="'.$pedido['num_pedido'].'"
@@ -122,16 +128,10 @@ $opcion = $_POST['opcion'];
                                                 data-fechaCreacion="'.$pedido['fecha_creacion'].'"
                                                 data-estado="'.$pedido['pedido_estado'].'"
                                                 data-nombre="'.$pedido['nombre'].'">
-                                                    <i class="fas fa-print" style="font-size:20px; color:black; background-color:none"></i>
+                                                    <i class="fa-solid fa-file-lines" style="font-size:20px; color:black"></i>
                                             </button>';
                                 break;
                 }
-
-                //1	Creado
-                //2	En transito
-                //3	Cancelado
-                //4	Concretado
-                //5	Todos
 
                 $response[] = array ( 'id_pedido' => $pedido['id_pedido'],
                                       'num_pedido' => $pedido['num_pedido'],
@@ -170,6 +170,30 @@ $opcion = $_POST['opcion'];
 
                 else 
                     $response = array('error' => $pedido->errorInfo()[2]);
+
+            echo json_encode($response);
+        }
+    
+    //Actualizar el estatus del pedido
+    else 
+        if($opcion == '3'){
+            $id_pedido = (isset($_POST['id_pedido'])) ? $_POST['id_pedido'] : null; 
+            $status = (isset($_POST['status'])) ? $_POST['status'] : null; 
+
+
+            $sql = 'UPDATE uni_pedido set status = :estatus where id_pedido = :id_pedido';
+            $update = $conn->prepare($sql);
+
+            $update->bindparam(':id_pedido', $id_pedido);
+            $update->bindparam(':estatus', $status);
+
+                 if($update->execute())
+                     $response = array("response" => 'Se ha actualizado la informacion',
+                                       'modificado' => true);
+
+                 else
+                     $response = array('response'=> $update->errorInfo()[2], 
+                                       'modificado' => false);
 
             echo json_encode($response);
         }

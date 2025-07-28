@@ -64,7 +64,8 @@ estatus.addEventListener('change', renderTable)
                                         let btnVer = document.querySelectorAll(".btnVer");
                                         let btnImprimir = document.querySelectorAll(".btnImprimir");
                                         let btnConcretar = document.querySelectorAll(".btnConcretar");
-                                        let btnCancelar = document.querySelectorAll(".btnCancelar");
+                                        let btnCancelar = document.querySelectorAll(".btnCancelar"); 
+                                        let btnConfirmar = document.querySelectorAll(".btnConfirmar"); 
 
                                         //Evento para el bton de ver pedidos
                                         btnVer.forEach(boton => {
@@ -90,6 +91,11 @@ estatus.addEventListener('change', renderTable)
                                             boton.addEventListener("click", abrirCancelarPedidoModal);
                                           });
 
+                                        //Evento para imprimir el pedido cuando aun esta en transito
+                                        btnConfirmar.forEach(boton => {
+                                            boton.removeEventListener("click", imprimirPedido);
+                                            boton.addEventListener("click", imprimirPedido);
+                                          });
                                     }
                                 });
             })
@@ -181,7 +187,7 @@ estatus.addEventListener('change', renderTable)
         const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
         var dataId = boton.getAttribute('data-id');
 
-        document.getElementById('cancelarPedidoModal').dataset.id = dataId;
+        //document.getElementById('cancelarPedidoModal').dataset.id = dataId;
         new bootstrap.Modal(document.getElementById('cancelarPedidoModal')).show();
     }
 
@@ -207,21 +213,44 @@ estatus.addEventListener('change', renderTable)
         var fechaCreacion = boton.getAttribute('data-fechaCreacion'); 
         var estado = boton.getAttribute('data-estado'); 
         var nombre = boton.getAttribute('data-nombre'); //quien lo realizo
+        var status = boton.getAttribute('data-status'); 
         let totalPedido= 0;
 
         var formData = new FormData;
         formData.append("opcion", "2");
         formData.append("id_pedido", dataId);
 
+        //EL PEDIDO PASA A ESTAR EN TRANSITO AL IMPRIMIRLO 
+        if(status && status == 1) {
+             var formDataUpdate = new FormData();
+             formDataUpdate.append('id_pedido', dataId)
+             formDataUpdate.append('status', 2)
+             formDataUpdate.append("opcion", 3);
+        
+             fetch("./api/pedidos.php", {
+                method: "POST",
+                body: formDataUpdate,
+             }).then((response) => response.json())
+                .then((dataU) => {
+                        if(dataU.modificado) 
+                                console.log("OK")
+                        else 
+                            console.log(dataU)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+
         //Creacion de la tabla del modal
         fetch("./api/pedidos.php", {
             method: "POST",
             body: formData,
         })
-        .then((response) => response.json())
-        .then((data) => {
+            .then((response) => response.json())
+            .then((data) => {
                 //MOSTRAR EL VALOR DE LA FECHA EN FORMATO DE 12 hr
-                let fechaP = (new Date (fechaCreacion)).toLocaleString('es-ES', {
+                let fechaP = (new Date(fechaCreacion)).toLocaleString('es-ES', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
@@ -229,26 +258,26 @@ estatus.addEventListener('change', renderTable)
                     minute: '2-digit',
                     hour12: true  // Usar el formato de 24 horas
                 }).replace(',', '');
-                
-                let tabla= ``; 
+
+                let tabla = ``;
 
                 // Iterar sobre los datos y crear una fila para cada artículo
                 data.forEach(dato => {
-                     tabla = tabla + 
-                            `<tr class="page-break-avoid">
+                    tabla = tabla +
+                        `<tr class="page-break-avoid">
                                 <td class="my-1 page-break-avoid">${dato.clave}</td>
                                 <td class="my-1 page-break-avoid">${dato.Cantidad}</td>
                                 <td class="my-1 page-break-avoid">${dato.Articulo}</td>
                                 <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.costo)).toFixed(2)}</td>
                                 <td class="my-1 page-break-avoid">$ ${(parseFloat(dato.total)).toFixed(2)}</td> 
                             </tr>`;
-                     totalPedido = totalPedido +  parseFloat(dato.total);
-                  }); 
+                    totalPedido = totalPedido + parseFloat(dato.total);
+                });
 
-                  `       $ ${ parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US') }`; 
+                `       $ ${parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US')}`;
 
 
-                     impresionInventario.innerHTML = `<!-- Detalles de pedido -->
+                impresionInventario.innerHTML = `<!-- Detalles de pedido -->
                                                         <p class="text-center" style="font-size:17px; page-break-avoid"><b> PEDIDO - UNIFORMES </b></p>
                                                         
                                                         <div class="mx-5 d-flex justify-content-between page-break-avoid">
@@ -300,46 +329,68 @@ estatus.addEventListener('change', renderTable)
                                                             </tbody>
                                                         </table>`;
 
-                    const opt = {
-                        margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
-                        filename: 'salida_'+2357+'_entrega de uniforme por vale.pdf',
-                        image: { 
-                            type: 'jpeg', 
-                            quality: 0.98
-                        },
-                        html2canvas: { 
-                            scale: 3, // Escala óptima para calidad y rendimiento
-                            useCORS: true,
-                            letterRendering: true,
-                            logging: false
-                        },
-                        jsPDF: { 
-                            unit: 'mm', 
-                            format: 'letter', 
-                            orientation: 'portrait' 
-                        },
-                        // Configuración avanzada para saltos de página
-                        pagebreak: { 
-                            mode: ['avoid-all', 'css'], 
-                            before: '.page-break-before',
-                            avoid: '.page-break-avoid'
-                        }
-                    };
+                const opt = {
+                    margin: [8, 13, 10, 13], // márgenes: [top, right, bottom, left]
+                    filename: 'salida_' + 2357 + '_entrega de uniforme por vale.pdf',
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 3, // Escala óptima para calidad y rendimiento
+                        useCORS: true,
+                        letterRendering: true,
+                        logging: false
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'letter',
+                        orientation: 'portrait'
+                    },
+                    // Configuración avanzada para saltos de página
+                    pagebreak: {
+                        mode: ['avoid-all', 'css'],
+                        before: '.page-break-before',
+                        avoid: '.page-break-avoid'
+                    }
+                };
 
-                    // Generar PDF y abrir en nueva pestaña
-                    html2pdf().set(opt).from(impresionInventario).outputPdf('blob')
-                        .then(function(blob) {
-                            const blobUrl = URL.createObjectURL(blob);
-                            window.open(blobUrl, '_blank');
-                            //impresionDetalleSalida.innerHTML= '';
-                        })
-                        .catch(function(error) {
-                            console.log(error)
-                });
-                 
-    }).catch((error) => {
-        console.log(error);
-    });
+                // Generar PDF y abrir en nueva pestaña
+                html2pdf().set(opt).from(impresionInventario).outputPdf('blob')
+                    .then(function (blob) {
+                        const blobUrl = URL.createObjectURL(blob);
+                        window.open(blobUrl, '_blank');
+                        //impresionDetalleSalida.innerHTML= '';
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+
+            }).catch((error) => {
+                console.log(error);
+            });
+    }
+
+
+    function cancelarPedido() {
+        var formDataUpdate = new FormData();
+        formDataUpdate.append('id_pedido', dataId)
+        formDataUpdate.append('status', 3)
+        formDataUpdate.append("opcion", 3);
+
+        fetch("./api/pedidos.php", {
+            method: "POST",
+            body: formDataUpdate,
+        }).then((response) => response.json())
+            .then((dataU) => {
+                if (dataU.modificado)
+                    console.log("OK")
+                else
+                    console.log(dataU)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     // Renderizar la tabla al cargar la página
