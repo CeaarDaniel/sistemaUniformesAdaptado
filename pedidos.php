@@ -158,7 +158,7 @@
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de cancelar este pedido?
-                        <input type="text" id="modalCancelarId">
+                        <input type="hidden" id="modalCancelarId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

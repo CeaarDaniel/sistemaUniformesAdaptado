@@ -480,4 +480,3 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
 				SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
 						where  TABLE_NAME = 'uni_articulos';
 	update uni_pedido set status = 4 where id_pedido = 1
-	select* from uni_pedido_estado

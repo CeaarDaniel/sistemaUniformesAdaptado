@@ -5,7 +5,7 @@
         </div>
 
         <!-- Enlaces -->
-        <div class="row px-5 mx-0 mx-md-4">
+        <div class="row px-5 justify-content-center mx-0 mx-md-4">
             <!-- Tarjeta 2: Venta de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2" >
                 <a class="text-decoration-none" onclick="cargarRuta('salidasPlanta')">

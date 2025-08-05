@@ -1,42 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Firma Trabajadro | Evaluaciones de Desempeño</title>
-
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
+<body>
+    
+<canvas id="canvas" width="300" height="150" style="border:1px solid black;"></canvas>
+<button onclick="verificarCanvas()">Verificar si está vacío</button>
 
-<body class="hold-transition sidebar-collapse">
-    <div class="wrapper">
-        <!-- Content Wrapper. Contains page content -->
-            <section class="content">
-                <form class="formulario" action="guardar-firma-nivel8?ID=<?php echo $ID ?>" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
-                    <div class="card ">
-                        <div class="card-body text-center">
-                            <canvas id='canvas' width="700" height="280" style='border: 1px solid #CCC;'>
-                                <p>Tu navegador no soporta canvas</p>
-                            </canvas>
-                            <div>
-                                <img id="preview" alt="Vista previa de la firma" />
-                            </div>
-                        </div>
-                            <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
-                            <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
-                    </div>
-                </form>
-            </section>
-    </div>
-    <!-- ./wrapper -->
+<script>
 
-    <!-- Page specific script -->
-    <script type="text/javascript">
-        /* Variables de Configuracion */
+
         var idCanvas = 'canvas';
         var idForm = 'formCanvas';
         var inputImagen = 'imagen';
@@ -195,6 +171,30 @@
             const byteArray = new Uint8Array(byteArrays);
             return new Blob([byteArray], { type: contentType });
         }
-    </script>
+        
+  function verificarCanvas() {
+    const canvas = document.getElementById('canvas');
+    if (isCanvasEmpty(canvas)) {
+      alert("El canvas está vacío");
+    } else {
+      alert("El canvas tiene contenido");
+    }
+  }
+
+  // Puedes usar esta función para verificar
+  function isCanvasEmpty(canvas) {
+    const ctx = canvas.getContext('2d');
+    const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+      if (pixels[i] !== 0 || pixels[i + 1] !== 0 || pixels[i + 2] !== 0 || pixels[i + 3] !== 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+</script>
+
 </body>
 </html>

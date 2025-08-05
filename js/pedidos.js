@@ -1,10 +1,12 @@
 var anio = document.getElementById('anio');
 var mes = document.getElementById('mes');
 var estatus = document.getElementById('status');
+var btnModalCancelar = document.getElementById('btnModalCancelar');
 
 anio.addEventListener('change', renderTable)
 mes.addEventListener('change', renderTable)
 estatus.addEventListener('change', renderTable)
+btnModalCancelar.addEventListener('click', cancelarPedido)
 // Función para renderizar la tabla
     function renderTable() {
         var ancho = window.innerWidth;
@@ -107,16 +109,16 @@ estatus.addEventListener('change', renderTable)
             $('#tablaPedidos').DataTable();
         });
         /*
-        ${pedido.pedido_estado === "Pendiente" ? `
-                        <button class="btn btn-danger btn-action" onclick="abrirCancelarPedidoModal(${pedido.id_pedido})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    ` : ''}
-                    ${pedido.pedido_estado === "En proceso" ? `
-                        <button class="btn btn-success btn-action" onclick="abrirConcretarPedidoModal(${pedido.id_pedido})">
-                            <i class="fas fa-check"></i>
-                        </button>
-                    ` : ''}
+            ${pedido.pedido_estado === "Pendiente" ? `
+                <button class="btn btn-danger btn-action" onclick="abrirCancelarPedidoModal(${pedido.id_pedido})">
+                    <i class="fas fa-times"></i>
+                </button>
+            ` : ''}
+            ${pedido.pedido_estado === "En proceso" ? `
+                <button class="btn btn-success btn-action" onclick="abrirConcretarPedidoModal(${pedido.id_pedido})">
+                    <i class="fas fa-check"></i>
+                </button>
+            ` : ''}
         */
     }
 
@@ -187,6 +189,8 @@ estatus.addEventListener('change', renderTable)
         const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
         var dataId = boton.getAttribute('data-id');
 
+        $('#modalCancelarId').val(dataId)
+
         //document.getElementById('cancelarPedidoModal').dataset.id = dataId;
         new bootstrap.Modal(document.getElementById('cancelarPedidoModal')).show();
     }
@@ -223,8 +227,8 @@ estatus.addEventListener('change', renderTable)
         //EL PEDIDO PASA A ESTAR EN TRANSITO AL IMPRIMIRLO 
         if(status && status == 1) {
              var formDataUpdate = new FormData();
-             formDataUpdate.append('id_pedido', dataId)
-             formDataUpdate.append('status', 2)
+             formDataUpdate.append('id_pedido', dataId);
+             formDataUpdate.append('status', 2);
              formDataUpdate.append("opcion", 3);
         
              fetch("./api/pedidos.php", {
@@ -373,24 +377,27 @@ estatus.addEventListener('change', renderTable)
 
 
     function cancelarPedido() {
-        var formDataUpdate = new FormData();
-        formDataUpdate.append('id_pedido', dataId)
-        formDataUpdate.append('status', 3)
-        formDataUpdate.append("opcion", 3);
+            bootstrap.Modal.getInstance(document.getElementById('cancelarPedidoModal')).hide();
+            var formDataCancelar = new FormData();
+            formDataCancelar.append('id_pedido', $('#modalCancelarId').val())
+            formDataCancelar.append('status', 3)
+            formDataCancelar.append("opcion", 3);
 
-        fetch("./api/pedidos.php", {
-            method: "POST",
-            body: formDataUpdate,
-        }).then((response) => response.json())
-            .then((dataU) => {
-                if (dataU.modificado)
-                    console.log("OK")
-                else
-                    console.log(dataU)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            fetch("./api/pedidos.php", {
+                method: "POST",
+                body: formDataCancelar,
+            }).then((response) => response.json())
+                .then((dataU) => {
+                    if (dataU.modificado){
+                        alert('pedido cancelado');
+                        renderTable();
+                    }
+                    else
+                        console.log(dataU)
+                })
+                .catch((error) => {
+                    console.log(error);
+                }); 
     }
 
     // Renderizar la tabla al cargar la página
