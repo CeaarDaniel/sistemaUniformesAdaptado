@@ -56,19 +56,21 @@
             </div>
 
             <!-- Tarjeta 5: Consulta de salidas -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
-                <a href="#/entradasUsado" class="text-decoration-none">
-                    <div class="card-shortcut text-center">
-                        <div class="">
-                            <div class="q-avatar bg-blue-10 text-white">
-                                <i class="fas fa-tshirt"></i>
+            <!--
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
+                    <a href="#/entradasUsado" class="text-decoration-none">
+                        <div class="card-shortcut text-center">
+                            <div class="">
+                                <div class="q-avatar bg-blue-10 text-white">
+                                    <i class="fas fa-tshirt"></i>
+                                </div>
+                            </div>
+                            <div class="">
+                                <span style="font-size: 16px; font-weight: bold; color:black;">Entradas de uniforme usado</span>
                             </div>
                         </div>
-                        <div class="">
-                            <span style="font-size: 16px; font-weight: bold; color:black;">Entradas de uniforme usado</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div> 
+            -->
         </div>
     </div>

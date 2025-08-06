@@ -10,40 +10,55 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <style>
+            @media (max-width: 700px) {
+                canvas{
+                    width:80%; 
+                    max-height:280px;
+                }
+            }
+
+            @media (min-width: 701px ) {
+                 canvas{
+                    width: 650px;
+                    height: 280px;
+                 }
+            }
+    </style>
 </head>
 
-<body class="hold-transition sidebar-collapse">
-    <div class="wrapper">
-        <!-- Content Wrapper. Contains page content -->
-            <section class="content">
-                <form class="formulario" action="guardar-firma-nivel8?ID=<?php echo $ID ?>" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
-                    <div class="card ">
-                        <div class="card-body text-center">
-                            <canvas id='canvas' width="700" height="280" style='border: 1px solid #CCC;'>
-                                <p>Tu navegador no soporta canvas</p>
-                            </canvas>
-                            <div>
-                                <img id="preview" alt="Vista previa de la firma" />
-                            </div>
-                        </div>
-                            <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
-                            <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
-                    </div>
-                </form>
-            </section>
+<body>
+    <div class="wrapper" style="px-1">
+        <form class="formulario" action="guardar-firma-nivel8?ID=<?php echo $ID ?>" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
+                <div class="card-body text-center">
+                    <canvas id='canvas' style='border: 1px solid #CCC;'>
+                        <p>Tu navegador no soporta canvas</p>
+                    </canvas>
+                </div>
+
+                <div class="text-center">
+                    <img id="preview" alt="Vista previa de la firma" />
+                </div>
+
+                <div class="text-center p-2" style="width:100%">
+                    <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
+                    <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
+                </div>
+        </form>
     </div>
     <!-- ./wrapper -->
 
     <!-- Page specific script -->
     <script type="text/javascript">
         /* Variables de Configuracion */
-        var idCanvas = 'canvas';
-        var idForm = 'formCanvas';
-        var inputImagen = 'imagen';
-        var estiloDelCursor = 'crosshair';
-        var colorDelTrazo = '#000000';
-        var colorDeFondo = '#ffffff';
-        var grosorDelTrazo = 2;
+            var idCanvas = 'canvas';
+            var idForm = 'formCanvas';
+            var inputImagen = 'imagen';
+            var estiloDelCursor = 'crosshair';
+            var colorDelTrazo = '#000000';
+            var colorDeFondo = '#ffffff';
+            var grosorDelTrazo = 2;
 
         /* Variables necesarias */
         var contexto = null;
@@ -51,19 +66,25 @@
         var valY = 0;
         var flag = false;
         var imagen = document.getElementById(inputImagen);
-        var anchoCanvas = document.getElementById(idCanvas).offsetWidth;
-        var altoCanvas = document.getElementById(idCanvas).offsetHeight;
+        //var anchoCanvas =document.getElementById(idCanvas).offsetWidth;
+        //var altoCanvas = document.getElementById(idCanvas).offsetHeight;
         var pizarraCanvas = document.getElementById(idCanvas);
+        ajustarCanvas();
 
         /* Esperamos el evento load */
         window.addEventListener('load', IniciarDibujo, false);
+
+        window.addEventListener('resize', () => {
+            ajustarCanvas(pizarraCanvas);
+        });
+
 
         function IniciarDibujo() {
             /* Creamos la pizarra */
             pizarraCanvas.style.cursor = estiloDelCursor;
             contexto = pizarraCanvas.getContext('2d');
-            contexto.fillStyle = colorDeFondo;
-            contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
+            //contexto.fillStyle = colorDeFondo;
+            //contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
             contexto.strokeStyle = colorDelTrazo;
             contexto.lineWidth = grosorDelTrazo;
             contexto.lineJoin = 'round';
@@ -140,14 +161,29 @@
 
         /* Limpiar pizarra */
         function LimpiarTrazado() {
-            contexto = document.getElementById(idCanvas).getContext('2d');
-            contexto.fillStyle = colorDeFondo;
-            contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
+            document.getElementById('preview').src = '';
+            let estilo = getComputedStyle(canvas);
+            let ancho = parseInt(estilo.width, 10);
+            let alto = parseInt(estilo.height, 10);
+            contexto = document.getElementById('canvas').getContext('2d');
+            contexto.clearRect(0, 0, ancho, alto);
+
+            //contexto.fillStyle = colorDeFondo;
+            //contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
         }
 
         /* Enviar el trazado */
         function GuardarTrazado() {
                 const canvas = document.getElementById('canvas');
+
+                 if (isCanvasEmpty(canvas)) {
+                        alert("El canvas está vacío");
+                    } 
+
+                else {
+                        alert("El canvas tiene contenido");
+                    }
+
                 const image = canvas.toDataURL('imagenes/png'); // También puedes usar 'image/jpeg'
 
                 //SE TRANFORMA A BLOB LA IMAGEN GENERADA
@@ -167,18 +203,19 @@
                 })
                 .catch(error => {
                     console.error('Error al enviar la imagen:', error);
+                    document.getElementById('preview').src = '';
                 });
 
-             /* 
-                Mostrar la imagen como vista previa
+             
+                //Mostrar la imagen como vista previa
                 document.getElementById('preview').src = image;
 
                 // Opción: descargar la imagen automáticamente
-                const link = document.createElement('a');
-                link.download = 'firma.png';
-                link.href = image;
-                link.click(); 
-              */
+                //const link = document.createElement('a');
+                //link.download = 'firma.png';
+                //link.href = image;
+                //link.click(); 
+              
         }
 
         //Funcion para tranformar a blob la imagen canvas y enviar como archivo en un fromData
@@ -194,6 +231,31 @@
 
             const byteArray = new Uint8Array(byteArrays);
             return new Blob([byteArray], { type: contentType });
+        }
+
+        // Puedes usar esta función para verificar
+        function isCanvasEmpty(canvas) {
+            const ctx = canvas.getContext('2d');
+            const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i] !== 0 || pixels[i + 1] !== 0 || pixels[i + 2] !== 0 || pixels[i + 3] !== 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function ajustarCanvas(){
+            let canvas = document.getElementById('canvas')
+            const estilo = getComputedStyle(canvas);
+            const ancho = parseInt(estilo.width, 10);
+            const alto = parseInt(estilo.height, 10);
+
+            // Establece el tamaño interno en píxeles reales
+            canvas.width = ancho;
+            canvas.height = alto;
         }
     </script>
 </body>

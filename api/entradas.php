@@ -304,15 +304,52 @@ else
     
 
 //CONCRETAR PEDIDO
-else if($opcion=='7') {
-    //fecha_termino
-    //id_entrada  se genera cuando el pedido es concretado
-    //Casi todas las entradas son registradas como entradas por pedido (1), a menos que sea por cambio (5)
-    $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
+else 
+    if($opcion=='7') {
+        //fecha_termino
+        //id_entrada  se genera cuando el pedido es concretado
+        //Casi todas las entradas son registradas como entradas por pedido (1), a menos que sea por cambio (5)
+        $idPedido = (isset($_POST['idPedido']) && !empty($_POST['idPedido'])) ? $_POST['idPedido'] : '';
+        $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
 
-                //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
-            //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
-            //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
+        //registrar la entrada
+        $sqlre="INSERT INTO uni_entrada (fecha, tipo_entrada, id_usuario)
+                    VALUES( format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipo_entrada, 1)";
 
+        $entrada = $conn->prepare($sqlre);
+        $entrada->bindparam(':tipo_entrada', $sqlre);
+
+        if($entrada->execute()) {
+                $lastID = $conn->lastInsertId();
+
+                //Actualizar los articulos del pedido
+                $sqlu = "UPDATE ua
+                            SET ua.cantidad = ua.cantidad + upa.cantidad
+                                FROM uni_articulos ua
+                                    INNER JOIN uni_pedido_articulo upa ON ua.id_articulo = upa.id_articulo
+                        WHERE upa.id_pedido = '20'";
+
+                $uArticulos = $conn ->prepare($sqlu);
+
+            //Insertar articulos a uni_entrada_articulos
+                $sqlia = "INSERT INTO uni_entrada_articulos (id_articulo, cantidad_entrada, fecha_entrada, id_pedido)
+                    SELECT  upa.id_articulo, upa.cantidad, GETDATE(), upa.id_pedido
+                    FROM uni_pedido_articulo upa
+                    INNER JOIN uni_articulos ua ON ua.id_articulo = upa.id_articulo
+                    WHERE upa.id_pedido = '20'";
+
+            //Actualizar el estatus del pedido
+            $sqlUE= "UPDATE uni_pedido set status= '4', id_entrada = ".$lastID;
+
+
+            }
+
+        else 
+            $entrada = array('response' => $stmt->errorInfo()[2]);
+                        
+
+            //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
+                //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
+                //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
 }
 ?>

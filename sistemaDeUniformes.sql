@@ -480,3 +480,17 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
 				SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
 						where  TABLE_NAME = 'uni_articulos';
 	update uni_pedido set status = 4 where id_pedido = 1
+
+
+
+select ua.id_articulo, ua.cantidad as actual, upa.id_articulo, upa.cantidad as nueva, (ua.cantidad + upa.cantidad) as 'Cant total'
+		from uni_articulos ua 
+	inner join uni_pedido_articulo upa on ua.id_articulo = upa.id_articulo 
+where id_pedido = '20'
+
+
+
+select* from uni_entrada_articulo where id_entrada = '125'
+
+select* from uni_entrada
+select format(GETDATE(),'yyyy-MM-dd HH:mm:s')
