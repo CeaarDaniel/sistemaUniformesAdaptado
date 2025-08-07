@@ -493,4 +493,9 @@ where id_pedido = '20'
 select* from uni_entrada_articulo where id_entrada = '125'
 
 select* from uni_entrada
-select format(GETDATE(),'yyyy-MM-dd HH:mm:s')
+select format(GETDATE(),'yyyy-MM-dd HH:mm:ss')
+
+select* from empleado order by fecha_ingreso
+select* from uni_pedido_estado
+
+select* from uni_pedido

@@ -41,7 +41,7 @@ if($opcion=='1'){
 
         if($articulos->execute()){
             while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                $response[]= array( 'check' => "<input type='checkbox' class='select-checkbox' data-id='" . $articulo['id_articulo'] . "'>",
+                $response[]= array('check' => "<input type='checkbox' class='select-checkbox' data-id='" . $articulo['id_articulo'] . "'>",
                                    'id_articulo' => $articulo['id_articulo'],
                                    'cantidad' => $articulo['cantidad'], 
                                    'costo' => $articulo['costo'], 
@@ -292,7 +292,8 @@ else
             $sql = "INSERT INTO articulos (id_articulo, nombre, cantidad, genero, talla) VALUES " . implode(',', $values);
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute($params); */
+            $stmt->execute($params); 
+        */
     } 
 
 //REGISTRO DE UNIFORME USADO
@@ -300,7 +301,7 @@ else
     if($opcion== '6'){
 
         
-    }
+}
     
 
 //CONCRETAR PEDIDO
@@ -310,46 +311,71 @@ else
         //id_entrada  se genera cuando el pedido es concretado
         //Casi todas las entradas son registradas como entradas por pedido (1), a menos que sea por cambio (5)
         $idPedido = (isset($_POST['idPedido']) && !empty($_POST['idPedido'])) ? $_POST['idPedido'] : '';
-        $tipoentrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
+        $tipoEntrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada'])) ? $_POST['tipoEntrada'] : '';
 
         //registrar la entrada
-        $sqlre="INSERT INTO uni_entrada (fecha, tipo_entrada, id_usuario)
-                    VALUES( format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipo_entrada, 1)";
+        //CAMBIAR UNO POR EL ID DE USUARIO
+        $sqlre="INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario)
+                    VALUES(format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipo_entrada, 1)";
 
         $entrada = $conn->prepare($sqlre);
-        $entrada->bindparam(':tipo_entrada', $sqlre);
+        $entrada->bindparam(':tipo_entrada', $tipoEntrada);
 
-        if($entrada->execute()) {
+            if($entrada->execute()){
                 $lastID = $conn->lastInsertId();
 
-                //Actualizar los articulos del pedido
+                //Actualizar los articulos correspondientes al pedido
                 $sqlu = "UPDATE ua
                             SET ua.cantidad = ua.cantidad + upa.cantidad
                                 FROM uni_articulos ua
                                     INNER JOIN uni_pedido_articulo upa ON ua.id_articulo = upa.id_articulo
-                        WHERE upa.id_pedido = '20'";
+                                        WHERE upa.id_pedido =  :idPedido";
 
                 $uArticulos = $conn ->prepare($sqlu);
+                $uArticulos->bindparam(':idPedido', $idPedido);
 
-            //Insertar articulos a uni_entrada_articulos
-                $sqlia = "INSERT INTO uni_entrada_articulos (id_articulo, cantidad_entrada, fecha_entrada, id_pedido)
-                    SELECT  upa.id_articulo, upa.cantidad, GETDATE(), upa.id_pedido
-                    FROM uni_pedido_articulo upa
-                    INNER JOIN uni_articulos ua ON ua.id_articulo = upa.id_articulo
-                    WHERE upa.id_pedido = '20'";
+                    if($uArticulos->execute()){
+                        //Insertar articulos a uni_entrada_articulos
+                        $sqlia = "INSERT INTO uni_entrada_articulos (id_entrada, id_articulo, cantidad)
+                                    SELECT  ".$lastID." as id_entrada, upa.id_articulo, upa.cantidad
+                                        FROM uni_pedido_articulo upa
+                                            INNER JOIN uni_articulos ua ON ua.id_articulo = upa.id_articulo
+                                    WHERE upa.id_pedido = :idPedido";
+                                    
+                        $entradaArticulos = $conn->prepare($sqlia);
+                        $entradaArticulos->bindparam(':idPedido', $idPedido);
 
-            //Actualizar el estatus del pedido
-            $sqlUE= "UPDATE uni_pedido set status= '4', id_entrada = ".$lastID;
 
+                        if($entradaArticulos->execute()){
+                            //Actualizar el estatus del pedido y el id de entrada
+                                $sqlUE= "UPDATE uni_pedido set status= '4', id_entrada = ".$lastID;
+                                $updatePedido->prepare($sqlUE);
+                                
 
+                                if($updatePedido->execute())
+                                    $respionse= array('response'=> 'PEDIDO CONCRETADO');
+
+                                else
+                                    $response= array('response' => $updatePedido->errorInfo()[2]);
+
+                        }
+
+                        else 
+                            $response = array('response' => $entradaArticulos->errorInfo()[2]);
+                        
+                    }
+
+                    else 
+                        $response = array('response' => $uArticulos->errorInfo()[2]);
             }
 
-        else 
-            $entrada = array('response' => $stmt->errorInfo()[2]);
+            else 
+                $response = array('response' => $entrada->errorInfo()[2]);
                         
 
-            //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
-                //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
-                //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
-}
+        echo json_encode($response);
+                //"INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
+                    //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
+                    //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
+    }
 ?>
