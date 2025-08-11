@@ -119,7 +119,7 @@
                          <hr class="my-5" style="height: 5px; background: linear-gradient(90deg,rgba(9, 11, 122, 1) 33%, rgba(133, 133, 133, 1) 0%); opacity: 1; border:none;">
 
                             <!--TABLA DE PRODUCTOS -->
-                            <p class="text-center fs-7"><b> PRODUCTOS </b></p>
+                            <p id='tablaProductosDetalleModal' class="text-center fs-7"><b> PRODUCTOS </b></p>
                             <div style="overflow: auto scroll; max-height: 400px;">
                                 <table id="" class="table">
                                     <thead>
@@ -178,10 +178,11 @@
                     </div>
                     <div class="modal-body">
                         ¿Estás seguro de concretar este pedido?
+                        <input type="hidden" id="modalConcretarId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-success">Sí, concretar</button>
+                        <button type="button" id='btnModalConcretar' class="btn btn-success">Sí, concretar</button>
                     </div>
                 </div>
             </div>

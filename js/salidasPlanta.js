@@ -6,9 +6,9 @@
         let datos = [];
 
         $("input[name='tipoEntrega']").change(function() {
-            let valor = $("input[name='tipoEntrega']:checked").val(); //VECARIO OBSEQUIO
+            let valor = $("input[name='tipoEntrega']:checked").val(); //BECARIO OBSEQUIO
 
-            if(valor == 0)
+            if(valor == 0) 
                 document.getElementById('empleadoInput').value= 'BECARIO';
 
             else 
@@ -273,3 +273,100 @@
     }
 
 actualizarVista();
+
+
+    /*
+        function agregarArticulosVale(){
+            await this.getValeInfo(this.vale);
+            if (!this.vale_info) {
+                this.vale = "";
+                return this.$q.notify({ message: `<strong>El código del vale no existe o es incorrecto</strong>`, caption: "Hace un instante", type: "warning", html: true });
+            }
+
+            const categorias = this.vale_info.equipo;
+            this.articulos = [];
+            let generoValue = -1;
+            let tallaValue = -1;
+
+            for (const c of categorias) {
+                await this.getCategoriaById(c.id_categoria);
+                await this.getTallasXTipo(this.categoria.tipo_talla);
+                await this.getGenerosByIdCategoria(c.id_categoria);
+
+                let selTallas = JSON.parse(JSON.stringify(this.opt_tallas));
+                if (selTallas.length == 1) tallaValue = selTallas[0].value;
+                if (c.id_talla) tallaValue = c.id_talla;
+                selTallas.unshift({ label: "-", value: -1 });
+
+                let selGeneros = JSON.parse(JSON.stringify(this.opt_generos));
+                if (selGeneros.length == 1) generoValue = selGeneros[0].value;
+                selGeneros.unshift({ label: "-", value: -1 });
+
+                let articuloTemp = { id_articulo: "-", cantidad: c.cantidad, nombre: this.categoria.abrev, categoria: this.categoria.categoria, id_categoria: c.id_categoria, tallas: selTallas, talla: tallaValue, generos: selGeneros, genero: generoValue };
+
+                if (articuloTemp.talla == -1 || articuloTemp.genero == -1) {
+                articuloTemp.id_articulo = "-";
+                } else {
+                await this.getArticuloByCatGenTalla({ categoria: articuloTemp.id_categoria, genero: articuloTemp.genero, talla: articuloTemp.talla, estado: 1 });
+                articuloTemp.id_articulo = this.articulo.id_articulo;
+                }
+
+                this.articulos.push(articuloTemp);
+                tallaValue = -1;
+                generoValue = -1;
+            }
+
+            this.data = this.articulos;
+            this.disabledInput = true;
+            this.$q.notify({ message: `<strong>Se han cargado correctamente los artículos, seleccione el genero y las tallas correspondientes</strong>`, caption: "Hace un instante", type: "positive", html: true });
+        }
+
+        
+        function agregar(){
+                const categorias = vale_info.equipo;
+                const articulos = [];
+                let generoValue = -1;
+                let tallaValue = -1;
+
+            for (const c of categorias) {
+                    const categoria = await getCategoriaById(c.id_categoria);
+                    const optTallas = await getTallasXTipo(categoria.tipo_talla);
+                    const optGeneros = await getGenerosByIdCategoria(c.id_categoria);
+
+                    let selTallas = JSON.parse(JSON.stringify(optTallas));
+                    if (selTallas.length === 1) tallaValue = selTallas[0].value;
+                    if (c.id_talla) tallaValue = c.id_talla;
+                    selTallas.unshift({ label: "-", value: -1 });
+
+                    let selGeneros = JSON.parse(JSON.stringify(optGeneros));
+                    if (selGeneros.length === 1) generoValue = selGeneros[0].value;
+                    selGeneros.unshift({ label: "-", value: -1 });
+
+                    let articuloTemp = {
+                    id_articulo: "-",
+                    cantidad: c.cantidad,
+                    nombre: categoria.abrev,
+                    categoria: categoria.categoria,
+                    id_categoria: c.id_categoria,
+                    tallas: selTallas,
+                    talla: tallaValue,
+                    generos: selGeneros,
+                    genero: generoValue
+                    };
+
+                    if (articuloTemp.talla !== -1 && articuloTemp.genero !== -1) {
+                        const articulo = await getArticuloByCatGenTalla({
+                            categoria: articuloTemp.id_categoria,
+                            genero: articuloTemp.genero,
+                            talla: articuloTemp.talla,
+                            estado: 1
+                        });
+                        articuloTemp.id_articulo = articulo?.id_articulo || "-";
+                    }
+            }
+
+            articulos.push(articuloTemp);
+            tallaValue = -1;
+            generoValue = -1;
+        }
+*/

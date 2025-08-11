@@ -153,6 +153,7 @@ $opcion = $_POST['opcion'];
     else 
         if($opcion == '2'){
             $id_pedido= (isset($_POST['id_pedido']) && !$_POST['id_pedido']=='') ? $_POST['id_pedido'] : NULL;
+            $response= null;
 
             $detallePedido= "SELECT a.id_articulo as clave, a.nombre as Articulo, dp.Cantidad, dp.costo, (dp.cantidad* dp.costo) as total 
                     from uni_pedido_articulo as dp 

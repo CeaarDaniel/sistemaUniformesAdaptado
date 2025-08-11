@@ -19,7 +19,7 @@ include('./api/conexion.php');
             
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="empleadoInput" placeholder="Empleado" readonly>
+                    <input type="text" class="form-control" id="empleadoInput" placeholder="Empleado">
                 </div>
                 <div class="col-md-3">
                     <input type="text" class="form-control" id="valeInput" placeholder="Vale">

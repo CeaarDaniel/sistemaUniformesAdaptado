@@ -2,11 +2,14 @@ var anio = document.getElementById('anio');
 var mes = document.getElementById('mes');
 var estatus = document.getElementById('status');
 var btnModalCancelar = document.getElementById('btnModalCancelar');
+var btnModalConcretar = document.getElementById('btnModalConcretar');
 
 anio.addEventListener('change', renderTable)
 mes.addEventListener('change', renderTable)
 estatus.addEventListener('change', renderTable)
 btnModalCancelar.addEventListener('click', cancelarPedido)
+btnModalConcretar.addEventListener('click', concretarPedido)
+
 // Función para renderizar la tabla
     function renderTable() {
         var ancho = window.innerWidth;
@@ -160,23 +163,27 @@ btnModalCancelar.addEventListener('click', cancelarPedido)
                 t.innerHTML = '';
 
                 // Iterar sobre los datos y crear una fila para cada artículo
-                data.forEach(dato => {
-                    const fila = document.createElement("tr");
-                    
-                    //var costo = parseFloat(parseFloat(dato.costo).toFixed(2));
-                    //var costoFormateado = costo.toLocaleString('en-US');
-                    fila.innerHTML =
-                    `<td>${dato.clave}</td>
-                     <td>${dato.Articulo}</td>
-                     <td>${dato.Cantidad}</td>
-                     <td>$ ${(parseFloat(dato.costo)).toFixed(2)}</td>
-                     <td>$ ${(parseFloat(dato.total)).toFixed(2)}</td>`;
-                     t.appendChild(fila);
+                if (data == null) document.getElementById('tablaProductosDetalleModal').innerHTML= '<b>SIN REGISTRO DE PRODUCTOS</b>'
 
-                     totalPedido = totalPedido +  parseFloat(dato.total);
-                  }); 
+                else {
+                        data.forEach(dato => {
+                            const fila = document.createElement("tr");
+                            
+                            //var costo = parseFloat(parseFloat(dato.costo).toFixed(2));
+                            //var costoFormateado = costo.toLocaleString('en-US');
+                            fila.innerHTML =
+                            `<td>${dato.clave}</td>
+                            <td>${dato.Articulo}</td>
+                            <td>${dato.Cantidad}</td>
+                            <td>$ ${(parseFloat(dato.costo)).toFixed(2)}</td>
+                            <td>$ ${(parseFloat(dato.total)).toFixed(2)}</td>`;
+                            t.appendChild(fila);
 
-                  document.getElementById('totalCostoPedido').textContent = `       $ ${ parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US') }`;
+                            totalPedido = totalPedido +  parseFloat(dato.total);
+                        }); 
+
+                        document.getElementById('totalCostoPedido').textContent = `       $ ${ parseFloat(totalPedido.toFixed(2)).toLocaleString('en-US') }`;
+                }
                   new bootstrap.Modal(document.getElementById('verPedidoModal')).show();
     })
         .catch((error) => {
@@ -199,7 +206,7 @@ btnModalCancelar.addEventListener('click', cancelarPedido)
     function abrirConcretarPedidoModal(event) {
         const boton = event.target.closest("button"); // Accede al atributo data-id del botón que disparó el evento
         var dataId = boton.getAttribute('data-id');  
-        document.getElementById('concretarPedidoModal').dataset.id = dataId;
+        $('#modalConcretarId').val(dataId)
         new bootstrap.Modal(document.getElementById('concretarPedidoModal')).show();
     }
 
@@ -240,6 +247,8 @@ btnModalCancelar.addEventListener('click', cancelarPedido)
                                 console.log("OK")
                         else 
                             console.log(dataU)
+
+                    renderTable();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -375,7 +384,6 @@ btnModalCancelar.addEventListener('click', cancelarPedido)
             });
     }
 
-
     function cancelarPedido() {
             bootstrap.Modal.getInstance(document.getElementById('cancelarPedidoModal')).hide();
             var formDataCancelar = new FormData();
@@ -394,6 +402,26 @@ btnModalCancelar.addEventListener('click', cancelarPedido)
                     }
                     else
                         console.log(dataU)
+                })
+                .catch((error) => {
+                    console.log(error);
+                }); 
+    }
+
+    function concretarPedido(){
+            bootstrap.Modal.getInstance(document.getElementById('concretarPedidoModal')).hide();
+            var formDataConcretar = new FormData();
+            formDataConcretar.append('idPedido', $('#modalConcretarId').val())
+            formDataConcretar.append('tipoEntrada', 1)
+            formDataConcretar .append("opcion", 7);
+
+            fetch("./api/entradas.php", {
+                method: "POST",
+                body: formDataConcretar,
+            }).then((response) => response.json())
+                .then((dataU) => {
+                        alert(dataU.response);
+                        renderTable();
                 })
                 .catch((error) => {
                     console.log(error);

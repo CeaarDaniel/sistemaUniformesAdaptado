@@ -499,3 +499,20 @@ select* from empleado order by fecha_ingreso
 select* from uni_pedido_estado
 
 select* from uni_pedido
+select* from uni_entrada
+select* from uni_entrada_articulo
+
+
+SELECT a.id_articulo as clave, a.nombre as Articulo, dp.Cantidad, dp.costo, (dp.cantidad* dp.costo) as total 
+                    from uni_pedido_articulo as dp 
+                        inner join uni_articulos as a on dp.id_articulo= a.id_articulo 
+                where id_pedido = '1080'
+
+	select* from uni_pedido_articulo where id_pedido= '1080'
+
+	select* from uni_vale
+
+	--CONSULTA PARA OBTENER LOS TIPOS DE VALES CON LOS UNIFORMES QUE DEBERAN DE REGISTRARASE
+	SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme 
+			FROM uni_vale AS v, uni_vale_uniforme AS vu, uni_tipo_vale AS tv 
+		WHERE v.barcode = 'S0020' AND v.tipo_vale = tv.id_tipo_vale AND vu.id_vale = v.tipo_vale

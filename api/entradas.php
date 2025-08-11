@@ -336,7 +336,7 @@ else
 
                     if($uArticulos->execute()){
                         //Insertar articulos a uni_entrada_articulos
-                        $sqlia = "INSERT INTO uni_entrada_articulos (id_entrada, id_articulo, cantidad)
+                        $sqlia = "INSERT INTO uni_entrada_articulo(id_entrada, id_articulo, cantidad)
                                     SELECT  ".$lastID." as id_entrada, upa.id_articulo, upa.cantidad
                                         FROM uni_pedido_articulo upa
                                             INNER JOIN uni_articulos ua ON ua.id_articulo = upa.id_articulo
@@ -348,16 +348,16 @@ else
 
                         if($entradaArticulos->execute()){
                             //Actualizar el estatus del pedido y el id de entrada
-                                $sqlUE= "UPDATE uni_pedido set status= '4', id_entrada = ".$lastID;
-                                $updatePedido->prepare($sqlUE);
+                                $sqlUE= "UPDATE uni_pedido set fecha_termino = format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), status= '4', id_entrada = ".$lastID." WHERE id_pedido= :id_pedido";
+                                $updatePedido= $conn->prepare($sqlUE);
+                                $updatePedido->bindparam(':id_pedido', $idPedido);
                                 
 
                                 if($updatePedido->execute())
-                                    $respionse= array('response'=> 'PEDIDO CONCRETADO');
+                                    $response= array('response'=> 'PEDIDO CONCRETADO');
 
                                 else
                                     $response= array('response' => $updatePedido->errorInfo()[2]);
-
                         }
 
                         else 
