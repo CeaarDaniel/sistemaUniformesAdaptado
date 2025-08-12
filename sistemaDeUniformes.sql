@@ -514,5 +514,19 @@ SELECT a.id_articulo as clave, a.nombre as Articulo, dp.Cantidad, dp.costo, (dp.
 
 	--CONSULTA PARA OBTENER LOS TIPOS DE VALES CON LOS UNIFORMES QUE DEBERAN DE REGISTRARASE
 	SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme 
-			FROM uni_vale AS v, uni_vale_uniforme AS vu, uni_tipo_vale AS tv 
-		WHERE v.barcode = 'S0020' AND v.tipo_vale = tv.id_tipo_vale AND vu.id_vale = v.tipo_vale
+			FROM uni_vale v inner join uni_vale_uniforme vu on vu.id_vale = v.tipo_vale 
+							inner join uni_tipo_vale tv on v.tipo_vale = tv.id_tipo_vale
+		WHERE v.barcode = 'S0020'; 
+
+	SELECT ug.id_genero, ug.genero from uni_articulos as ua 
+                                    left join uni_genero as ug on ua.genero = ug.id_genero 
+                                where id_categoria= '1'
+                            group by id_categoria, ug.genero, ug.id_genero
+
+        SELECT ua.id_talla, ut.talla from uni_articulos ua
+                                    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
+                                where id_categoria= '1'
+                            group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla
+
+
+		select* from uni_vale_uniforme order by uniforme

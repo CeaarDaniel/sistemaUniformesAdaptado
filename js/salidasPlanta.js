@@ -3,6 +3,8 @@
         var emptyState = document.getElementById('emptyState');
         var confirmarBtn = document.getElementById('confirmarBtn');
         var radioEntrega = document.getElementsByName('tipoEntrega');
+        var talbaBarcodePRueba = document.getElementById('talbaBarcodePRueba');
+        
         let datos = [];
 
         $("input[name='tipoEntrega']").change(function() {
@@ -13,6 +15,30 @@
 
             else 
                 if( valor == 567) document.getElementById('empleadoInput').value= 'OBSEQUIO';
+        });
+
+        //OBTENER LOS GENEROS Y CATEGORIAS CORRESPONDIENTES AL BARCODE
+        valeInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                    var formDataGet = new FormData;
+                    formDataGet.append('opcion', 2);
+                    formDataGet.append('barcode', this.value);
+
+                    fetch("./api/salidas.php", {
+                        method: "POST",
+                        body: formDataGet,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                                if(data.error)
+                                        alert("EL CODIGO INGRESADO NO EXISTE")
+
+                                else cargarTabla(data.uniforme);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+            }
         });
 
     
@@ -114,8 +140,8 @@
             .then((response) => response.json())
             .then((data) => {
 
-                console.log("Tallas: ", data.tallas);
-                console.log("Generos: ", data.generos);
+                //onsole.log("Tallas: ", data.tallas);
+                //console.log("Generos: ", data.generos);
 
                 var tallas = '<option value="" selected>Seleccione una talla</option>';
                 var generos = '<option value="" selected>Seleccione género</option>';
@@ -273,6 +299,98 @@
     }
 
 actualizarVista();
+
+
+  function cargarTabla(data) {
+            const tbody = document.querySelector('#talbaBarcodePrueba tbody');
+            tbody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+
+                 var formDataGet = new FormData;
+                    formDataGet.append('opcion', 3);
+                    formDataGet.append('categoria', item.id_categoria);
+
+                    fetch("./api/entradas.php", {
+                        method: "POST",
+                        body: formDataGet,
+                    })
+                    .then((response) => response.json())
+                    .then((catGen) => {
+
+                        //LABEL CATEGORIA
+
+                            const labelCategoria = document.createElement('td');
+                                labelCategoria.textContent =  item.id_categoria
+                     
+                        //SELECT DE GENERO
+                            const tdGenero = document.createElement('td');
+                            const selectGenero = document.createElement('select');
+                            //selectCategoria.classList.add('categoria-select');
+                            //selectCategoria.dataset.id = item.id;
+
+                            const option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = ' Genero ';
+                            selectGenero.appendChild(option);
+
+                            catGen.generos.forEach(genero => {
+                                    const option = document.createElement('option');
+                                    option.value = genero.id_genero;
+                                    option.textContent = genero.genero;
+                                    selectGenero.appendChild(option);
+                                })
+
+                            tdGenero.appendChild(selectGenero);
+
+                        //SELECT DE TALLA
+                            const tdTalla = document.createElement('td');
+                            const selectTalla = document.createElement('select');
+
+                            const optionTalla = document.createElement('option');
+                            optionTalla.value = '';
+                            optionTalla.textContent = ' Talla ';
+                            selectTalla.appendChild(optionTalla);
+
+                            catGen.tallas.forEach(talla => {
+                                    const optionTalla = document.createElement('option');
+                                    optionTalla.value = talla.id_talla;
+                                    optionTalla.textContent = talla.talla;
+                                    selectTalla.appendChild(optionTalla);
+                                })
+
+                            tdTalla.appendChild(selectTalla)
+                            
+                        
+                        //INPUT CANTIDAD
+                            const tdCantidad = document.createElement('td');
+                            const inputCantidad = document.createElement('input');
+                            inputCantidad.type= 'number'
+                            inputCantidad.min = '1';
+
+                            //inputCantidad.classList.add('genero-select');
+                            //inputCantidad.dataset.id = item.id;
+
+                            inputCantidad.value = item.cantidad
+                            tdCantidad.appendChild(inputCantidad);
+
+                        // Ensamblar fila
+                        row.appendChild(labelCategoria);
+                        row.appendChild(tdGenero);
+                        row.appendChild(tdTalla);
+                        row.appendChild(tdCantidad);
+
+                        tbody.appendChild(row);
+
+                        console.log(catGen);
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            });
+        }
 
 
     /*

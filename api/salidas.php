@@ -27,5 +27,36 @@ if($opcion == '1'){
   echo json_encode($response);
 }
 
+//OBTENER GENEROS Y CATEGORIAS DEL BARCODE
+else 
+    if( $opcion == '2'){
+         $barcode = (isset($_POST['barcode']) && !$_POST['barcode']=='') ? $_POST['barcode'] : NULL;
+         $sqlB= 'SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme 
+			            FROM uni_vale v inner join uni_vale_uniforme vu on vu.id_vale = v.tipo_vale 
+							inner join uni_tipo_vale tv on v.tipo_vale = tv.id_tipo_vale 
+		         WHERE v.barcode = :barcode AND v.tipo_vale = tv.id_tipo_vale AND vu.id_vale = v.tipo_vale';
+
+        $cateGen = $conn->prepare($sqlB);
+        $cateGen->bindparam(':barcode', $barcode);
+            if($cateGen->execute()){
+                $result = $cateGen->fetch(PDO::FETCH_ASSOC);
+
+                if ($result) {
+                        $response = array(
+                            'nombre' => $result['nombre'],
+                            'uniforme' => json_decode($result['uniforme'])
+                        );
+                    } 
+                    else 
+                        $response = array('error' => 'No se encontraron resultados');
+                }
+
+            else 
+            $response = array ('error' => $cateGen->errorInfo()[2]);
+
+        echo json_encode($response);
+}
+
+
 
 ?>

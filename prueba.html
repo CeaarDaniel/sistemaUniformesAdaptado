@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla de Productos con Dependencias</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            border: 1px solid red;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+        .agotado {
+            background-color: #ffe6e6;
+        }
+        .deshabilitado {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Género</th>
+                <th>Talla</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos se cargarán dinámicamente -->
+        </tbody>
+    </table>
+    <button onclick="validarDatos()">Validar Datos</button>
+    <div id="resultado"></div>
+
+    <script>
+        // Datos iniciales de ejemplo
+        const data = [
+            { id: 1, nombre: "Cinturón de Cuero", categoria: "Cinturones", genero: "", talla: "", cantidad: 0 },
+            { id: 2, nombre: "Camiseta Básica", categoria: "Camisetas", genero: "", talla: "", cantidad: 0 },
+            { id: 3, nombre: "Zapatos Deportivos", categoria: "Calzado", genero: "", talla: "", cantidad: 0 }
+        ];
+
+        // Opciones para los selects
+        const generos = ["Masculino", "Femenino", "Unisex"];
+        const tallas = ["XS", "S", "M", "L", "XL", "XXL"];
+        
+        // Relación entre categorías y opciones de género
+        const generosPorCategoria = {
+            "Cinturones": ["Unisex", "No aplica"],
+            "Camisetas": ["Masculino", "Femenino", "Unisex"],
+            "Calzado": ["Masculino", "Femenino"]
+        };
+        
+        // Inventario por producto y talla
+        const inventario = {
+            1: { "Única": 10 },   // Cinturones no tienen talla
+            2: { "XS": 0, "S": 5, "M": 10, "L": 3, "XL": 0 },
+            3: { "38": 0, "39": 2, "40": 4, "41": 0 } // Para calzado
+        };
+        
+        // Tallas por categoría
+        const tallasPorCategoria = {
+            "Cinturones": ["Única"],
+            "Camisetas": ["XS", "S", "M", "L", "XL"],
+            "Calzado": ["38", "39", "40", "41"]
+        };
+
+        // Cargar datos en la tabla
+        function cargarTabla() {
+            const tbody = document.querySelector('#productTable tbody');
+            tbody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.dataset.id = item.id;
+                
+                // ID
+                const tdId = document.createElement('td');
+                tdId.textContent = item.id;
+                
+                // Nombre
+                const tdNombre = document.createElement('td');
+                tdNombre.textContent = item.nombre;
+                
+                // Categoría (select)
+                const tdCategoria = document.createElement('td');
+                const selectCategoria = document.createElement('select');
+                selectCategoria.classList.add('categoria-select');
+                selectCategoria.dataset.id = item.id;
+                
+                // Opciones de categoría
+                Object.keys(generosPorCategoria).forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    selectCategoria.appendChild(option);
+                });
+                
+                // Seleccionar categoría actual
+                selectCategoria.value = item.categoria;
+                tdCategoria.appendChild(selectCategoria);
+                
+                // Género (select)
+                const tdGenero = document.createElement('td');
+                const selectGenero = document.createElement('select');
+                selectGenero.classList.add('genero-select');
+                selectGenero.dataset.id = item.id;
+                tdGenero.appendChild(selectGenero);
+                
+                // Mensaje de error para género
+                const errorGenero = document.createElement('div');
+                errorGenero.classList.add('error-message');
+                errorGenero.id = `error-genero-${item.id}`;
+                errorGenero.textContent = "Seleccione un género";
+                tdGenero.appendChild(errorGenero);
+                
+                // Talla (select)
+                const tdTalla = document.createElement('td');
+                const selectTalla = document.createElement('select');
+                selectTalla.classList.add('talla-select');
+                selectTalla.dataset.id = item.id;
+                tdTalla.appendChild(selectTalla);
+                
+                // Mensaje de error para talla
+                const errorTalla = document.createElement('div');
+                errorTalla.classList.add('error-message');
+                errorTalla.id = `error-talla-${item.id}`;
+                errorTalla.textContent = "Seleccione una talla";
+                tdTalla.appendChild(errorTalla);
+                
+                // Cantidad (input number)
+                const tdCantidad = document.createElement('td');
+                const inputCantidad = document.createElement('input');
+                inputCantidad.type = 'number';
+                inputCantidad.min = '0';
+                inputCantidad.value = item.cantidad;
+                inputCantidad.classList.add('cantidad-input');
+                inputCantidad.dataset.id = item.id;
+                tdCantidad.appendChild(inputCantidad);
+                
+                // Mensaje de error para cantidad
+                const errorCantidad = document.createElement('div');
+                errorCantidad.classList.add('error-message');
+                errorCantidad.id = `error-cantidad-${item.id}`;
+                errorCantidad.textContent = "Cantidad inválida";
+                tdCantidad.appendChild(errorCantidad);
+                
+                // Estado
+                const tdEstado = document.createElement('td');
+                tdEstado.id = `estado-${item.id}`;
+                tdEstado.textContent = "Sin seleccionar";
+                
+                // Ensamblar fila
+                row.appendChild(tdId);
+                row.appendChild(tdNombre);
+                row.appendChild(tdCategoria);
+                row.appendChild(tdGenero);
+                row.appendChild(tdTalla);
+                row.appendChild(tdCantidad);
+                row.appendChild(tdEstado);
+                tbody.appendChild(row);
+                
+                // Actualizar dependencias
+                actualizarDependencias(item.id);
+                
+                // Event listeners
+                selectCategoria.addEventListener('change', function() {
+                    actualizarDependencias(item.id);
+                });
+                
+                selectTalla.addEventListener('change', function() {
+                    actualizarDisponibilidad(item.id);
+                });
+                
+                inputCantidad.addEventListener('change', function() {
+                    validarCantidad(item.id);
+                });
+            });
+        }
+
+        // Actualizar dependencias entre campos
+        function actualizarDependencias(id) {
+            const categoriaSelect = document.querySelector(`.categoria-select[data-id="${id}"]`);
+            const generoSelect = document.querySelector(`.genero-select[data-id="${id}"]`);
+            const tallaSelect = document.querySelector(`.talla-select[data-id="${id}"]`);
+            const inputCantidad = document.querySelector(`.cantidad-input[data-id="${id}"]`);
+            const estadoCell = document.getElementById(`estado-${id}`);
+            
+            const categoria = categoriaSelect.value;
+            
+            // Actualizar opciones de género
+            generoSelect.innerHTML = '';
+            generosPorCategoria[categoria].forEach(genero => {
+                const option = document.createElement('option');
+                option.value = genero;
+                option.textContent = genero;
+                generoSelect.appendChild(option);
+            });
+            
+            // Actualizar opciones de talla
+            tallaSelect.innerHTML = '';
+            tallasPorCategoria[categoria].forEach(talla => {
+                const option = document.createElement('option');
+                option.value = talla;
+                option.textContent = talla;
+                tallaSelect.appendChild(option);
+            });
+            
+            // Si la categoría no requiere género
+            if (categoria === "Cinturones") {
+                generoSelect.value = "No aplica";
+                generoSelect.disabled = true;
+                generoSelect.parentElement.classList.add('deshabilitado');
+            } else {
+                generoSelect.disabled = false;
+                generoSelect.parentElement.classList.remove('deshabilitado');
+            }
+            
+            // Actualizar disponibilidad
+            actualizarDisponibilidad(id);
+        }
+
+        // Actualizar disponibilidad según talla seleccionada
+        function actualizarDisponibilidad(id) {
+            const categoriaSelect = document.querySelector(`.categoria-select[data-id="${id}"]`);
+            const tallaSelect = document.querySelector(`.talla-select[data-id="${id}"]`);
+            const inputCantidad = document.querySelector(`.cantidad-input[data-id="${id}"]`);
+            const estadoCell = document.getElementById(`estado-${id}`);
+            
+            const categoria = categoriaSelect.value;
+            const talla = tallaSelect.value;
+            
+            if (!talla) {
+                estadoCell.textContent = "Seleccione talla";
+                estadoCell.style.color = "black";
+                inputCantidad.disabled = true;
+                inputCantidad.value = 0;
+                return;
+            }
+            
+            // Para categorías con talla única
+            const tallaKey = (categoria === "Cinturones") ? "Única" : talla;
+            
+            const stock = inventario[id][tallaKey] || 0;
+            
+            if (stock === 0) {
+                estadoCell.textContent = "AGOTADO";
+                estadoCell.style.color = "red";
+                inputCantidad.disabled = true;
+                inputCantidad.value = 0;
+                inputCantidad.max = 0;
+                inputCantidad.parentElement.parentElement.classList.add('agotado');
+            } else {
+                estadoCell.textContent = `Disponible: ${stock}`;
+                estadoCell.style.color = "green";
+                inputCantidad.disabled = false;
+                inputCantidad.max = stock;
+                inputCantidad.parentElement.parentElement.classList.remove('agotado');
+            }
+            
+            validarCantidad(id);
+        }
+
+        // Validar cantidad
+        function validarCantidad(id) {
+            const inputCantidad = document.querySelector(`.cantidad-input[data-id="${id}"]`);
+            const errorCantidad = document.getElementById(`error-cantidad-${id}`);
+            const max = parseInt(inputCantidad.max) || 0;
+            const valor = parseInt(inputCantidad.value) || 0;
+            
+            errorCantidad.style.display = 'none';
+            inputCantidad.classList.remove('error');
+            
+            if (valor < 1) {
+                errorCantidad.textContent = "Mínimo 1 unidad";
+                errorCantidad.style.display = 'block';
+                inputCantidad.classList.add('error');
+            } else if (valor > max) {
+                errorCantidad.textContent = `Máximo ${max} unidades`;
+                errorCantidad.style.display = 'block';
+                inputCantidad.classList.add('error');
+            }
+        }
+
+        // Validar todos los datos
+        function validarDatos() {
+            let valido = true;
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = '';
+            
+            data.forEach(item => {
+                const id = item.id;
+                const generoSelect = document.querySelector(`.genero-select[data-id="${id}"]`);
+                const tallaSelect = document.querySelector(`.talla-select[data-id="${id}"]`);
+                const inputCantidad = document.querySelector(`.cantidad-input[data-id="${id}"]`);
+                const categoriaSelect = document.querySelector(`.categoria-select[data-id="${id}"]`);
+                
+                // Resetear errores
+                document.getElementById(`error-genero-${id}`).style.display = 'none';
+                document.getElementById(`error-talla-${id}`).style.display = 'none';
+                document.getElementById(`error-cantidad-${id}`).style.display = 'none';
+                generoSelect.classList.remove('error');
+                tallaSelect.classList.remove('error');
+                inputCantidad.classList.remove('error');
+                
+                // Validar género (excepto para cinturones)
+                if (categoriaSelect.value !== "Cinturones") {
+                    if (!generoSelect.value) {
+                        document.getElementById(`error-genero-${id}`).style.display = 'block';
+                        generoSelect.classList.add('error');
+                        valido = false;
+                    }
+                }
+                
+                // Validar talla
+                if (!tallaSelect.value) {
+                    document.getElementById(`error-talla-${id}`).style.display = 'block';
+                    tallaSelect.classList.add('error');
+                    valido = false;
+                }
+                
+                // Validar cantidad
+                validarCantidad(id);
+                if (inputCantidad.classList.contains('error')) {
+                    valido = false;
+                }
+            });
+            
+            if (valido) {
+                resultadoDiv.innerHTML = '<p style="color:green;">¡Todos los datos son válidos!</p>';
+                // Aquí puedes procesar los datos validados
+                const datosValidados = obtenerDatosValidados();
+                console.log('Datos validados:', datosValidados);
+            } else {
+                resultadoDiv.innerHTML = '<p style="color:red;">Corrija los campos marcados</p>';
+            }
+            
+            return valido;
+        }
+
+        // Obtener datos validados del formulario
+        function obtenerDatosValidados() {
+            return data.map(item => {
+                const id = item.id;
+                const categoriaSelect = document.querySelector(`.categoria-select[data-id="${id}"]`);
+                const generoSelect = document.querySelector(`.genero-select[data-id="${id}"]`);
+                const tallaSelect = document.querySelector(`.talla-select[data-id="${id}"]`);
+                const inputCantidad = document.querySelector(`.cantidad-input[data-id="${id}"]`);
+                
+                return {
+                    id: id,
+                    nombre: item.nombre,
+                    categoria: categoriaSelect.value,
+                    genero: generoSelect.value,
+                    talla: tallaSelect.value,
+                    cantidad: parseInt(inputCantidad.value)
+                };
+            });
+        }
+
+        // Inicializar la tabla al cargar la página
+        window.onload = cargarTabla;
+    </script>
+</body>
+</html>

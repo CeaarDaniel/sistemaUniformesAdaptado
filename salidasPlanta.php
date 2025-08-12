@@ -172,3 +172,18 @@ include('./api/conexion.php');
                 </div>
             </div>
         </div>
+
+
+        <table id="talbaBarcodePrueba">
+            <thead>
+                <tr>
+                    <th>CATEGORIA</th>
+                    <th>TALLA</th>
+                    <th>GENERO</th> 
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+        <tbody>
+            <!-- Los datos se cargarán dinámicamente -->
+        </tbody>
+        </table>
