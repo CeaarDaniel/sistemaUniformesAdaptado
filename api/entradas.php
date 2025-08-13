@@ -118,16 +118,20 @@ else
                                 where id_categoria= :categoria
                             group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla";
 
+            $consultaCategoria = "SELECT id_categoria, abrev FROM uni_categoria WHERE  id_categoria = :categoria";
+
             $listaTallas = null;
             $listaGeneros = null;
+            $categoriaN = null;
 
             $talla = $conn->prepare($consultaTalla); 
             $genero = $conn->prepare($consultaGenero); 
+            $categoriaN = $conn->prepare($consultaCategoria); 
 
 
             $talla->bindparam(':categoria', $categoria);
             $genero->bindparam(':categoria', $categoria);
-
+            $categoriaN->bindparam(':categoria', $categoria);
 
             if($talla->execute()){
                 while($tallas = $talla->fetch(PDO::FETCH_ASSOC)){
@@ -150,6 +154,17 @@ else
 
             else 
                 $response['generos'] = array('error' => $talla->errorInfo()[2]);
+
+            if($categoriaN->execute()){
+                $categorias = $categoriaN->fetch(PDO::FETCH_ASSOC);
+                    //$listaCategoria = $categorias;
+                //}
+
+                $response['categoria'] = $categorias;
+            }
+
+            else 
+              $response['categoria'] = array('error' => $categoria->errorInfo()[2]);
 
         echo json_encode($response);
     }

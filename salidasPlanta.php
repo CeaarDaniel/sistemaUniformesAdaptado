@@ -70,7 +70,7 @@ include('./api/conexion.php');
             </div>
 
         </div>
-                <!-- Modal para selección de artículos -->
+        <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarArticuloModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -173,17 +173,39 @@ include('./api/conexion.php');
             </div>
         </div>
 
+        <!-- Modal para la seleccion de articulos con el uso del barcode del vale -->
+                 <!-- Modal para selección de artículos -->
+        <div class="modal fade" id="seleccionarValeArticuloModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">SELECCIONAR ARTÍCULO</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="my-3" style="width:100%; height:auto; overflow-x: auto;">
+                                <table id="talbaBarcodePrueba" class="table" style="width:100%">
+                                    <thead class="header-table">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>CATEGORIA</th>
+                                            <th>GENERO</th> 
+                                            <th>TALLA</th>
+                                            <th>Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                <tbody style="width:100%">
+                                    <!-- Los datos se cargarán dinámicamente -->
+                                </tbody>
+                                </table>
+                            </div>
 
-        <table id="talbaBarcodePrueba">
-            <thead>
-                <tr>
-                    <th>CATEGORIA</th>
-                    <th>TALLA</th>
-                    <th>GENERO</th> 
-                    <th>Cantidad</th>
-                </tr>
-            </thead>
-        <tbody>
-            <!-- Los datos se cargarán dinámicamente -->
-        </tbody>
-        </table>
+                            <div class="text-left">
+                                 <button id="btnEditarArticulo" class="btn" style="color:white; background-color:#21ba45;">
+                                    Modificar
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>

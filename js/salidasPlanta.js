@@ -4,6 +4,8 @@
         var confirmarBtn = document.getElementById('confirmarBtn');
         var radioEntrega = document.getElementsByName('tipoEntrega');
         var talbaBarcodePRueba = document.getElementById('talbaBarcodePRueba');
+        //
+          const valeModal = new bootstrap.Modal(document.getElementById("seleccionarValeArticuloModal"));
         
         let datos = [];
 
@@ -18,28 +20,31 @@
         });
 
         //OBTENER LOS GENEROS Y CATEGORIAS CORRESPONDIENTES AL BARCODE
-        valeInput.addEventListener("keydown", function(event) {
-            if (event.key === "Enter") {
-                    var formDataGet = new FormData;
-                    formDataGet.append('opcion', 2);
-                    formDataGet.append('barcode', this.value);
+            valeInput.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                        var formDataGet = new FormData;
+                        formDataGet.append('opcion', 2);
+                        formDataGet.append('barcode', this.value);
 
-                    fetch("./api/salidas.php", {
-                        method: "POST",
-                        body: formDataGet,
-                    })
-                        .then((response) => response.json())
-                        .then((data) => {
-                                if(data.error)
-                                        alert("EL CODIGO INGRESADO NO EXISTE")
+                        fetch("./api/salidas.php", {
+                            method: "POST",
+                            body: formDataGet,
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                    if(data.error)
+                                            alert("El código del vale no existe o es incorrecto")
 
-                                else cargarTabla(data.uniforme);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        })
-            }
-        });
+                                    else {
+                                    cargarTabla(data.uniforme);
+                                    valeModal.show();
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            })
+                }
+            });
 
     
     // Fuente de datos inicial
@@ -319,14 +324,20 @@ actualizarVista();
                     .then((response) => response.json())
                     .then((catGen) => {
 
-                        //LABEL CATEGORIA
+                        //COLUMNA ID
+                            let idArticulo = document.createElement('td');
+                                 idArticulo.classList.add('idArticulo');
+                                 idArticulo.textContent = ''
 
+                        //LABEL CATEGORIA
                             const labelCategoria = document.createElement('td');
-                                labelCategoria.textContent =  item.id_categoria
+                                labelCategoria.classList.add('labelCategoria')
+                                labelCategoria.textContent =  catGen.categoria.abrev;
                      
                         //SELECT DE GENERO
                             const tdGenero = document.createElement('td');
                             const selectGenero = document.createElement('select');
+                            selectGenero.classList.add('selectGenero')
                             //selectCategoria.classList.add('categoria-select');
                             //selectCategoria.dataset.id = item.id;
 
@@ -347,6 +358,7 @@ actualizarVista();
                         //SELECT DE TALLA
                             const tdTalla = document.createElement('td');
                             const selectTalla = document.createElement('select');
+                            selectTalla.classList.add('selectTalla');
 
                             const optionTalla = document.createElement('option');
                             optionTalla.value = '';
@@ -357,6 +369,8 @@ actualizarVista();
                                     const optionTalla = document.createElement('option');
                                     optionTalla.value = talla.id_talla;
                                     optionTalla.textContent = talla.talla;
+
+                                    (item.id_talla == talla.id_talla) ? optionTalla.selected = true : null;
                                     selectTalla.appendChild(optionTalla);
                                 })
 
@@ -366,6 +380,7 @@ actualizarVista();
                         //INPUT CANTIDAD
                             const tdCantidad = document.createElement('td');
                             const inputCantidad = document.createElement('input');
+                            inputCantidad.classList.add('inputCantidad');
                             inputCantidad.type= 'number'
                             inputCantidad.min = '1';
 
@@ -376,6 +391,7 @@ actualizarVista();
                             tdCantidad.appendChild(inputCantidad);
 
                         // Ensamblar fila
+                        row.appendChild(idArticulo)
                         row.appendChild(labelCategoria);
                         row.appendChild(tdGenero);
                         row.appendChild(tdTalla);
@@ -383,7 +399,10 @@ actualizarVista();
 
                         tbody.appendChild(row);
 
-                        console.log(catGen);
+                        //console.log(catGen);
+
+                        selectGenero.addEventListener('change', validarArticulo)
+                        selectTalla.addEventListener('change', validarArticulo)
 
                     })
                     .catch((error) => {
@@ -391,6 +410,71 @@ actualizarVista();
                     })
             });
         }
+
+        function validarArticulo(event){
+            const fila = event.target.closest('tr');
+            //const selectCategoria = fila.querySelector('select.categoria');
+            //const selectTalla = this;
+
+            //const talla = selectTalla.value;
+            const genero = fila.querySelector('.selectGenero').value;
+            const talla = fila.querySelector('.selectTalla').value;
+
+            fila.cells[0].textContent = 'Genero: '+genero+' Talla:'+talla
+
+            //alert(genero);
+        }
+
+/*
+OBTENER LOS DATOS EN UN ARREGLO
+const filas = document.querySelectorAll('#miTabla tbody tr');
+const datos = [];
+
+filas.forEach(fila => {
+  const data = {
+    id_articulo: fila.cells[0].textContent,
+    talla: fila.querySelector('select.talla')?.value,
+    genero: fila.querySelector('select.genero')?.value,
+    categoria: fila.querySelector('select.categoria')?.value,
+    nombre: fila.querySelector('.nombre')?.textContent,
+    existencia: fila.querySelector('.existencia')?.textContent,
+    descripcion: fila.querySelector('.descripcion')?.textContent
+  };
+
+  datos.push(data);
+});
+
+console.log(datos);
+*/
+
+
+
+/*
+selectTalla.addEventListener('change', function() {
+  const fila = this.closest('tr');
+
+  const selectGenero = fila.querySelector('select.genero');
+  const selectCategoria = fila.querySelector('select.categoria');
+  const selectTalla = this;
+
+  const talla = selectTalla.value;
+  const genero = selectGenero.value;
+  const categoria = selectCategoria.value;
+
+  const articulo = buscarArticulo(talla, genero, categoria);
+
+  if (articulo) {
+    // Supongamos que quieres llenar estas celdas:
+    fila.cells[0].textContent = articulo.id; // primera columna
+    fila.querySelector('.nombre').textContent = articulo.nombre;
+    fila.querySelector('.existencia').textContent = articulo.existencia;
+    fila.querySelector('.descripcion').textContent = articulo.descripcion;
+  } else {
+    // Opcional: limpiar si no se encuentra
+    fila.cells[0].textContent = '';
+  }
+});
+*/
 
 
     /*
