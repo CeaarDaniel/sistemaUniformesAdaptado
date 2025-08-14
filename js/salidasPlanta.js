@@ -306,7 +306,7 @@
 actualizarVista();
 
 
-  function cargarTabla(data) {
+    function cargarTabla(data) {
             const tbody = document.querySelector('#talbaBarcodePrueba tbody');
             tbody.innerHTML = '';
 
@@ -324,6 +324,14 @@ actualizarVista();
                     .then((response) => response.json())
                     .then((catGen) => {
 
+                        //BOTON DE REOMOVE
+                         const  tdRemove= document.createElement('td');
+                            let btnRemove = document.createElement('button');
+                                btnRemove.classList.add('btnRemove', 'btn');
+                                btnRemove.style.color = 'rgb(193, 0, 21)';
+                                btnRemove.innerHTML = '<i class="fas fa-trash"></i>';
+                                tdRemove.appendChild(btnRemove);
+
                         //COLUMNA ID
                             let idArticulo = document.createElement('td');
                                  idArticulo.classList.add('idArticulo');
@@ -332,12 +340,14 @@ actualizarVista();
                         //LABEL CATEGORIA
                             const labelCategoria = document.createElement('td');
                                 labelCategoria.classList.add('labelCategoria')
+                                labelCategoria.dataset.idCategoria = item.id_categoria;
                                 labelCategoria.textContent =  catGen.categoria.abrev;
                      
                         //SELECT DE GENERO
                             const tdGenero = document.createElement('td');
+                            tdGenero.classList.add('mx-2')
                             const selectGenero = document.createElement('select');
-                            selectGenero.classList.add('selectGenero')
+                            selectGenero.classList.add('selectGenero', 'form-select', 'text-center');
                             //selectCategoria.classList.add('categoria-select');
                             //selectCategoria.dataset.id = item.id;
 
@@ -357,8 +367,9 @@ actualizarVista();
 
                         //SELECT DE TALLA
                             const tdTalla = document.createElement('td');
+                            tdTalla.classList.add('mr-2', 'ml-2')
                             const selectTalla = document.createElement('select');
-                            selectTalla.classList.add('selectTalla');
+                            selectTalla.classList.add('selectTalla', 'form-select', 'text-center');
 
                             const optionTalla = document.createElement('option');
                             optionTalla.value = '';
@@ -379,10 +390,13 @@ actualizarVista();
                         
                         //INPUT CANTIDAD
                             const tdCantidad = document.createElement('td');
+                            tdCantidad.classList.add('mx-2')
                             const inputCantidad = document.createElement('input');
-                            inputCantidad.classList.add('inputCantidad');
+                            inputCantidad.classList.add('inputCantidad', 'form-control', 'text-center');
+                            inputCantidad.style.maxWidth = '150px'
                             inputCantidad.type= 'number'
                             inputCantidad.min = '1';
+                            inputCantidad.disabled = true;
 
                             //inputCantidad.classList.add('genero-select');
                             //inputCantidad.dataset.id = item.id;
@@ -391,6 +405,7 @@ actualizarVista();
                             tdCantidad.appendChild(inputCantidad);
 
                         // Ensamblar fila
+                        row.appendChild(tdRemove)
                         row.appendChild(idArticulo)
                         row.appendChild(labelCategoria);
                         row.appendChild(tdGenero);
@@ -403,27 +418,68 @@ actualizarVista();
 
                         selectGenero.addEventListener('change', validarArticulo)
                         selectTalla.addEventListener('change', validarArticulo)
+                        btnRemove.addEventListener('click', eliminarFila)
 
                     })
                     .catch((error) => {
                         console.log(error);
                     })
             });
-        }
+    }
 
-        function validarArticulo(event){
+    function validarArticulo(event){
             const fila = event.target.closest('tr');
-            //const selectCategoria = fila.querySelector('select.categoria');
-            //const selectTalla = this;
-
-            //const talla = selectTalla.value;
+            const categoria = fila.querySelector('.labelCategoria').dataset.idCategoria
             const genero = fila.querySelector('.selectGenero').value;
             const talla = fila.querySelector('.selectTalla').value;
+            const cantidad = fila.querySelector('.inputCantidad').value;
 
-            fila.cells[0].textContent = 'Genero: '+genero+' Talla:'+talla
+            console.log("categoria:"+categoria+" genero: "+genero+" talla: "+talla)
 
-            //alert(genero);
-        }
+            
+             let formDataVale = new FormData;
+                formDataVale.append('opcion', 4);
+                formDataVale.append('categoria', categoria);
+                formDataVale.append('genero', genero);
+                formDataVale.append('talla',talla);
+                cantidad.value ="" 
+                    fetch("./api/entradas.php", {
+                        method: "POST",
+                        body: formDataVale,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if(data.articulo == null) {
+                                $('#btnConfirmarVale').prop('disabled', true);
+                                fila.cells[1].textContent = ''
+                                fila.querySelector('.inputCantidad').disabled = true
+                            }
+                            else {
+                                $('#btnConfirmarVale').prop('disabled', false);
+                                //data.articulo.cantidad;
+                                fila.cells[1].textContent = data.articulo.nombre;
+
+                               // data.articulo.cantidad < 1
+                                fila.querySelector('.inputCantidad').max = data.articulo.cantidad;
+                                fila.querySelector('.inputCantidad').disabled = false
+                            }
+
+                            console.log(data);
+                    })
+            .catch((error) => {
+                console.log(error);
+            }) 
+    }
+
+    function eliminarFila(event){
+        const fila = event.target.closest('tr');
+        $(fila).remove();
+
+        const filas = document.querySelectorAll('#talbaBarcodePrueba tbody tr');
+
+        if(filas.length <= 0)  
+            valeModal.hide();
+    }
 
 /*
 OBTENER LOS DATOS EN UN ARREGLO

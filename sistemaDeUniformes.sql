@@ -1,5 +1,4 @@
 use beyonz;
-
 select* from SCI_linea
 SELECT * FROM Fotos order by FOTOS_NN
 
@@ -466,15 +465,7 @@ SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, u
                      where 1=1   group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo  order by id_articulo
 
 
-					 select* from uni_pedido;
-					 select* from uni_pedido_articulo where id_pedido = '1069';
-
-					 select* from uni_estado
-					 select* from uni_articulos
-
-
-					 select* from uni_categoria
-					 select* from uni_talla
+		
 			Declare @tipoTalla INT;
 				SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
 				SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
@@ -489,44 +480,12 @@ select ua.id_articulo, ua.cantidad as actual, upa.id_articulo, upa.cantidad as n
 where id_pedido = '20'
 
 
-
-select* from uni_entrada_articulo where id_entrada = '125'
-
-select* from uni_entrada
-select format(GETDATE(),'yyyy-MM-dd HH:mm:ss')
-
-select* from empleado order by fecha_ingreso
-select* from uni_pedido_estado
-
-select* from uni_pedido
-select* from uni_entrada
-select* from uni_entrada_articulo
-
-
-SELECT a.id_articulo as clave, a.nombre as Articulo, dp.Cantidad, dp.costo, (dp.cantidad* dp.costo) as total 
-                    from uni_pedido_articulo as dp 
-                        inner join uni_articulos as a on dp.id_articulo= a.id_articulo 
-                where id_pedido = '1080'
-
-	select* from uni_pedido_articulo where id_pedido= '1080'
-
-	select* from uni_vale
-
 	--CONSULTA PARA OBTENER LOS TIPOS DE VALES CON LOS UNIFORMES QUE DEBERAN DE REGISTRARASE
-	SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme 
+	SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme, v.barcode
 			FROM uni_vale v inner join uni_vale_uniforme vu on vu.id_vale = v.tipo_vale 
 							inner join uni_tipo_vale tv on v.tipo_vale = tv.id_tipo_vale
-		WHERE v.barcode = 'S0020'; 
+		WHERE vu.id_vale= '2'; 
+		
 
-	SELECT ug.id_genero, ug.genero from uni_articulos as ua 
-                                    left join uni_genero as ug on ua.genero = ug.id_genero 
-                                where id_categoria= '1'
-                            group by id_categoria, ug.genero, ug.id_genero
-
-        SELECT ua.id_talla, ut.talla from uni_articulos ua
-                                    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
-                                where id_categoria= '1'
-                            group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla
-
-
-		select* from uni_vale_uniforme order by uniforme
+			select* from uni_categoria
+			select* from uni_vale_uniforme

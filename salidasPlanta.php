@@ -187,11 +187,12 @@ include('./api/conexion.php');
                                 <table id="talbaBarcodePrueba" class="table" style="width:100%">
                                     <thead class="header-table">
                                         <tr>
+                                            <th>ACTIONS</th>
                                             <th>ID</th>
                                             <th>CATEGORIA</th>
                                             <th>GENERO</th> 
                                             <th>TALLA</th>
-                                            <th>Cantidad</th>
+                                            <th>CANTIDAD</th>
                                         </tr>
                                     </thead>
                                 <tbody style="width:100%">
@@ -201,8 +202,8 @@ include('./api/conexion.php');
                             </div>
 
                             <div class="text-left">
-                                 <button id="btnEditarArticulo" class="btn" style="color:white; background-color:#21ba45;">
-                                    Modificar
+                                 <button id="btnConfirmarVale" class="btn" style="color:white; background-color:#21ba45;">
+                                    CONFIRMAR
                                 </button>
                             </div>
                         </div>
