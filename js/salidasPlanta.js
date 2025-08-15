@@ -405,19 +405,18 @@ actualizarVista();
                             tdCantidad.appendChild(inputCantidad);
 
                         // Ensamblar fila
-                        row.appendChild(tdRemove)
-                        row.appendChild(idArticulo)
-                        row.appendChild(labelCategoria);
-                        row.appendChild(tdGenero);
-                        row.appendChild(tdTalla);
-                        row.appendChild(tdCantidad);
+                            row.appendChild(tdRemove)
+                            row.appendChild(idArticulo)
+                            row.appendChild(labelCategoria);
+                            row.appendChild(tdGenero);
+                            row.appendChild(tdTalla);
+                            row.appendChild(tdCantidad);
 
-                        tbody.appendChild(row);
+                            tbody.appendChild(row);
 
-                        //console.log(catGen);
-
-                        selectGenero.addEventListener('change', validarArticulo)
-                        selectTalla.addEventListener('change', validarArticulo)
+                        selectGenero.addEventListener('change', getArticuloVale)
+                        selectTalla.addEventListener('change', getArticuloVale)
+                        inputCantidad.addEventListener('change', validarCantidad)
                         btnRemove.addEventListener('click', eliminarFila)
 
                     })
@@ -427,22 +426,18 @@ actualizarVista();
             });
     }
 
-    function validarArticulo(event){
+    function getArticuloVale(event){
             const fila = event.target.closest('tr');
             const categoria = fila.querySelector('.labelCategoria').dataset.idCategoria
             const genero = fila.querySelector('.selectGenero').value;
             const talla = fila.querySelector('.selectTalla').value;
-            const cantidad = fila.querySelector('.inputCantidad').value;
-
-            console.log("categoria:"+categoria+" genero: "+genero+" talla: "+talla)
-
             
              let formDataVale = new FormData;
                 formDataVale.append('opcion', 4);
                 formDataVale.append('categoria', categoria);
                 formDataVale.append('genero', genero);
                 formDataVale.append('talla',talla);
-                cantidad.value ="" 
+                //cantidad.value ="" 
                     fetch("./api/entradas.php", {
                         method: "POST",
                         body: formDataVale,
@@ -450,25 +445,49 @@ actualizarVista();
                         .then((response) => response.json())
                         .then((data) => {
                             if(data.articulo == null) {
-                                $('#btnConfirmarVale').prop('disabled', true);
                                 fila.cells[1].textContent = ''
                                 fila.querySelector('.inputCantidad').disabled = true
                             }
+
                             else {
-                                $('#btnConfirmarVale').prop('disabled', false);
-                                //data.articulo.cantidad;
                                 fila.cells[1].textContent = data.articulo.nombre;
-
-                               // data.articulo.cantidad < 1
-                                fila.querySelector('.inputCantidad').max = data.articulo.cantidad;
-                                fila.querySelector('.inputCantidad').disabled = false
+                                let inputCantidad = fila.querySelector('.inputCantidad')
+                                
+                                inputCantidad.max = data.articulo.cantidad;
+                                inputCantidad.disabled = false
                             }
-
-                            console.log(data);
+                            
+                            validarCantidad(event);
                     })
             .catch((error) => {
                 console.log(error);
             }) 
+    }
+
+
+    function validarCantidad(event){
+        const fila = event.target.closest('tr');
+        let inputCantidad = fila.querySelector('.inputCantidad')
+
+            if (inputCantidad.max > inputCantidad.min && inputCantidad.checkValidity()) {
+                inputCantidad.classList.remove('invalido');
+                // Buscar el elemento hermano anterior (el div que contiene el mensaje de error) y eliminarlo si existe
+                var mensajeError = inputCantidad.nextElementSibling;
+                if (mensajeError && mensajeError.classList.contains('invalido')) {
+                    mensajeError.remove();
+                }
+
+                console.log(inputCantidad.validationMessage);
+            }
+
+        else
+            if(!inputCantidad.classList.contains('invalido')){
+                inputCantidad.classList.add('invalido');
+                var mensajeError = document.createElement('div');
+                mensajeError.innerHTML = "<p class='text-danger m-0 p-0' style='font-size:12px'><b>*STOCK INSUFICIENTE</b></p>";
+                mensajeError.classList.add('invalido');
+                inputCantidad.insertAdjacentElement("afterend", mensajeError)
+            }
     }
 
     function eliminarFila(event){
@@ -531,7 +550,6 @@ selectTalla.addEventListener('change', function() {
   }
 });
 */
-
 
     /*
         function agregarArticulosVale(){
