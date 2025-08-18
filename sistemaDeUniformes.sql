@@ -489,3 +489,5 @@ where id_pedido = '20'
 
 			select* from uni_categoria
 			select* from uni_vale_uniforme
+
+			select* from empleado where id_usuario = 'adsf' and estatus='1'

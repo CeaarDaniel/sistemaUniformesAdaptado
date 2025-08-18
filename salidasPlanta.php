@@ -26,6 +26,10 @@ include('./api/conexion.php');
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipoEntrega" id="empleadoRadio" value = ''>
+                        <label class="form-check-label" for="empleadoRadio">Empleado</label>
+                    </div>
+                    <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="tipoEntrega" id="becarioRadio" value = '0'>
                         <label class="form-check-label" for="becarioRadio">Becario</label>
                     </div>
@@ -56,8 +60,8 @@ include('./api/conexion.php');
                 <table id="tablaArticulos" class="table table-striped">
                 <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>nombre</th>
+                            <th>Id</th>
+                            <th>Nombre</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
                             <th>Genero</th>
@@ -70,6 +74,7 @@ include('./api/conexion.php');
             </div>
 
         </div>
+
         <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarArticuloModal">
             <div class="modal-dialog modal-lg">
@@ -174,7 +179,6 @@ include('./api/conexion.php');
         </div>
 
         <!-- Modal para la seleccion de articulos con el uso del barcode del vale -->
-                 <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarValeArticuloModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">

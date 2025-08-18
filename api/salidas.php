@@ -58,5 +58,24 @@ else
 }
 
 
+//OBTENER DATOS DEL EMPLEADO
+else
+if($opcion == '3'){
+    $NN =  isset($_POST['NN']) ? $_POST['NN'] : '';
+    $sn = "select* from empleado where id_usuario = :NN and estatus='1'"; 
+    $consulta = $conn->prepare($sn);
+    $consulta->bindParam(':NN', $NN);
+ 
+     if ($consulta->execute()) {
+              if( $res = $consulta->fetch(PDO::FETCH_ASSOC))
+                    $respuesta = array('ok' => true);  
+         
+               else  $respuesta = array('ok' => false);
+       }
 
+    else 
+       $respuesta = array('error'=> $stmt->errorInfo()[2]);
+   
+   echo json_encode($respuesta);
+}
 ?>

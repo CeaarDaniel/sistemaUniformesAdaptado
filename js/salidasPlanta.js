@@ -13,11 +13,25 @@
         $("input[name='tipoEntrega']").change(function() {
             let valor = $("input[name='tipoEntrega']:checked").val(); //BECARIO OBSEQUIO
 
-            if(valor == 0) 
-                document.getElementById('empleadoInput').value= 'BECARIO';
+            if(valor === '0') {
+                empleado.value= 'BECARIO';
+                empleado.dataset.dataIdEmpleado = '0';
+                empleado.disabled = true
+            }
 
             else 
-                if( valor == 567) document.getElementById('empleadoInput').value= 'OBSEQUIO';
+                if(valor == 567) { 
+                    empleado.value= 'OBSEQUIO';
+                    empleado.dataset.dataIdEmpleado = '567';
+                    empleado.disabled = true;
+                }
+
+            else 
+                if(valor ===''){
+                    empleado.value= '';
+                    empleado.dataset.dataIdEmpleado = '';
+                    empleado.disabled = false;
+                }
         });
 
         //OBTENER LOS GENEROS Y CATEGORIAS CORRESPONDIENTES AL BARCODE
@@ -46,6 +60,35 @@
                             })
                 }
             });
+
+        empleado.addEventListener('change', function(){
+            if( $("input[name='tipoEntrega']:checked").val()!== '0' &&  $("input[name='tipoEntrega']:checked").val() != 567){
+
+                if(!Number(empleado.value)) 
+                    empleado.dataset.dataIdEmpleado = false;
+
+                else { 
+                    var formDataGetUser = new FormData;
+                    formDataGetUser.append('opcion', 3);
+                    formDataGetUser.append('NN', Number(empleado.value)); 
+                    fetch("./api/salidas.php", {
+                        method: "POST",
+                        body: formDataGetUser,
+                    }).then((response) => response.text())
+                        .then((dataUs) => {
+                            console.log(dataUs);
+                            if(dataUs.ok)
+                                empleado.dataset.dataIdEmpleado = empleado.value
+
+                            else 
+                                empleado.dataset.dataIdEmpleado = false;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                }
+            }
+        })
 
     
     // Fuente de datos inicial
@@ -240,8 +283,8 @@
 
                                 datos.push(nuevoArticulo);
                                 tabla.row.add(nuevoArticulo).draw(false);
-                                document.querySelectorAll("input").forEach(input => input.value = "");
-                                document.querySelectorAll("select").forEach(select => {
+                                document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
+                                document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                     select.selectedIndex = 0; // selecciona la primera opción
                                 });
                             } else {
@@ -273,8 +316,8 @@
 
                                     tabla.draw(false); // Redibujar manteniendo paginación/orden
 
-                                    document.querySelectorAll("input").forEach(input => input.value = "");
-                                    document.querySelectorAll("select").forEach(select => {
+                                    document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
+                                    document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                         select.selectedIndex = 0; // selecciona la primera opción
                                     });
                                 }
@@ -298,14 +341,22 @@
 
     //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
     function registrarSalida(){ 
-        //TIPO DE ENTRREGA
-         let tipoEntrega = $("input[name='tipoEntrega']:checked").val(); //VECARIO OBSEQUIO
-         console.log(tipoEntrega);
-         datos;
+         
+          if(datos.length <1)
+                alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
+
+        else
+            if(!empleado.dataset.dataIdEmpleado){
+                alert('El número de nómina no es valido')
+            }
+
+        else 
+         if(empleado.dataset.dataIdEmpleado === '0' || empleado.dataset.dataIdEmpleado === '567'){
+                alert('Se ha registrado la salida')
+        }
+wp
+      
     }
-
-actualizarVista();
-
 
     function cargarTabla(data) {
             const tbody = document.querySelector('#talbaBarcodePrueba tbody');
@@ -532,154 +583,11 @@ actualizarVista();
                 const tabla = $('#tablaArticulos').DataTable();
                 tabla.row.add(artNuevo).draw(false);
                 ocultarMostrarTabla();
+                 valeModal.hide();
+                 valeInput.disabled = true
             //tabla.draw(false)
             });
         }
     }
 
-/*
-OBTENER LOS DATOS EN UN ARREGLO
-const filas = document.querySelectorAll('#miTabla tbody tr');
-const datos = [];
-
-filas.forEach(fila => {
-  const data = {
-    id_articulo: fila.cells[0].textContent,
-    talla: fila.querySelector('select.talla')?.value,
-    genero: fila.querySelector('select.genero')?.value,
-    categoria: fila.querySelector('select.categoria')?.value,
-    nombre: fila.querySelector('.nombre')?.textContent,
-    existencia: fila.querySelector('.existencia')?.textContent,
-    descripcion: fila.querySelector('.descripcion')?.textContent
-  };
-
-  datos.push(data);
-});
-
-console.log(datos);
-*/
-
-
-
-/*
-selectTalla.addEventListener('change', function() {
-  const fila = this.closest('tr');
-
-  const selectGenero = fila.querySelector('select.genero');
-  const selectCategoria = fila.querySelector('select.categoria');
-  const selectTalla = this;
-
-  const talla = selectTalla.value;
-  const genero = selectGenero.value;
-  const categoria = selectCategoria.value;
-
-  const articulo = buscarArticulo(talla, genero, categoria);
-
-  if (articulo) {
-    // Supongamos que quieres llenar estas celdas:
-    fila.cells[0].textContent = articulo.id; // primera columna
-    fila.querySelector('.nombre').textContent = articulo.nombre;
-    fila.querySelector('.existencia').textContent = articulo.existencia;
-    fila.querySelector('.descripcion').textContent = articulo.descripcion;
-  } else {
-    // Opcional: limpiar si no se encuentra
-    fila.cells[0].textContent = '';
-  }
-});
-*/
-
-    /*
-        function agregarArticulosVale(){
-            await this.getValeInfo(this.vale);
-            if (!this.vale_info) {
-                this.vale = "";
-                return this.$q.notify({ message: `<strong>El código del vale no existe o es incorrecto</strong>`, caption: "Hace un instante", type: "warning", html: true });
-            }
-
-            const categorias = this.vale_info.equipo;
-            this.articulos = [];
-            let generoValue = -1;
-            let tallaValue = -1;
-
-            for (const c of categorias) {
-                await this.getCategoriaById(c.id_categoria);
-                await this.getTallasXTipo(this.categoria.tipo_talla);
-                await this.getGenerosByIdCategoria(c.id_categoria);
-
-                let selTallas = JSON.parse(JSON.stringify(this.opt_tallas));
-                if (selTallas.length == 1) tallaValue = selTallas[0].value;
-                if (c.id_talla) tallaValue = c.id_talla;
-                selTallas.unshift({ label: "-", value: -1 });
-
-                let selGeneros = JSON.parse(JSON.stringify(this.opt_generos));
-                if (selGeneros.length == 1) generoValue = selGeneros[0].value;
-                selGeneros.unshift({ label: "-", value: -1 });
-
-                let articuloTemp = { id_articulo: "-", cantidad: c.cantidad, nombre: this.categoria.abrev, categoria: this.categoria.categoria, id_categoria: c.id_categoria, tallas: selTallas, talla: tallaValue, generos: selGeneros, genero: generoValue };
-
-                if (articuloTemp.talla == -1 || articuloTemp.genero == -1) {
-                articuloTemp.id_articulo = "-";
-                } else {
-                await this.getArticuloByCatGenTalla({ categoria: articuloTemp.id_categoria, genero: articuloTemp.genero, talla: articuloTemp.talla, estado: 1 });
-                articuloTemp.id_articulo = this.articulo.id_articulo;
-                }
-
-                this.articulos.push(articuloTemp);
-                tallaValue = -1;
-                generoValue = -1;
-            }
-
-            this.data = this.articulos;
-            this.disabledInput = true;
-            this.$q.notify({ message: `<strong>Se han cargado correctamente los artículos, seleccione el genero y las tallas correspondientes</strong>`, caption: "Hace un instante", type: "positive", html: true });
-        }
-
-        
-        function agregar(){
-                const categorias = vale_info.equipo;
-                const articulos = [];
-                let generoValue = -1;
-                let tallaValue = -1;
-
-            for (const c of categorias) {
-                    const categoria = await getCategoriaById(c.id_categoria);
-                    const optTallas = await getTallasXTipo(categoria.tipo_talla);
-                    const optGeneros = await getGenerosByIdCategoria(c.id_categoria);
-
-                    let selTallas = JSON.parse(JSON.stringify(optTallas));
-                    if (selTallas.length === 1) tallaValue = selTallas[0].value;
-                    if (c.id_talla) tallaValue = c.id_talla;
-                    selTallas.unshift({ label: "-", value: -1 });
-
-                    let selGeneros = JSON.parse(JSON.stringify(optGeneros));
-                    if (selGeneros.length === 1) generoValue = selGeneros[0].value;
-                    selGeneros.unshift({ label: "-", value: -1 });
-
-                    let articuloTemp = {
-                    id_articulo: "-",
-                    cantidad: c.cantidad,
-                    nombre: categoria.abrev,
-                    categoria: categoria.categoria,
-                    id_categoria: c.id_categoria,
-                    tallas: selTallas,
-                    talla: tallaValue,
-                    generos: selGeneros,
-                    genero: generoValue
-                    };
-
-                    if (articuloTemp.talla !== -1 && articuloTemp.genero !== -1) {
-                        const articulo = await getArticuloByCatGenTalla({
-                            categoria: articuloTemp.id_categoria,
-                            genero: articuloTemp.genero,
-                            talla: articuloTemp.talla,
-                            estado: 1
-                        });
-                        articuloTemp.id_articulo = articulo?.id_articulo || "-";
-                    }
-            }
-
-            articulos.push(articuloTemp);
-            tallaValue = -1;
-            generoValue = -1;
-        }
-*/
+    actualizarVista();
