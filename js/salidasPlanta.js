@@ -1,10 +1,11 @@
         var empleado = document.getElementById('empleadoInput');
+        const btnConfirmarVale = document.getElementById('btnConfirmarVale');
         var valeInput = document.getElementById('valeInput');
         var emptyState = document.getElementById('emptyState');
         var confirmarBtn = document.getElementById('confirmarBtn');
         var radioEntrega = document.getElementsByName('tipoEntrega');
         var talbaBarcodePRueba = document.getElementById('talbaBarcodePRueba');
-        //
+        
           const valeModal = new bootstrap.Modal(document.getElementById("seleccionarValeArticuloModal"));
         
         let datos = [];
@@ -84,7 +85,7 @@
 
     selectTalla.addEventListener('change', actualizarArticulo);
     selectGenero.addEventListener('change', actualizarArticulo);
-    
+    btnConfirmarVale.addEventListener('click', agregarArticuloVale) 
 
     function actualizarVista() {
             var ancho = window.innerWidth;
@@ -231,9 +232,9 @@
                                 const nuevoArticulo = {
                                     id: nuevoId,
                                     nombre: document.getElementById("nombre").value,
-                                    tipo: document.getElementById("tipo").value,
+                                    tipo: $('#tipo option:selected').data('abrev'), //document.getElementById("tipo").value,
                                     cantidad: nuevaCantidad,
-                                    precio: Number(document.getElementById("precio").value),
+                                    precio:  $('#genero option:selected').text(), //Number(document.getElementById("precio").value),
                                     boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
                                 };
 
@@ -396,6 +397,7 @@ actualizarVista();
                             inputCantidad.style.maxWidth = '150px'
                             inputCantidad.type= 'number'
                             inputCantidad.min = '1';
+                            inputCantidad.max = '2';
                             inputCantidad.disabled = true;
 
                             //inputCantidad.classList.add('genero-select');
@@ -431,6 +433,7 @@ actualizarVista();
             const categoria = fila.querySelector('.labelCategoria').dataset.idCategoria
             const genero = fila.querySelector('.selectGenero').value;
             const talla = fila.querySelector('.selectTalla').value;
+            let inputCantidad = fila.querySelector('.inputCantidad')
             
              let formDataVale = new FormData;
                 formDataVale.append('opcion', 4);
@@ -446,13 +449,13 @@ actualizarVista();
                         .then((data) => {
                             if(data.articulo == null) {
                                 fila.cells[1].textContent = ''
-                                fila.querySelector('.inputCantidad').disabled = true
+                                inputCantidad.disabled = true
+                                fila.cells[1].dataset.idArticuloModal = ''; 
                             }
 
                             else {
                                 fila.cells[1].textContent = data.articulo.nombre;
-                                let inputCantidad = fila.querySelector('.inputCantidad')
-                                
+                                fila.cells[1].dataset.idArticuloModal = data.articulo.id_articulo; 
                                 inputCantidad.max = data.articulo.cantidad;
                                 inputCantidad.disabled = false
                             }
@@ -470,14 +473,12 @@ actualizarVista();
         let inputCantidad = fila.querySelector('.inputCantidad')
 
             if (inputCantidad.max > inputCantidad.min && inputCantidad.checkValidity()) {
-                inputCantidad.classList.remove('invalido');
-                // Buscar el elemento hermano anterior (el div que contiene el mensaje de error) y eliminarlo si existe
+                // Buscar el elemento hermano siguiente (el div que contiene el mensaje de error) y eliminarlo si existe
                 var mensajeError = inputCantidad.nextElementSibling;
-                if (mensajeError && mensajeError.classList.contains('invalido')) {
+                if (mensajeError) {
                     mensajeError.remove();
+                    inputCantidad.classList.remove('invalido');
                 }
-
-                console.log(inputCantidad.validationMessage);
             }
 
         else
@@ -485,9 +486,10 @@ actualizarVista();
                 inputCantidad.classList.add('invalido');
                 var mensajeError = document.createElement('div');
                 mensajeError.innerHTML = "<p class='text-danger m-0 p-0' style='font-size:12px'><b>*STOCK INSUFICIENTE</b></p>";
-                mensajeError.classList.add('invalido');
                 inputCantidad.insertAdjacentElement("afterend", mensajeError)
             }
+
+        //console.log(inputCantidad.validationMessage);
     }
 
     function eliminarFila(event){
@@ -498,6 +500,41 @@ actualizarVista();
 
         if(filas.length <= 0)  
             valeModal.hide();
+    }
+
+    function agregarArticuloVale(){
+        let invalido = document.querySelectorAll('.invalido')
+        let articulos = document.querySelectorAll('.idArticulo')
+
+        let articulosCont = Array.from(articulos).every(label => {
+            return label.textContent.trim() !== '';
+        });
+
+
+        if(invalido.length > 0 || !articulosCont) 
+            alert('Debe completar los campos correctamente para poder agregar el articulo');
+
+
+        else {
+            const filas = document.querySelectorAll('#talbaBarcodePrueba tbody tr');
+
+            filas.forEach(fila => {
+                let artNuevo = {
+                    id: Number(fila.cells[1].dataset.idArticuloModal),
+                    nombre: fila.querySelector('.idArticulo').textContent,
+                    tipo: fila.querySelector('.labelCategoria').textContent,
+                    cantidad: Number(fila.querySelector('.inputCantidad').value),
+                    precio: fila.querySelector('.selectGenero').options[fila.querySelector('.selectGenero').selectedIndex].text,
+                    boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
+                };
+                
+                datos.push(artNuevo);
+                const tabla = $('#tablaArticulos').DataTable();
+                tabla.row.add(artNuevo).draw(false);
+                ocultarMostrarTabla();
+            //tabla.draw(false)
+            });
+        }
     }
 
 /*

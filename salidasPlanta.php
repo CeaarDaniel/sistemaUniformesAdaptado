@@ -60,7 +60,7 @@ include('./api/conexion.php');
                             <th>nombre</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
-                            <th>Precio</th>
+                            <th>Genero</th>
                             <th>Boton</th>
                         </tr>
                     </thead>
@@ -94,7 +94,7 @@ include('./api/conexion.php');
                                                 <option value="">Seleccione una categoría</option>
                                                 <?php 
                                                     while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
+                                                           echo "<option data-abrev='".$articulo['abrev']."' value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
                                                 ?>
                                             </select>
                                         </div>
