@@ -62,10 +62,10 @@
             });
 
         empleado.addEventListener('change', function(){
-            if( $("input[name='tipoEntrega']:checked").val()!== '0' &&  $("input[name='tipoEntrega']:checked").val() != 567){
-
-                if(!Number(empleado.value)) 
+                if(!Number(empleado.value)) {
                     empleado.dataset.dataIdEmpleado = false;
+                    //console.log('not num');
+                }
 
                 else { 
                     var formDataGetUser = new FormData;
@@ -74,9 +74,8 @@
                     fetch("./api/salidas.php", {
                         method: "POST",
                         body: formDataGetUser,
-                    }).then((response) => response.text())
+                    }).then((response) => response.json())
                         .then((dataUs) => {
-                            console.log(dataUs);
                             if(dataUs.ok)
                                 empleado.dataset.dataIdEmpleado = empleado.value
 
@@ -87,7 +86,6 @@
                             console.log(error);
                         })
                 }
-            }
         })
 
     
@@ -112,6 +110,12 @@
         datos= []; 
         actualizarVista();
         ocultarMostrarTabla();
+        empleado.disabled = false;
+        empleado.value= '';
+        empleado.dataset.dataIdEmpleado = '';
+        valeInput.disabled = false
+        valeInput.value = '';
+        $('input[type="radio"][name="tipoEntrega"][value=""]').prop('checked', true);
     })
     
     categoria.addEventListener('change', function () {
@@ -323,6 +327,7 @@
                                 }
                             }
                                 ocultarMostrarTabla();
+                                valeInput.disabled = true;
                         }
                 }
     }
@@ -344,20 +349,24 @@
          
           if(datos.length <1)
                 alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
+        
+          else 
+            if( (empleado.dataset.dataIdEmpleado !== '0' && empleado.dataset.dataIdEmpleado !== '567') 
+                        && 
+                (empleado.dataset.dataIdEmpleado == 'false' || empleado.dataset.dataIdEmpleado == false  ||  empleado.dataset.dataIdEmpleado == null))
+                    { alert('El número de nómina no es valido') }
 
         else
-            if(!empleado.dataset.dataIdEmpleado){
-                alert('El número de nómina no es valido')
+            {
+                    alert('Se ha registrado la salida')
             }
 
-        else 
-         if(empleado.dataset.dataIdEmpleado === '0' || empleado.dataset.dataIdEmpleado === '567'){
-                alert('Se ha registrado la salida')
-        }
-wp
-      
+
+       
+        //console.log('Valor de dataID:'+empleado.dataset.dataIdEmpleado+' Tipo de dato: '+ typeof(empleado.dataset.dataIdEmpleado));
     }
 
+    //FUNCION PARA CARGAR LOS DATOS DE LA TABLA DE VALES
     function cargarTabla(data) {
             const tbody = document.querySelector('#talbaBarcodePrueba tbody');
             tbody.innerHTML = '';
@@ -479,6 +488,7 @@ wp
             });
     }
 
+    //OBTENER DATOS DE UN ARTICULO PARA LA TABLA DE VALES
     function getArticuloVale(event){
             const fila = event.target.closest('tr');
             const categoria = fila.querySelector('.labelCategoria').dataset.idCategoria
@@ -517,7 +527,6 @@ wp
                 console.log(error);
             }) 
     }
-
 
     function validarCantidad(event){
         const fila = event.target.closest('tr');
@@ -585,7 +594,7 @@ wp
                 ocultarMostrarTabla();
                  valeModal.hide();
                  valeInput.disabled = true
-            //tabla.draw(false)
+                //tabla.draw(false)
             });
         }
     }

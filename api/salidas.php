@@ -62,6 +62,8 @@ else
 else
 if($opcion == '3'){
     $NN =  isset($_POST['NN']) ? $_POST['NN'] : '';
+
+    ($NN == 1 || $NN =='1') ? $NN=0 : '';
     $sn = "select* from empleado where id_usuario = :NN and estatus='1'"; 
     $consulta = $conn->prepare($sn);
     $consulta->bindParam(':NN', $NN);

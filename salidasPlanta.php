@@ -19,14 +19,14 @@ include('./api/conexion.php');
             
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="empleadoInput" placeholder="Empleado">
+                    <input type="text" class="form-control" id="empleadoInput" data-data-id-empleado='' placeholder="Empleado">
                 </div>
                 <div class="col-md-3">
                     <input type="text" class="form-control" id="valeInput" placeholder="Vale">
                 </div>
                 <div class="col-6 col-md-4">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="tipoEntrega" id="empleadoRadio" value = ''>
+                        <input class="form-check-input" type="radio" name="tipoEntrega" id="empleadoRadio" value = '' checked>
                         <label class="form-check-label" for="empleadoRadio">Empleado</label>
                     </div>
                     <div class="form-check form-check-inline">
