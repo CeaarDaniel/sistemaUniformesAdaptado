@@ -1,5 +1,5 @@
         var empleado = document.getElementById('empleadoInput');
-        var valeInput = document.getElementById('valeInput');
+        var nombreEmpleado = document.getElementById('nombreEmpleado')
         var emptyState = document.getElementById('emptyState');
         let datos = []
 
@@ -18,28 +18,55 @@
 
         const table = $('#tablaArticulos').DataTable();
 
-    btnAgregarArticulo.addEventListener('click', agregarArticulo)
+        btnAgregarArticulo.addEventListener('click', agregarArticulo)
 
-    eliminarBtn.addEventListener('click', function(){
-        datos= []; 
-        actualizarVista();
-        ocultarMostrarTabla();
-    })
+        eliminarBtn.addEventListener('click', function(){
+            datos= []; 
+            empleado.value= '';
+            nombreEmpleado.textContent ="";
+            actualizarVista();
+            ocultarMostrarTabla();
+        })
     
-    categoria.addEventListener('change', function () {
-            if(categoria && categoria.value) actualizarFormulario();
+        categoria.addEventListener('change', function () {
+                if(categoria && categoria.value) actualizarFormulario();
 
-            else {
-                var tallas  = '<option value="" selected>Seleccione una talla</option>';
-                var generos = '<option value="" selected>Seleccione género</option>';
-                    selectTalla.innerHTML= `${tallas}`;
-                    selectGenero.innerHTML = `${generos}`;
-            }
-            actualizarArticulo();
-    })
+                else {
+                    var tallas  = '<option value="" selected>Seleccione una talla</option>';
+                    var generos = '<option value="" selected>Seleccione género</option>';
+                        selectTalla.innerHTML= `${tallas}`;
+                        selectGenero.innerHTML = `${generos}`;
+                }
+                actualizarArticulo();
+        })
 
-    selectTalla.addEventListener('change', actualizarArticulo);
-    selectGenero.addEventListener('change', actualizarArticulo);
+        empleado.addEventListener('change', function(){
+                        var formDataGetUser = new FormData;
+                        formDataGetUser.append('opcion', 3);
+                        formDataGetUser.append('NN', Number(empleado.value)); 
+                        fetch("./api/salidas.php", {
+                            method: "POST",
+                            body: formDataGetUser,
+                        }).then((response) => response.json())
+                            .then((dataUs) => {
+                                if(dataUs.ok){
+                                    empleado.dataset.dataIdEmpleado = empleado.value
+                                    nombreEmpleado.textContent = dataUs.nombreEmpleado;
+                                }
+
+                                else {
+                                    empleado.dataset.dataIdEmpleado = false;
+                                    nombreEmpleado.textContent = '';
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            })
+        })
+
+
+        selectTalla.addEventListener('change', actualizarArticulo);
+        selectGenero.addEventListener('change', actualizarArticulo);
     
 
     function actualizarVista() {
@@ -196,8 +223,8 @@
 
                                     datos.push(nuevoArticulo);
                                     tabla.row.add(nuevoArticulo).draw(false);
-                                    document.querySelectorAll("input").forEach(input => input.value = "");
-                                    document.querySelectorAll("select").forEach(select => {
+                                    document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
+                                    document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                         select.selectedIndex = 0; // selecciona la primera opción
                                     });
                                 } else {
@@ -229,8 +256,8 @@
 
                                         tabla.draw(false); // Redibujar manteniendo paginación/orden
 
-                                        document.querySelectorAll("input").forEach(input => input.value = "");
-                                        document.querySelectorAll("select").forEach(select => {
+                                        document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
+                                        document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                             select.selectedIndex = 0; // selecciona la primera opción
                                         });
                                     }

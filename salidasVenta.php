@@ -20,13 +20,14 @@ include('./api/conexion.php');
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-4">
                     <input type="number" min="2" step="1" class="form-control" id="empleadoInput" placeholder="Empleado">
+                    <label id="nombreEmpleado" class="ms-2 my-0 fw-bold" for="empleadoInput"></label>
                 </div>
-                <div class="col-4 col-md-auto">
+                <div class="col-4 col-md-auto mb-4">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
                         <i class="bi bi-plus-lg"></i>
                     </button>
                 </div>
-                <div class="col-12 col-md-auto">
+                <div class="col-12 col-md-auto mb-4">
                     <button class="btn btn-secondary" id="cancelarBtn">Cancelar</button>
                     <button class="btn btn-success" id="confirmarBtn">Confirmar</button>
                 </div>

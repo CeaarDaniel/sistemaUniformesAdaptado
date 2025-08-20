@@ -1,4 +1,5 @@
         var empleado = document.getElementById('empleadoInput');
+        var nombreEmpleado = document.getElementById('nombreEmpleado')
         const btnConfirmarVale = document.getElementById('btnConfirmarVale');
         var valeInput = document.getElementById('valeInput');
         var emptyState = document.getElementById('emptyState');
@@ -6,7 +7,7 @@
         var radioEntrega = document.getElementsByName('tipoEntrega');
         var talbaBarcodePRueba = document.getElementById('talbaBarcodePRueba');
         
-          const valeModal = new bootstrap.Modal(document.getElementById("seleccionarValeArticuloModal"));
+        const valeModal = new bootstrap.Modal(document.getElementById("seleccionarValeArticuloModal"));
         
         let datos = [];
 
@@ -15,6 +16,7 @@
 
             if(valor === '0') {
                 empleado.value= 'BECARIO';
+                nombreEmpleado.textContent ="";
                 empleado.dataset.dataIdEmpleado = '0';
                 empleado.disabled = true
             }
@@ -22,6 +24,7 @@
             else 
                 if(valor == 567) { 
                     empleado.value= 'OBSEQUIO';
+                    nombreEmpleado.textContent ="";
                     empleado.dataset.dataIdEmpleado = '567';
                     empleado.disabled = true;
                 }
@@ -29,41 +32,43 @@
             else 
                 if(valor ===''){
                     empleado.value= '';
+                    nombreEmpleado.textContent ="";
                     empleado.dataset.dataIdEmpleado = '';
                     empleado.disabled = false;
                 }
         });
 
         //OBTENER LOS GENEROS Y CATEGORIAS CORRESPONDIENTES AL BARCODE
-            valeInput.addEventListener("keydown", function(event) {
-                if (event.key === "Enter") {
-                        var formDataGet = new FormData;
-                        formDataGet.append('opcion', 2);
-                        formDataGet.append('barcode', this.value);
+        valeInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                    var formDataGet = new FormData;
+                    formDataGet.append('opcion', 2);
+                    formDataGet.append('barcode', this.value);
 
-                        fetch("./api/salidas.php", {
-                            method: "POST",
-                            body: formDataGet,
+                    fetch("./api/salidas.php", {
+                        method: "POST",
+                        body: formDataGet,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                                if(data.error)
+                                        alert("El código del vale no existe o es incorrecto")
+
+                                else {
+                                cargarTabla(data.uniforme);
+                                valeModal.show();
+                            }
                         })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                    if(data.error)
-                                            alert("El código del vale no existe o es incorrecto")
-
-                                    else {
-                                    cargarTabla(data.uniforme);
-                                    valeModal.show();
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            })
-                }
-            });
+                        .catch((error) => {
+                            console.log(error);
+                        })
+            }
+        });
 
         empleado.addEventListener('change', function(){
                 if(!Number(empleado.value)) {
                     empleado.dataset.dataIdEmpleado = false;
+                    nombreEmpleado.textContent ="";
                     //console.log('not num');
                 }
 
@@ -76,11 +81,15 @@
                         body: formDataGetUser,
                     }).then((response) => response.json())
                         .then((dataUs) => {
-                            if(dataUs.ok)
+                            if(dataUs.ok){
                                 empleado.dataset.dataIdEmpleado = empleado.value
+                                nombreEmpleado.textContent = dataUs.nombreEmpleado;
+                            }
 
-                            else 
+                            else {
                                 empleado.dataset.dataIdEmpleado = false;
+                                nombreEmpleado.textContent = '';
+                            }
                         })
                         .catch((error) => {
                             console.log(error);
@@ -115,6 +124,7 @@
         empleado.dataset.dataIdEmpleado = '';
         valeInput.disabled = false
         valeInput.value = '';
+        nombreEmpleado.textContent ="";
         $('input[type="radio"][name="tipoEntrega"][value=""]').prop('checked', true);
     })
     

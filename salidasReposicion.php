@@ -20,16 +20,17 @@ include('./api/conexion.php');
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-4">
                     <input type="number" min="2" step="1" class="form-control" id="empleadoInput" placeholder="Empleado">
+                    <label id="nombreEmpleado" class="ms-2 my-0 fw-bold" for="empleadoInput"></label>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-4">
                     <input type="text" class="form-control" id="valeInput" placeholder="Vale">
                 </div>
-                <div class="col-4 col-md-auto">
+                <div class="col-4 col-md-auto mb-4">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
                         <i class="bi bi-plus-lg"></i>
                     </button>
                 </div>
-                <div class="col-12 col-md-auto">
+                <div class="col-12 col-md-auto mb-4">
                     <button class="btn btn-secondary" id="cancelarBtn">Cancelar</button>
                     <button class="btn btn-success" id="confirmarBtn">Confirmar</button>
                 </div>
@@ -58,9 +59,9 @@ include('./api/conexion.php');
                     </tbody>
                 </table>
             </div>
-
         </div>
-                <!-- Modal para selección de artículos -->
+
+        <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarArticuloModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -159,6 +160,43 @@ include('./api/conexion.php');
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para la seleccion de articulos con el uso del barcode del vale -->
+        <div class="modal fade" id="seleccionarValeArticuloModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">SELECCIONAR ARTÍCULO</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="my-3" style="width:100%; height:auto; overflow-x: auto;">
+                                <table id="talbaBarcodePrueba" class="table" style="width:100%">
+                                    <thead class="header-table">
+                                        <tr>
+                                            <th>ACTIONS</th>
+                                            <th>ID</th>
+                                            <th>CATEGORIA</th>
+                                            <th>GENERO</th> 
+                                            <th>TALLA</th>
+                                            <th>CANTIDAD</th>
+                                        </tr>
+                                    </thead>
+                                <tbody style="width:100%">
+                                    <!-- Los datos se cargarán dinámicamente -->
+                                </tbody>
+                                </table>
+                            </div>
+
+                            <div class="text-left">
+                                 <button id="btnConfirmarVale" class="btn" style="color:white; background-color:#21ba45;">
+                                    CONFIRMAR
+                                </button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

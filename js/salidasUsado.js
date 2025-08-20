@@ -1,5 +1,5 @@
         var empleado = document.getElementById('empleadoInput');
-        var valeInput = document.getElementById('valeInput');
+        var nombreEmpleado = document.getElementById('nombreEmpleado')
         var emptyState = document.getElementById('emptyState');
         let datos = []
 
@@ -19,9 +19,13 @@
         const table = $('#tablaArticulos').DataTable();
 
     btnAgregarArticulo.addEventListener('click', agregarArticulo)
+    selectTalla.addEventListener('change', actualizarArticulo);
+    selectGenero.addEventListener('change', actualizarArticulo);
 
-    eliminarBtn.addEventListener('click', function(){
+     eliminarBtn.addEventListener('click', function(){
         datos= []; 
+        empleado.value= '';
+        nombreEmpleado.textContent ="";
         actualizarVista();
         ocultarMostrarTabla();
     })
@@ -38,8 +42,38 @@
             actualizarArticulo();
     })
 
-    selectTalla.addEventListener('change', actualizarArticulo);
-    selectGenero.addEventListener('change', actualizarArticulo);
+
+    empleado.addEventListener('change', function(){
+            if(!Number(empleado.value)) {
+                empleado.dataset.dataIdEmpleado = false;
+                nombreEmpleado.textContent ="";
+                //console.log('not num');
+            }
+
+            else { 
+                var formDataGetUser = new FormData;
+                formDataGetUser.append('opcion', 3);
+                formDataGetUser.append('NN', Number(empleado.value)); 
+                fetch("./api/salidas.php", {
+                    method: "POST",
+                    body: formDataGetUser,
+                }).then((response) => response.json())
+                    .then((dataUs) => {
+                        if(dataUs.ok){
+                            empleado.dataset.dataIdEmpleado = empleado.value
+                            nombreEmpleado.textContent = dataUs.nombreEmpleado;
+                        }
+
+                        else {
+                            empleado.dataset.dataIdEmpleado = false;
+                            nombreEmpleado.textContent = '';
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+    })
     
 
     function actualizarVista() {

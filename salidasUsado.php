@@ -20,6 +20,7 @@ include('./api/conexion.php');
             <div class="row g-3 align-items-center mb-4">
                 <div class="col-md-4">
                     <input type="number" min="2" step="1" class="form-control" id="empleadoInput" placeholder="Empleado">
+                    <label id="nombreEmpleado" class="ms-2 my-0 fw-bold" for="empleadoInput"></label>
                 </div>
                 <div class="col-4 col-md-auto">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">

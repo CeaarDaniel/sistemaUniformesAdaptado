@@ -70,9 +70,9 @@ if($opcion == '3'){
  
      if ($consulta->execute()) {
               if( $res = $consulta->fetch(PDO::FETCH_ASSOC))
-                    $respuesta = array('ok' => true);  
+                    $respuesta = array('ok' => true, 'nombreEmpleado' => $res['usuario']);  
          
-               else  $respuesta = array('ok' => false);
+               else $respuesta = array('ok' => false);
        }
 
     else 

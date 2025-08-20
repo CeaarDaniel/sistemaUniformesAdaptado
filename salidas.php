@@ -22,7 +22,7 @@
                 </a>
             </div>
 
-            <!-- Tarjeta 3: Entrega de uniforme usado -->
+            <!-- Tarjeta 2: Reposición de uniforme -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
                 <a  class="text-decoration-none"  onclick="cargarRuta('salidasVenta')">
                     <div class="card-shortcut text-center q-card p-4">
@@ -37,8 +37,9 @@
                     </div>
                 </a>
             </div>
+            
 
-            <!-- Tarjeta 4: Reposición de uniforme -->
+            <!-- Tarjeta 3:  Entrega de uniforme usado
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
                 <a class="text-decoration-none" onclick="cargarRuta('salidasUsado')">
                     <div class="card-shortcut text-center q-card p-4">
@@ -52,9 +53,9 @@
                         </div>
                     </div>
                 </a>
-            </div>
+            </div>-->
 
-            <!-- Tarjeta 5: Consulta de salidas -->
+            <!-- Tarjeta 4: Consulta de salidas -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-2">
                 <a class="text-decoration-none"  onclick="cargarRuta('salidasReposicion')">
                     <div class="card-shortcut text-center q-card p-4">
