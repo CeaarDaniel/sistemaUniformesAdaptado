@@ -80,4 +80,76 @@ if($opcion == '3'){
    
    echo json_encode($respuesta);
 }
+
+
+//REGISTRO DE UNA SALIDA
+else 
+    if($opcion == '4'){
+        //$fecha = (isset($_POST['fecha']) && !$_POST['fecha']=='') ? $_POST['fecha'] : NULL;
+        $tipoSalida = (isset($_POST['tipoSalida']) && !$_POST['tipoSalida']=='') ? $_POST['tipoSalida'] : NULL;
+        $idUsuario = (isset($_POST['idUsuario']) && !$_POST['idUsuario']=='') ? $_POST['idUsuario'] : NULL;
+        $idEmpleado = (isset($_POST['idEmpleado']) && !$_POST['idEmpleado']=='') ? $_POST['idEmpleado'] : NULL;
+        $nota = (isset($_POST['nota']) && !$_POST['nota']=='') ? $_POST['nota'] : NULL;
+        $vale = (isset($_POST['vale']) && !$_POST['vale']=='') ? $_POST['vale'] : NULL;
+        $articulosPedido = (isset($_POST['articulosSalida']) && !empty($_POST['articulosSalida']) ) ? $_POST['articulosSalida'] : '';
+
+
+        $sqlre="INSERT INTO uni_salida(fecha, tipo_salida, id_usuario, id_empleado, nota, vale)
+                    VALUES(format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipoSalida, :idUsuario, :idEmpleado, :nota, :vale)";
+
+        $entrada = $conn->prepare($sqlre);
+        $entrada->bindparam(':tipoSalida', $tipoSalida);
+        $entrada->bindparam(':idUsuario', $idUsuario);
+        $entrada->bindparam(':idEmpleado', $idEmpleado);
+        $entrada->bindparam(':nota', $nota);
+        $entrada->bindparam(':vale', $vale);
+
+
+            // Ejecuta la consulta
+            if ($entrada->execute()) {
+                 $lastID = $conn->lastInsertId();
+                //Se revisa que la estructura de los datos sea un arreglo para poder generar la consulta 
+                if (is_array(json_decode($articulosPedido, true))) {
+                        $articulosPedido = json_decode($articulosPedido, true);
+
+                        //INSERTAR MULTIPLES REGISTROS USANDO INSERT
+                        try {
+                            //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                            // Suponiendo que $data es tu arreglo de objetos decodificado desde JSON
+                            $conn->beginTransaction();
+
+                            $stmt = $conn->prepare("INSERT INTO uni_salida_articulo(id_salida, id_articulo, cantidad, precio) VALUES (?, ?, ?, ?)");
+
+                            foreach ($articulosPedido as $item) {
+                                $stmt->execute([
+                                    $lastID,
+                                    (int)$item['id'],
+                                    (int)$item['cantidad'],
+                                    (float)$item['precio'],
+                                ]);
+                            }
+
+                            $conn->commit();
+                            $respuesta = array('response' => 'Salida registrado');
+
+                        } catch (Exception $e) {
+                            $conn->rollBack(); 
+                            $respuesta = array("response" => "error: ".$e->getMessage());
+                        }
+                }
+
+                else 
+                    $respuesta = array("response" => "Datos invalidos");
+            }
+
+            else 
+                $respuesta = array('response' => $stmt->errorInfo()[2]);
+
+     echo json_encode($respuesta);
+    }
+
+
+//2635 nancy la primera 
+//magda la segunda
 ?>

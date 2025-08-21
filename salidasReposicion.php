@@ -1,9 +1,9 @@
 <?php 
-header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-header("Allow: GET, POST, OPTIONS, PUT, DELETE");
-include('./api/conexion.php');
+    header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+    header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+    include('./api/conexion.php');
 
         $sql= "SELECT* from uni_categoria";
 
@@ -51,7 +51,7 @@ include('./api/conexion.php');
                             <th>nombre</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
-                            <th>Precio</th>
+                            <th>Genero</th>
                             <th>Boton</th>
                         </tr>
                     </thead>

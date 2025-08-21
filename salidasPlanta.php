@@ -10,8 +10,6 @@ include('./api/conexion.php');
         $articulos = $conn->prepare($sql); 
         $articulos->execute()
 ?>
-
-
         <div class="padding-header">
             <div class="row mb-4">
                 <h1 class="title">Entrega de uniforme</h1>
@@ -39,6 +37,10 @@ include('./api/conexion.php');
                         <input class="form-check-input" type="radio" name="tipoEntrega" id="obsequioRadio" value = '567'>
                         <label class="form-check-label" for="obsequioRadio">Obsequio</label>
                     </div>
+                </div>
+                <div class="col-6">
+                    <label for="nota">NOTA</label>
+                    <textarea class="form-control" name="nota" id="nota" rows=4 placeholder="Escriba alguna nota"></textarea>
                 </div>
                 <div class="col-4 col-md-auto">
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">

@@ -1,26 +1,25 @@
 use beyonz;
-select* from SCI_linea
-SELECT * FROM Fotos order by FOTOS_NN
 
 --CONSULTAS INDIVIDUALES DE LAS TABLAS
-select* from uni_articulos
-select* from uni_categoria
-select* from uni_genero
-select* from uni_estado
-select* from uni_pedido
-select* from uni_pedido_estado
-select* from uni_roles_sesion
-select* from uni_bitacora_sesion
-select* from uni_vale
-select* from uni_venta order by id_empleado
-select* from uni_venta_articulo order by id_venta
-select* from DIRECTORIO_0
-select* from uni_vale
-select* from uni_vale_uniforme
-select* from uni_tipo_vale
-select* from uni_roles_sesion
-select* from uni_rol
-select* from uni_entrada
+	select* from uni_articulos
+	select* from uni_categoria
+	select* from uni_genero
+	select* from uni_estado
+	select* from uni_pedido
+	select* from uni_pedido_estado
+	select* from uni_roles_sesion
+	select* from uni_bitacora_sesion
+	select* from uni_vale
+	select* from uni_venta order by id_empleado
+	select* from uni_venta_articulo order by id_venta
+	select* from DIRECTORIO_0
+	select* from uni_vale
+	select* from uni_vale_uniforme
+	select* from uni_tipo_vale
+	select* from uni_roles_sesion
+	select* from uni_rol
+	select* from uni_entrada
+
 --Usuarios del sistema de uniformes
 select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
 
@@ -87,18 +86,12 @@ SELECT p.id_pedido, p.num_pedido, p.fecha_creacion, e.pedido_estado, d.nombre fr
 		SELECT id_venta, count(*) as cantidad FROM uni_venta_articulo group by id_venta order by cantidad
 	--En esta consulta al hacer un join con venta_articulo trae los registros de ese tabla, pero al agregar la clausula de GROUP BY de los campo seleccionados se logra que solo traiga los valores de la tabla principal (uni_venta)
 
-	
-	select* from uni_categoria
-
 
 --CONSULTA PARA OBTENER LOS DATOS DE LOS ARTICULOS DE CADA VENTA
 	SELECT va.id_venta as venta, va.id_articulo, v.fecha, va.cantidad, a.nombre from uni_venta_articulo va 
 			inner join uni_articulos as a on va.id_articulo = a.id_articulo
 			left join uni_venta as v on v.id_venta= va.id_venta
 		where 1=1 and v.id_empleado = '1538' and a.id_categoria='4' and v.id_usuario = '7' order by v.id_venta;
-
-
-
 
 --EJEMPLO DE USO DE LA FUNCION STRING_AGG, permite agrupar valores de un campo en especifico indicandole el caracter de agrupacion o de separacion			
 SELECT STRING_AGG( id_articulo, ', ') AS art from uni_articulos
@@ -110,7 +103,6 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 
 SELECT CHARINDEX('ab','bc,b,ab,c,def');
 
-select* from uni_salida_articulo order by id_usuario
 	SELECT us.id_salida, FORMAT(us.fecha,'yyyy-mm-dd HH:mm') as fecha, e.usuario as empleado, d.Nombre as usuario, ts.tipo_salida from uni_salida as us 
 		left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
 		left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
@@ -120,42 +112,34 @@ select* from uni_salida_articulo order by id_usuario
 		left join uni_articulos as a on usa.id_articulo = a.id_articulo
 		inner join uni_salida as us on usa.id_salida = us.id_salida where 1=1 AND us.id_usuario = '94'
 
-		select* from uni_venta_articulo
-		select* from uni_venta
-
-		select* from uni_vale_uniforme
-
-		select id_venta, FORMAT(fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario, pago_total, 
-						num_descuentos, (ISNULL(CASE WHEN uv.check_1 = 1 THEN 1 ELSE 0 END, 0) +
-										 ISNULL(CASE WHEN uv.check_2 = 1 THEN 1 ELSE 0 END, 0) +
-										 ISNULL(CASE WHEN uv.check_3 = 1 THEN 1 ELSE 0 END, 0) +
-										 ISNULL(CASE WHEN uv.check_4 = 1 THEN 1 ELSE 0 END, 0)) AS aplicados, 
-					firma,  SUM(pago_total) OVER () as total
-					from uni_venta as uv left join (select id_usuario, usuario from empleado group by id_usuario, usuario) 
-					as e on uv.id_empleado = e.id_usuario where year(fecha) = 2024 and month(fecha)= 12
+	select id_venta, FORMAT(fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario, pago_total, 
+					num_descuentos, (ISNULL(CASE WHEN uv.check_1 = 1 THEN 1 ELSE 0 END, 0) +
+										ISNULL(CASE WHEN uv.check_2 = 1 THEN 1 ELSE 0 END, 0) +
+										ISNULL(CASE WHEN uv.check_3 = 1 THEN 1 ELSE 0 END, 0) +
+										ISNULL(CASE WHEN uv.check_4 = 1 THEN 1 ELSE 0 END, 0)) AS aplicados, 
+				firma,  SUM(pago_total) OVER () as total
+				from uni_venta as uv left join (select id_usuario, usuario from empleado group by id_usuario, usuario) 
+				as e on uv.id_empleado = e.id_usuario where year(fecha) = 2024 and month(fecha)= 12
 
 
-				  SELECT id_venta, check_nombre, check_valor, fecha
-						FROM uni_venta
-						UNPIVOT (
-							check_valor FOR check_nombre IN (check_1, check_2, check_3, check_4)
-						) AS unpvt where id_venta=2417;
+	SELECT id_venta, check_nombre, check_valor, fecha
+		FROM uni_venta
+		UNPIVOT (
+			check_valor FOR check_nombre IN (check_1, check_2, check_3, check_4)
+		) AS unpvt where id_venta=2417;
 
 
-			SELECT id_venta, num_descuentos, check_nombre, check_valor, fechaC, descuento
-					FROM uni_venta
-					CROSS APPLY (
-									VALUES
-										('check_1', check_1, fecha_1, descuento_1),
-										('check_2', check_2, fecha_2, descuento_2),
-										('check_3', check_3, fecha_3, descuento_3),
-										('check_4', check_4, fecha_4, descuento_4)
-								) AS datos(check_nombre, check_valor, fechaC, descuento)
-					where id_venta=4;
+	SELECT id_venta, num_descuentos, check_nombre, check_valor, fechaC, descuento
+			FROM uni_venta
+			CROSS APPLY (
+							VALUES
+								('check_1', check_1, fecha_1, descuento_1),
+								('check_2', check_2, fecha_2, descuento_2),
+								('check_3', check_3, fecha_3, descuento_3),
+								('check_4', check_4, fecha_4, descuento_4)
+						) AS datos(check_nombre, check_valor, fechaC, descuento)
+			where id_venta=4;
 
-
-		select* from uni_venta_articulo
-		select* from uni_venta order by fecha
 
 	-- CONSULTA PARA OBTENER VENTAS Y GANANCIAS POR CATEGORIAS 
 		 select uc.categoria, 
@@ -248,88 +232,83 @@ select* from uni_salida_articulo order by id_usuario
 	--- FIN CONSULTAS
 
 
-	select ua.id_articulo, ua.cantidad, ua.nombre, uc.categoria, ut.talla,  ug.genero from uni_articulos as ua
-		inner join uni_categoria as uc on ua.id_categoria = uc.id_categoria
-		inner join uni_genero as ug on ua.genero = ug.id_genero
-		inner join uni_talla as ut on ua.id_talla = ut.id_talla
-		where cantidad <= stock_min
-
-
 	--CONSULTA PARA LA ENTRADA POR ARTICULOS REGISTRADOS COMO SALIDA
-
 		select* from uni_salida as us inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
 			where FORMAT(us.fecha, 'yyyy/MM/dd') between '2025-01-01' and '2025-05-31'
 
 
-		--Obtener las tallas de la categoria 
-			select ua.id_talla, ut.talla from uni_articulos ua
-				inner join uni_talla as ut on ua.id_talla = ut.id_talla 
-				group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla   
+	--Obtener las tallas de la categoria 
+		select ua.id_talla, ut.talla from uni_articulos ua
+			inner join uni_talla as ut on ua.id_talla = ut.id_talla 
+			group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla   
 
-			--Obtener los generos de la categoria
-			select ua.id_categoria, ug.id_genero, ug.genero from uni_articulos as ua 
-				left join uni_genero as ug on ua.genero = ug.id_genero 
-			 group by id_categoria, ug.genero, ug.id_genero
-
-			 select* from uni_talla
-			 select* from uni_tipo_talla
-
-			 select id_articulo, nombre, cantidad, precio from uni_articulos where id_talla = '2' and genero='1' and id_categoria=2 and eliminado='0'
+	--Obtener los generos de la categoria
+		select ua.id_categoria, ug.id_genero, ug.genero from uni_articulos as ua 
+			left join uni_genero as ug on ua.genero = ug.id_genero 
+		group by id_categoria, ug.genero, ug.id_genero
 
 
+	--CONSULTA QUE OBTINE LOS USUARIOS CON SU ROL Y SU CONTRASEÑA
+		select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol, ur.rol
+			from uni_roles_sesion AS rs 
+			inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
+			left join uni_rol as ur on rs.id_rol = ur.id_rol 
+		order by id_rol
 
+	-- CONSULTA PARA ELIMINAR VALORES DUPLICADOS EN TABLAS SIN IDENTIFICADOR UNICO
+		WITH Duplicados AS (
+		   SELECT *,
+					 ROW_NUMBER() OVER (PARTITION BY id_salida, id_articulo, cantidad ORDER BY id_salida) AS fila
+			  FROM uni_salida_articulo 
+		)
+		delete FROM Duplicados WHERE fila > 1;
 
-			 select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol, ur.rol
-					from uni_roles_sesion AS rs 
-				inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
-				left join uni_rol as ur on rs.id_rol = ur.id_rol 
-			order by id_rol
+	--CONSULTA DEL SISTEMA ANTERIOR PARA GENERAR LOS DATOS PARA LA CONSULTA DE LOS ARTICULOS POR PEDIDO
+		SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS pedidos, a.cantidad, stock_min, stock_max, c.abrev, t.talla, g.genero, 
+		CASE 
+			WHEN EXISTS (
+				SELECT 1 
+				FROM uni_pedido p 
+				INNER JOIN uni_pedido_articulo pa ON p.id_pedido = pa.id_pedido
+				WHERE p.status IN (1, 2) 
+				  AND pa.id_articulo = a.id_articulo
+			) THEN 1
+			ELSE 0
+		END AS en_pedido
+			FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g 
+		 WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
 
-select* from uni_salida_articulo where id_salida = '15'
+	--CONSULTA PARA OBTENER LOS ARTICULOS QUE SE ENCUNTRAN EN UN PEDIO AUN NO CERRADO
+		select pa.id_articulo from uni_pedido p inner join uni_pedido_articulo as pa on p.id_pedido = pa.id_pedido 
+			where p.status = 1 or p.status = 2
+			group by id_articulo
+			order by id_articulo
 
--- CONSULTA PARA ELIMINAR VALORES DUPLICADOS EN TABLAS SIN IDENTIFICADOR UNICO
-WITH Duplicados AS (
-   SELECT *,
-			 ROW_NUMBER() OVER (PARTITION BY id_salida, id_articulo, cantidad ORDER BY id_salida) AS fila
-	  FROM uni_salida_articulo 
-)
-delete FROM Duplicados WHERE fila > 1;
+	--OBTENER LAS COLUMNAS DE UNA TABLA
+		Declare @tipoTalla INT;
+			SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
+			SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+		where  TABLE_NAME = 'uni_articulos';
 
-
-select* from uni_articulos
-
-select* from uni_tipo_salida
-	--LA SALIDA POR VALE NO REGISTRA Y NO MUESTRA EL PRECIO EN LA SALIDA (1)
-	--LA VENTA DE UNIFORE REGISTRA Y MUESTA LA EL PRECIO DE LA VENTA (2)
-	--EN LA ENTREGA DE UNIFORME USADO EL UNICO REGISTRO LE ASIGNO UN VALOR DE 0 AL PRECIO Y EN REPORTE LO MUESTRA EN BLANCO (3)
-	--LA SALIDA POR REPOSICIÓN DE UNIFORME SI REGITRA PERO NO LA MUESTRA EN EL REPORTE (4) 
-	--LA SALIDA POR CAMBIO SOLO EN UNA NO REGITRO EL PRECIO Y EN EL REPORTE NO SE MUESTRA (5)
-	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
-
-SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
+		SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
                     FROM uni_salida as us 
-                left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
-                left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
-                left join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida
-				left join (select tipo_vale,barcode from uni_vale group by tipo_vale, barcode) as uv on us.vale = uv.barcode 
-				left join uni_tipo_vale as tv on uv.tipo_vale = tv.id_tipo_vale WHERE 1=1
+            left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
+            left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
+            left join uni_tipo_salida as ts on us.tipo_salida = ts.id_tipo_salida
+			left join (select tipo_vale,barcode from uni_vale group by tipo_vale, barcode) as uv on us.vale = uv.barcode 
+			left join uni_tipo_vale as tv on uv.tipo_vale = tv.id_tipo_vale WHERE 1=1
 
-
-select* from uni_venta
-
-
-
-SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EMPLEADO, dr.Nombre as USUARIO, v.pago_total from uni_venta as v 
-                            inner join (SELECT
-                                                MIN(id_usuario) AS id_usuario,
-                                                MIN(usuario) AS usuario
-                                        FROM empleado
-                                        GROUP BY id_usuario) as e on v.id_empleado = e.id_usuario
-                            left join DIRECTORIO_0 as dr on v.id_usuario= dr.ID
-                            left join uni_venta_articulo as va on v.id_venta = va.id_venta
-                            left join uni_articulos as a  on va.id_articulo = a.id_articulo 
-                                WHERE 1=1
-                        group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total 
+		SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EMPLEADO, dr.Nombre as USUARIO, v.pago_total from uni_venta as v 
+                inner join (SELECT
+                                    MIN(id_usuario) AS id_usuario,
+                                    MIN(usuario) AS usuario
+                            FROM empleado
+                            GROUP BY id_usuario) as e on v.id_empleado = e.id_usuario
+                left join DIRECTORIO_0 as dr on v.id_usuario= dr.ID
+                left join uni_venta_articulo as va on v.id_venta = va.id_venta
+                left join uni_articulos as a  on va.id_articulo = a.id_articulo 
+                    WHERE 1=1
+            group by v.id_venta, v.fecha, e.usuario, dr.Nombre, v.pago_total 
 
 		SELECT a.nombre, SUM(va.cantidad) AS piezas, a.id_articulo
         FROM uni_venta AS v, uni_venta_articulo AS va, uni_articulos AS a
@@ -350,11 +329,6 @@ SELECT v.id_venta, FORMAT(v.fecha, 'yyyy-MM-dd HH:mm') as fecha, e.usuario as EM
             WHERE 1=1 AND v.id_usuario = '2357'
 			group by va.id_articulo, a.nombre
         ORDER BY va.id_articulo
-
-
-		SELECT pa.id_articulo from uni_pedido as p, uni_pedido_articulo AS pa WHERE (p.status = 1 OR p.status = 2) AND p.id_pedido = pa.id_pedido GROUP BY id_articulo
-SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c.abrev, t.talla, g.genero FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
-
 
 	SELECT ua.id_articulo, (ua.stock_max - ua.cantidad) as cantidad, 
 		   ua.nombre, uc.categoria, ut.talla, ug.genero,  CASE 
@@ -390,104 +364,35 @@ SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS cantidad, c
 	 WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
 
 
-	 SELECT ug.genero
-		 from uni_salida as us 
-				inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
-				inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
-				inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
-				inner join uni_talla ut on ua.id_talla = ut.id_talla
-				inner join uni_genero ug on ua.genero = ug.id_genero
-        where 1=1 group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre
+	--delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-09'
 
-		select* from empleado order by id_usuario
-		select* from uni_salida order by id_empleado
+	--CONSULTA PARA GENERAR EL NUM_PEDIDO O ID PEDIDO 
+	SELECT  FORMAT(GETDATE(), 'yyyy/MM') + '/' 
+		+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
+			WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) as num_pedido
 
 
-	select id_vale, barcode as barcode 
-		from uni_vale group by id_vale, barcode
-
-	select* from uni_vale
-	select* from empleado order by id_usuario
-
-
-	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
-
-
-	select* from uni_entrada
-	select up.*, ue.id_entrada, ue.tipo_entrada from uni_pedido up inner join uni_entrada ue on up.id_entrada = ue.id_entrada 
-			order by up.id_pedido
-
-			select* from uni_pedido order by id_pedido
-			delete from uni_pedido where FORMAT(fecha_creacion, 'yyyy-MM-dd') = '2025-07-09'
-
-			select* from uni_pedido_articulo
-			delete from uni_pedido_articulo where id_pedido > 1130
-
-			select* from uni_entrada
-		
-			select* from uni_entrada_articulo where id_entrada = '115'
-
-			--codigo de la etiqueta de master de nuevo numero de parte
-			--id_pedido
-			--fecha_creacion
-			--fecha_termino
-			--status
-			--num_pedido
-			--consecutivo
-			--id_usuario
-			--id_entrada
-
-	select* from uni_venta
-	select* from uni_salida where tipo_salida = '5'
-	select* from uni_entrada where tipo_entrada='5'
-	select* from uni_venta
-
-	select* from uni_salida_articulo
-
-
-	
-	select* from uni_entrada ue inner join uni_entrada_articulo ae on ue.id_entrada = ae.id_entrada order by fecha
-	select* from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where  id_empleado = '149' order by fecha
-	select* from uni_salida_articulo
-
-	     SELECT  FORMAT(GETDATE(), 'yyyy/MM') + '/' 
-				+ RIGHT('000' + CAST((SELECT COUNT(*) + 1 FROM uni_pedido 
-				  WHERE FORMAT(fecha_creacion, 'yyyy/MM')  = FORMAT(GETDATE(), 'yyyy/MM')) AS VARCHAR), 3) as num_pedido
-
-
-SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo
-                     from uni_salida as us 
-                            inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
-                            inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
-                            inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
-                            inner join uni_talla ut on ua.id_talla = ut.id_talla
-                            inner join uni_genero ug on ua.genero = ug.id_genero
-                     where 1=1   group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo  order by id_articulo
-
-
-		
-			Declare @tipoTalla INT;
-				SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
-				SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-						where  TABLE_NAME = 'uni_articulos';
-	update uni_pedido set status = 4 where id_pedido = 1
-
-
-
-select ua.id_articulo, ua.cantidad as actual, upa.id_articulo, upa.cantidad as nueva, (ua.cantidad + upa.cantidad) as 'Cant total'
-		from uni_articulos ua 
-	inner join uni_pedido_articulo upa on ua.id_articulo = upa.id_articulo 
-where id_pedido = '20'
+	SELECT usa.id_articulo, SUM(usa.cantidad) as cantidad, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo
+		from uni_salida as us 
+			inner join uni_salida_articulo as usa on us.id_salida = usa.id_salida
+			inner join uni_articulos as ua on usa.id_articulo = ua.id_articulo
+			inner join uni_categoria uc on ua.id_categoria = uc.id_categoria
+			inner join uni_talla ut on ua.id_talla = ut.id_talla
+			inner join uni_genero ug on ua.genero = ug.id_genero
+	where 1=1   group by usa.id_articulo, uc.categoria, ut.talla, ua.nombre, ug.genero, ua.costo  order by id_articulo
 
 
 	--CONSULTA PARA OBTENER LOS TIPOS DE VALES CON LOS UNIFORMES QUE DEBERAN DE REGISTRARASE
-	SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme, v.barcode
+		SELECT tv.id_tipo_vale, tv.nombre, vu.uniforme, v.barcode
 			FROM uni_vale v inner join uni_vale_uniforme vu on vu.id_vale = v.tipo_vale 
 							inner join uni_tipo_vale tv on v.tipo_vale = tv.id_tipo_vale
-		WHERE vu.id_vale= '2'; 
-		
+		WHERE vu.id_vale= '2';
 
-			select* from uni_categoria
-			select* from uni_vale_uniforme
 
-			select* from empleado where id_usuario = 'adsf' and estatus='1'
+	--LA SALIDA POR VALE NO REGISTRA Y NO MUESTRA EL PRECIO EN LA SALIDA (1)
+	--LA VENTA DE UNIFORE REGISTRA Y MUESTA LA EL PRECIO DE LA VENTA (2)
+	--EN LA ENTREGA DE UNIFORME USADO EL UNICO REGISTRO LE ASIGNO UN VALOR DE 0 AL PRECIO Y EN REPORTE LO MUESTRA EN BLANCO (3)
+	--LA SALIDA POR REPOSICIÓN DE UNIFORME SI REGITRA PERO NO LA MUESTRA EN EL REPORTE (4) 
+	--LA SALIDA POR CAMBIO SOLO EN UNA NO REGITRO EL PRECIO Y EN EL REPORTE NO SE MUESTRA (5)
+	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
+	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes

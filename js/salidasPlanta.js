@@ -191,7 +191,6 @@
 
     //Esta funcion obtiene las tallas y generos de la categoria seleccionada
     function actualizarFormulario(){
-        
         var formDataGet = new FormData;
         formDataGet.append('opcion', 3);
         formDataGet.append('categoria', categoria.value);
@@ -304,7 +303,6 @@
                             } else {
                                 // Actualizar cantidad en fila existente
                                 const datosActualizados = filaExistente.data();
-                                
 
                                 if (parseInt(datosActualizados.cantidad + nuevaCantidad) > parseInt(cantidad.max)) {
                                     alert(
@@ -338,6 +336,7 @@
                             }
                                 ocultarMostrarTabla();
                                 valeInput.disabled = true;
+                                valeInput.value = '';
                         }
                 }
     }
@@ -356,7 +355,6 @@
 
     //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
     function registrarSalida(){ 
-         
           if(datos.length <1)
                 alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
         
@@ -365,14 +363,35 @@
                         && 
                 (empleado.dataset.dataIdEmpleado == 'false' || empleado.dataset.dataIdEmpleado == false  ||  empleado.dataset.dataIdEmpleado == null))
                     { alert('El número de nómina no es valido') }
-
         else
             {
-                    alert('Se ha registrado la salida')
-            }
+                console.log(JSON.stringify(datos));
+                console.log(empleado.value);
+                let formDataArt = new FormData;
+                formDataArt.append('opcion', 4);
+                formDataArt.append('tipoSalida', 1);
+                formDataArt.append('idUsuario', 94); //CAMBIAR POR EL VALOR DE LA SESSION
+                formDataArt.append('idEmpleado', 
+                        (empleado.dataset.dataIdEmpleado == 0 || empleado.dataset.dataIdEmpleado == 567) 
+                                    ? empleado.dataset.dataIdEmpleado : empleado.value);
+                formDataArt.append('nota', document.getElementById('nota').value);
+                formDataArt.append('vale', (valeInput.value).toUpperCase()); 
+                formDataArt.append('articulosSalida',JSON.stringify(datos))
 
+                fetch("./api/salidas.php", {
+                    method: "POST",
+                    body: formDataArt,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(data.response)
+                         console.log(data)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        }
 
-       
         //console.log('Valor de dataID:'+empleado.dataset.dataIdEmpleado+' Tipo de dato: '+ typeof(empleado.dataset.dataIdEmpleado));
     }
 
@@ -581,7 +600,7 @@
         });
 
 
-        if(invalido.length > 0 || !articulosCont) 
+        if(invalido.length > 0 || !articulosCont || articulos.length<1) 
             alert('Debe completar los campos correctamente para poder agregar el articulo');
 
 

@@ -508,16 +508,15 @@
 
     function agregarArticuloVale(){
         let invalido = document.querySelectorAll('.invalido')
-        let articulos = document.querySelectorAll('.idArticulo')
+        let articulos = document.querySelectorAll('#seleccionarValeArticuloModal .idArticulo')
 
+        //VALIDAR LA EXISTENCIA DEL ID PARA VERIFICAR EL LLENADO DEL FORMULARIO DE LA TABLA
         let articulosCont = Array.from(articulos).every(label => {
             return label.textContent.trim() !== '';
         });
 
-        console.log(articulosCont);
-
-
-        if(invalido.length > 0 || !articulosCont) 
+        //VERIFICAR QUE HAYA ARTICULOS EN LA TABLA DE VALE ARTICULOS
+        if(invalido.length > 0 || !articulosCont || articulos.length<1)  
             alert('Debe completar los campos correctamente para poder agregar el articulo');
 
 
