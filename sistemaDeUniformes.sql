@@ -101,8 +101,6 @@ select id_articulo, nombre, clave_comercial from uni_articulos GROUP BY id_artic
 select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_articulos GROUP BY id_articulo
 
 
-SELECT CHARINDEX('ab','bc,b,ab,c,def');
-
 	SELECT us.id_salida, FORMAT(us.fecha,'yyyy-mm-dd HH:mm') as fecha, e.usuario as empleado, d.Nombre as usuario, ts.tipo_salida from uni_salida as us 
 		left join DIRECTORIO_0 AS d on us.id_usuario = d.ID
 		left join (select id_usuario, usuario from empleado group by id_usuario, usuario) as e on us.id_empleado = e.id_usuario
@@ -323,13 +321,7 @@ SELECT CHARINDEX('ab','bc,b,ab,c,def');
 			group by va.id_articulo, ua.nombre
 		order by id_articulo
 
-		SELECT va.id_articulo, a.nombre, sum(va.cantidad) as cantidad from uni_venta_articulo va 
-                inner join uni_articulos as a on va.id_articulo = a.id_articulo
-                left join uni_venta as v on v.id_venta= va.id_venta
-            WHERE 1=1 AND v.id_usuario = '2357'
-			group by va.id_articulo, a.nombre
-        ORDER BY va.id_articulo
-
+	--CONSULTA PARA SABER SI EL ARTICULO ESTA EN UN PEDIDO AUN NO TERMINADO O NO
 	SELECT ua.id_articulo, (ua.stock_max - ua.cantidad) as cantidad, 
 		   ua.nombre, uc.categoria, ut.talla, ug.genero,  CASE 
             WHEN EXISTS (
@@ -348,7 +340,7 @@ SELECT CHARINDEX('ab','bc,b,ab,c,def');
 		where (ua.cantidad < 10 or ua.cantidad < stock_min) AND (ua.stock_max - ua.cantidad) > 0 order by en_pedido desc
 		--where cantidad <= stock_min and (ua.stock_max - ua.cantidad) > 0
 
-
+	--CONSULTA PARA SABER SI EL ARTICULO ESTA EN UN PEDIDO AUN NO TERMINADO O NO
 	SELECT a.nombre, a.costo, a.id_articulo, a.stock_max - a.cantidad AS pedidos, a.cantidad, stock_min, stock_max, c.abrev, t.talla, g.genero, 
         CASE 
             WHEN EXISTS (
@@ -389,6 +381,9 @@ SELECT CHARINDEX('ab','bc,b,ab,c,def');
 		WHERE vu.id_vale= '2';
 
 
+
+		SELECT CHARINDEX('ab','bc,b,ab,c,def');
+
 	--LA SALIDA POR VALE NO REGISTRA Y NO MUESTRA EL PRECIO EN LA SALIDA (1)
 	--LA VENTA DE UNIFORE REGISTRA Y MUESTA LA EL PRECIO DE LA VENTA (2)
 	--EN LA ENTREGA DE UNIFORME USADO EL UNICO REGISTRO LE ASIGNO UN VALOR DE 0 AL PRECIO Y EN REPORTE LO MUESTRA EN BLANCO (3)
@@ -396,3 +391,22 @@ SELECT CHARINDEX('ab','bc,b,ab,c,def');
 	--LA SALIDA POR CAMBIO SOLO EN UNA NO REGITRO EL PRECIO Y EN EL REPORTE NO SE MUESTRA (5)
 	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
 	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
+
+
+	select id_salida, id_tipo_salida, ts.tipo_salida, fecha, id_empleado, id_usuario, nota, vale 
+				from uni_tipo_salida ts 
+		inner join uni_salida  as us on ts.id_tipo_salida = us.tipo_salida
+
+
+	select* from uni_venta
+	select* from uni_salida order by id_salida
+	select* from uni_salida_articulo order by id_salida
+	select* from uni_tipo_salida
+
+	--id_salida
+	--fecha
+	--tipo_salida
+	--id_usuario
+	--id_empleado
+	--nota
+	--vale

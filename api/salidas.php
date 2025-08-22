@@ -93,7 +93,6 @@ else
         $vale = (isset($_POST['vale']) && !$_POST['vale']=='') ? $_POST['vale'] : NULL;
         $articulosPedido = (isset($_POST['articulosSalida']) && !empty($_POST['articulosSalida']) ) ? $_POST['articulosSalida'] : '';
 
-
         $sqlre="INSERT INTO uni_salida(fecha, tipo_salida, id_usuario, id_empleado, nota, vale)
                     VALUES(format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipoSalida, :idUsuario, :idEmpleado, :nota, :vale)";
 
@@ -104,7 +103,6 @@ else
         $entrada->bindparam(':nota', $nota);
         $entrada->bindparam(':vale', $vale);
 
-
             // Ejecuta la consulta
             if ($entrada->execute()) {
                  $lastID = $conn->lastInsertId();
@@ -114,9 +112,6 @@ else
 
                         //INSERTAR MULTIPLES REGISTROS USANDO INSERT
                         try {
-                            //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-                            // Suponiendo que $data es tu arreglo de objetos decodificado desde JSON
                             $conn->beginTransaction();
 
                             $stmt = $conn->prepare("INSERT INTO uni_salida_articulo(id_salida, id_articulo, cantidad, precio) VALUES (?, ?, ?, ?)");
@@ -126,12 +121,27 @@ else
                                     $lastID,
                                     (int)$item['id'],
                                     (int)$item['cantidad'],
-                                    (float)$item['precio'],
+                                    ($tipoSalida != 2) ? null : (float)$item['precio'],
                                 ]);
                             }
 
                             $conn->commit();
-                            $respuesta = array('response' => 'Salida registrado');
+
+                            //Actualizar los articulos correspondientes al pedido
+                                $sqluA = "UPDATE ua SET ua.cantidad = (ua.cantidad - usa.cantidad)
+                                                        FROM uni_articulos ua
+                                                    INNER JOIN uni_salida_articulo usa ON ua.id_articulo = usa.id_articulo
+                                            WHERE usa.id_salida = :idPedido";
+
+                            $uArticulos = $conn ->prepare($sqluA);
+                            $uArticulos->bindparam(':idPedido', $lastID);
+
+                            if($uArticulos->execute())
+                                 $respuesta = array('response' => 'Salida registrado');
+
+                            else 
+                                $response = array('response' => $uArticulos->errorInfo()[2]);
+                           
 
                         } catch (Exception $e) {
                             $conn->rollBack(); 
@@ -148,8 +158,4 @@ else
 
      echo json_encode($respuesta);
     }
-
-
-//2635 nancy la primera 
-//magda la segunda
 ?>
