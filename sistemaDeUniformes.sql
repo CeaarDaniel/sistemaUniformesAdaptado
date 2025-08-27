@@ -399,9 +399,11 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 
 
 	select* from uni_venta
-	select* from uni_salida order by id_salida
+	select* from uni_salida s inner join uni_salida_articulo us on s.id_salida = us.id_salida  where s.tipo_salida = 2 
 	select* from uni_salida_articulo order by id_salida
+	select* from uni_articulos where id_articulo = 1 or id_articulo = 2 or id_articulo = 3
 	select* from uni_tipo_salida
+
 
 	--id_salida
 	--fecha
@@ -410,3 +412,6 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 	--id_empleado
 	--nota
 	--vale
+
+
+	select* from uni_salida order by id_salida

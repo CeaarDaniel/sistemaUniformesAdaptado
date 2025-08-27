@@ -137,7 +137,7 @@ else
                             $uArticulos->bindparam(':idPedido', $lastID);
 
                             if($uArticulos->execute())
-                                 $respuesta = array('response' => 'Salida registrado');
+                                 $respuesta = array('response' => 'Salida registrada');
 
                             else 
                                 $response = array('response' => $uArticulos->errorInfo()[2]);

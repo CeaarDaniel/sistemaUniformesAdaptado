@@ -386,6 +386,16 @@
                     .then((data) => {
                         alert(data.response)
                          console.log(data)
+                          datos= []; 
+                            actualizarVista();
+                            ocultarMostrarTabla();
+                            empleado.disabled = false;
+                            empleado.value= '';
+                            empleado.dataset.dataIdEmpleado = '';
+                            valeInput.disabled = false
+                            valeInput.value = '';
+                            nombreEmpleado.textContent ="";
+                            $('input[type="radio"][name="tipoEntrega"][value=""]').prop('checked', true);
                     })
                     .catch((error) => {
                         console.log(error);

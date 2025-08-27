@@ -1,6 +1,7 @@
         var empleado = document.getElementById('empleadoInput');
+        var isEmpleado = false;
         var nombreEmpleado = document.getElementById('nombreEmpleado')
-        var valeInput = document.getElementById('valeInput');
+        var confirmarBtn = document.getElementById('confirmarBtn');
         var emptyState = document.getElementById('emptyState');
         let datos = []
 
@@ -15,6 +16,7 @@
         var nombre = document.getElementById('nombre');
         var precio = document.getElementById('precio');
         var cantidad = document.getElementById('cantidadArt');
+        confirmarBtn.addEventListener('click', registrarSalida)
 
 
         const table = $('#tablaArticulos').DataTable();
@@ -24,6 +26,7 @@
         eliminarBtn.addEventListener('click', function(){
             datos= []; 
             empleado.value= '';
+            isEmpleado = false;
             nombreEmpleado.textContent ="";
             actualizarVista();
             ocultarMostrarTabla();
@@ -41,6 +44,7 @@
                 actualizarArticulo();
         })
 
+        //VALIDAR EL NN DEL EMPLEADO
         empleado.addEventListener('change', function(){
                     var formDataGetUser = new FormData;
                     formDataGetUser.append('opcion', 3);
@@ -50,12 +54,14 @@
                         body: formDataGetUser,
                     }).then((response) => response.json())
                         .then((dataUs) => {
-                            if(dataUs.ok)
+                            if(dataUs.ok) {
                                 nombreEmpleado.textContent = dataUs.nombreEmpleado;
-
-                            else 
+                                isEmpleado = true;
+                             }
+                            else{ 
                                 nombreEmpleado.textContent = '';
-                            
+                                isEmpleado = false;
+                            }
                         })
                         .catch((error) => {
                             console.log(error);
@@ -274,6 +280,47 @@
                 document.getElementById('emptyState').classList.add('d-none');
                 document.getElementById('contenedorTabla').classList.remove('d-none');
             }
+    }
+
+    //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
+    function registrarSalida(){ 
+          if(datos.length <1)
+                alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
+        
+          else 
+            if(!isEmpleado)
+                        alert('El número de nómina no es valido');
+        
+         else
+            {
+                console.log(JSON.stringify(datos));
+                console.log(empleado.value);
+                let formDataArt = new FormData;
+                formDataArt.append('opcion', 4);
+                formDataArt.append('tipoSalida', 6);
+                formDataArt.append('idUsuario', 94); //CAMBIAR POR EL VALOR DE LA SESSION
+                formDataArt.append('idEmpleado', empleado.value);
+                formDataArt.append('articulosSalida',JSON.stringify(datos))
+
+                fetch("./api/salidas.php", {
+                    method: "POST",
+                    body: formDataArt,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(data.response)
+                        datos= [];
+                        empleado.value= '';
+                        nombreEmpleado.textContent ="";
+                        isEmpleado = false;
+                        actualizarVista();
+                        ocultarMostrarTabla();
+                        console.log(data)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        }
     }
 
 actualizarVista();

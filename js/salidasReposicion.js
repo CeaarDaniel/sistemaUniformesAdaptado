@@ -1,6 +1,8 @@
         var empleado = document.getElementById('empleadoInput');
+        var isEmpleado = false;
         var valeInput = document.getElementById('valeInput');
         var emptyState = document.getElementById('emptyState');
+        var confirmarBtn = document.getElementById('confirmarBtn');
         let datos = []
         const btnConfirmarVale = document.getElementById('btnConfirmarVale');
         const valeModal = new bootstrap.Modal(document.getElementById("seleccionarValeArticuloModal"));
@@ -22,6 +24,7 @@
 
     btnAgregarArticulo.addEventListener('click', agregarArticulo)
     btnConfirmarVale.addEventListener('click', agregarArticuloVale) 
+    confirmarBtn.addEventListener('click', registrarSalida)
 
     eliminarBtn.addEventListener('click', function(){
         datos= [];
@@ -29,6 +32,7 @@
         valeInput.disabled = false
         valeInput.value = '';
         nombreEmpleado.textContent ="";
+        isEmpleado = false;
         actualizarVista();
         ocultarMostrarTabla();
     })
@@ -72,6 +76,7 @@
         }
     });
 
+    //VALIDAR EL NUMERO DE NOMINA DEL EMPLEADO
     empleado.addEventListener('change', function(){
         var formDataGetUser = new FormData;
         formDataGetUser.append('opcion', 3);
@@ -83,10 +88,12 @@
             .then((dataUs) => {
                 if(dataUs.ok){
                     nombreEmpleado.textContent = dataUs.nombreEmpleado;
+                    isEmpleado = true;
                 }
 
                 else {
                     nombreEmpleado.textContent = '';
+                    isEmpleado = false;
                 }
             })
             .catch((error) => {
@@ -292,6 +299,7 @@
                                 }
                             }
                                 valeInput.disabled = true;
+                                valeInput.value='';
                                 ocultarMostrarTabla();
                         }
                 }
@@ -307,6 +315,52 @@
                 document.getElementById('emptyState').classList.add('d-none');
                 document.getElementById('contenedorTabla').classList.remove('d-none');
             }
+    }
+
+       //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
+    function registrarSalida(){ 
+          if(datos.length <1)
+                alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
+        
+          else 
+            if(!isEmpleado)
+                        alert('El número de nómina no es valido');
+        
+         else
+            {
+                //console.log(JSON.stringify(datos));
+                //console.log(empleado.value);
+                let formDataArt = new FormData;
+                formDataArt.append('opcion', 4);
+                formDataArt.append('tipoSalida', 4);
+                formDataArt.append('idUsuario', 94); //CAMBIAR POR EL VALOR DE LA SESSION
+                formDataArt.append('idEmpleado', empleado.value);
+                formDataArt.append('vale', (valeInput.value).toUpperCase()); 
+                formDataArt.append('articulosSalida',JSON.stringify(datos))
+
+                fetch("./api/salidas.php", {
+                    method: "POST",
+                    body: formDataArt,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(data.response)
+                         datos= [];
+                        empleado.value= '';
+                        valeInput.disabled = false
+                        valeInput.value = '';
+                        nombreEmpleado.textContent ="";
+                        isEmpleado = false;
+                        actualizarVista();
+                        ocultarMostrarTabla();
+                         console.log(data)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        }
+
+        //console.log('Valor de dataID:'+empleado.dataset.dataIdEmpleado+' Tipo de dato: '+ typeof(empleado.dataset.dataIdEmpleado));
     }
 
 
