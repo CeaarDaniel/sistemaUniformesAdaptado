@@ -3,7 +3,9 @@
         var emptyState = document.getElementById('emptyState');
         var confirmarBtn = document.getElementById('confirmarBtn');
         let datos = []
+        let total = 0;
         var isEmpleado = false;
+        const valeModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
 
     
     // Fuente de datos inicial
@@ -23,12 +25,14 @@
         btnAgregarArticulo.addEventListener('click', agregarArticulo)
 
         eliminarBtn.addEventListener('click', function(){
-            datos= []; 
+            datos= [];
+            isEmpleado = false;
+            total=0;
             empleado.value= '';
             nombreEmpleado.textContent ="";
+            $('#costoTotalVenta').text(total)
             actualizarVista();
             ocultarMostrarTabla();
-            isEmpleado = false;
         })
     
         categoria.addEventListener('change', function () {
@@ -43,6 +47,7 @@
                 actualizarArticulo();
         })
 
+        //VALIDAR EL NUMERO DE NOMINA DEL EMPLEADO
         empleado.addEventListener('change', function(){
                         var formDataGetUser = new FormData;
                         formDataGetUser.append('opcion', 3);
@@ -90,6 +95,7 @@
                     { "data": "tipo" },
                     { "data": "cantidad" },
                     { "data": "precio" },
+                    { "data": "genero"},
                     { "data": "boton" }
                 ],
                 columnDefs: [
@@ -106,11 +112,13 @@
                         $(row).find('.btn-eliminar').off('click').on('click', function (e) {
                             e.stopPropagation(); // evita que se dispare otro evento en la fila
                             var fila = tabla.row($(this).closest('tr'));
+                            total -= (fila.data().cantidad * fila.data().precio)
                             fila.remove().draw();
 
                             // Luego de eliminar una fila o cuando lo necesites
                             datos = tabla.rows().data().toArray();
                             ocultarMostrarTabla();
+                            $('#costoTotalVenta').text(total)
                         });
                     });
                 }
@@ -219,14 +227,16 @@
                                 const nuevoArticulo = {
                                     id: nuevoId,
                                     nombre: document.getElementById("nombre").value,
-                                    tipo: document.getElementById("tipo").value,
+                                    tipo: $('#tipo option:selected').data('abrev'), //document.getElementById("tipo").value,
                                     cantidad: nuevaCantidad,
                                     precio: Number(document.getElementById("precio").value),
+                                    genero: $('#genero option:selected').text(),
                                     boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
                                 };
 
                                 datos.push(nuevoArticulo);
                                 tabla.row.add(nuevoArticulo).draw(false);
+                                total += (Number(document.getElementById("precio").value)* nuevaCantidad);
                                 document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
                                 document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                     select.selectedIndex = 0; // selecciona la primera opción
@@ -259,7 +269,7 @@
                                     }
 
                                     tabla.draw(false); // Redibujar manteniendo paginación/orden
-
+                                    total += (Number(document.getElementById("precio").value)* nuevaCantidad);
                                     document.querySelectorAll("#formAgregarArticulo input").forEach(input => input.value = "");
                                     document.querySelectorAll("#formAgregarArticulo select").forEach(select => {
                                         select.selectedIndex = 0; // selecciona la primera opción
@@ -267,6 +277,7 @@
                                 }
                             }
                                 ocultarMostrarTabla();
+                                $('#costoTotalVenta').text(total)
                         }
                 }
     }
@@ -290,7 +301,7 @@
         
           else 
             if(!isEmpleado)
-                        alert('El número de nómina no es valido');
+                alert('El número de nómina no es valido');
         
          else
             {

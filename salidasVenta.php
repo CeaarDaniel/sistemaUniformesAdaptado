@@ -34,6 +34,11 @@ include('./api/conexion.php');
             </div>
         </div>
 
+        <div class="text-end fs-3">
+            <b>TOTAL:</b> $ <label id="costoTotalVenta" class="fs-3">0</label>
+        </div>
+
+
         <div class="table-container" style="background-color:white; height: 420px;">
             <div id="emptyState" class="text-center flex-wrap align-content-center py-5" style="width:100%; height:100%;">
                 <i class="bi bi-emoji-neutral display-4 text-muted"></i>
@@ -45,10 +50,11 @@ include('./api/conexion.php');
                 <thead>
                         <tr>
                             <th>ID</th>
-                            <th>nombre</th>
+                            <th>Nombre</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
                             <th>Precio</th>
+                            <th>Genero</th>
                             <th>Boton</th>
                         </tr>
                     </thead>
@@ -56,9 +62,9 @@ include('./api/conexion.php');
                     </tbody>
                 </table>
             </div>
-
         </div>
-                <!-- Modal para selección de artículos -->
+        
+        <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarArticuloModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -82,7 +88,7 @@ include('./api/conexion.php');
                                                 <option value="">Seleccione una categoría</option>
                                                 <?php 
                                                     while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
+                                                           echo "<option data-abrev='".$articulo['abrev']."' value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
                                                 ?>
                                             </select>
                                         </div>
@@ -156,6 +162,47 @@ include('./api/conexion.php');
                                 </div>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+             
+        <!--Modal confirmar numero de descuentos -->
+        <div class="modal fade" id="descuentosModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center">CANTIDAD DE DESCUENTOS DE NÓMINA</h5>
+                        <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                    </div>
+                    <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="">
+                                            <label class="form-label">
+                                                Tipo de nómina: <span id="tipoPago"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="from-group">
+                                            <label class="form-label">
+                                               <i class="bi bi-tags-fill bi-icon"></i>
+                                                Numero de descuentos:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 mx-0 px-0">
+                                        <input type="number" id="cantidadDescuentos" class="form-control" placeholder="Cantidad" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <button id="btnAgregarArticulo" class="btn btn-custom" type="button">
+                                             Registrar
+                                        </button>
+                                    </div>
+                                </div>
                     </div>
                 </div>
             </div>

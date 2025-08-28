@@ -251,9 +251,9 @@
                                 const nuevoArticulo = {
                                     id: nuevoId,
                                     nombre: document.getElementById("nombre").value,
-                                    tipo: document.getElementById("tipo").value,
+                                    tipo: $('#tipo option:selected').data('abrev'), //document.getElementById("tipo").value,
                                     cantidad: nuevaCantidad,
-                                    precio: Number(document.getElementById("precio").value),
+                                    precio: $('#genero option:selected').text(), //Number(document.getElementById("precio").value),
                                     boton: "<button class='btn btn-danger my-0 mx-1 btn-eliminar'><i class='fas fa-trash'></i></button>"
                                 };
 
@@ -317,7 +317,7 @@
             }
     }
 
-       //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
+    //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
     function registrarSalida(){ 
           if(datos.length <1)
                 alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 

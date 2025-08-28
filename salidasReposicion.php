@@ -48,7 +48,7 @@
                 <thead>
                         <tr>
                             <th>ID</th>
-                            <th>nombre</th>
+                            <th>Nombre</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
                             <th>Genero</th>
@@ -85,7 +85,7 @@
                                                 <option value="">Seleccione una categoría</option>
                                                 <?php 
                                                     while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))
-                                                           echo "<option value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
+                                                           echo "<option data-abrev='".$articulo['abrev']."' value='".$articulo['id_categoria']."'>".$articulo['categoria']."</option>";
                                                 ?>
                                             </select>
                                         </div>
