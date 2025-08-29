@@ -170,17 +170,17 @@ include('./api/conexion.php');
              
         <!--Modal confirmar numero de descuentos -->
         <div class="modal fade" id="descuentosModal">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title text-center">CANTIDAD DE DESCUENTOS DE NÓMINA</h5>
+                        <h5 class="text-center textDescuentos">CANTIDAD DE DESCUENTOS DE NÓMINA</h5>
                         <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
                     </div>
                     <div class="modal-body">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <div class="">
-                                            <label class="form-label">
+                                            <label class="form-label textDescuentos">
                                                 Tipo de nómina: <span id="tipoPago"></span>
                                             </label>
                                         </div>
@@ -188,17 +188,17 @@ include('./api/conexion.php');
 
                                     <div class="col-12 col-md-6">
                                         <div class="from-group">
-                                            <label class="form-label">
+                                            <label class="form-label textDescuentos">
                                                <i class="bi bi-tags-fill bi-icon"></i>
                                                 Numero de descuentos:
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 mx-0 px-0">
-                                        <input type="number" id="cantidadDescuentos" class="form-control" placeholder="Cantidad" required>
+                                        <input type="number" id="cantidadDescuentos" class="form-control textDescuentos" placeholder="Cantidad" required>
                                     </div>
                                     <div class="col-12">
-                                        <button id="btnAgregarArticulo" class="btn btn-custom" type="button">
+                                        <button id="btnModalDescuentos" class="btn btn-custom textDescuentos" type="button">
                                              Registrar
                                         </button>
                                     </div>

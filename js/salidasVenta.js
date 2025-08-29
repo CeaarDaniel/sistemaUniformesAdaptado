@@ -4,12 +4,15 @@
         var confirmarBtn = document.getElementById('confirmarBtn');
         let datos = []
         let total = 0;
+        let tipoNomina= '';
         var isEmpleado = false;
         const valeModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
 
     
     // Fuente de datos inicial
         var  btnAgregarArticulo = document.getElementById('btnAgregarArticulo');
+         let btnModalDescuentos = document.getElementById('btnModalDescuentos');
+
         var  eliminarBtn = document.getElementById('cancelarBtn');
         var categoria = document.getElementById('tipo') //Select de Categoria
         var selectTalla = document.getElementById('talla');
@@ -59,12 +62,14 @@
                             .then((dataUs) => {
                                 if(dataUs.ok){
                                     nombreEmpleado.textContent = dataUs.nombreEmpleado;
+                                    tipoNomina = dataUs.tipoNomina;
                                     isEmpleado = true;
                                 }
 
                                 else {
                                     nombreEmpleado.textContent = '';
                                     isEmpleado = false ;
+                                    tipoNomina = '';
                                 }
                             })
                             .catch((error) => {
@@ -75,7 +80,8 @@
 
         selectTalla.addEventListener('change', actualizarArticulo);
         selectGenero.addEventListener('change', actualizarArticulo);
-        confirmarBtn.addEventListener('click', registrarSalida)
+        confirmarBtn.addEventListener('click', validarSalida);
+        btnModalDescuentos.addEventListener('clicl', registrarSalida)
     
 
     function actualizarVista() {
@@ -295,7 +301,7 @@
     }
 
     //REGISTRO DE UNA SALIDA POR ENTREGA DE UNIFORME 
-    function registrarSalida(){ 
+    function validarSalida(){ 
           if(datos.length <1)
                 alert('No se pueden realizar salidas sin artículos, favor de agregar por lo menos uno') 
         
@@ -304,8 +310,13 @@
                 alert('El número de nómina no es valido');
         
          else
-            {
-                //console.log(JSON.stringify(datos));
+                valeModal.show(); 
+        
+    }
+
+
+    function registrarSalida(){
+         //console.log(JSON.stringify(datos));
                 //console.log(empleado.value);
                 let formDataArt = new FormData;
                 formDataArt.append('opcion', 4);
@@ -313,6 +324,13 @@
                 formDataArt.append('idUsuario', 94); //CAMBIAR POR EL VALOR DE LA SESSION
                 formDataArt.append('idEmpleado', empleado.value);
                 formDataArt.append('articulosSalida',JSON.stringify(datos))
+                formDataArt.append('pagoTotal', total)
+                //formDataArt.append('numDescuentos', $('#cantidadDescuentos').val())
+
+                numDescuentos = $('#cantidadDescuentos').val();
+                tipoNomina
+                total
+
 
                 fetch("./api/salidas.php", {
                     method: "POST",
@@ -332,9 +350,7 @@
                     .catch((error) => {
                         console.log(error);
                     })
-        }
     }
-
 actualizarVista();
 /*
     const state = {

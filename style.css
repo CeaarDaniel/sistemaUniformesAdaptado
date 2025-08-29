@@ -497,7 +497,6 @@ tbody .editColum {
 }
 
 
-
 /*ESTILOS PARA LA GENERACION DE ARCHIVOS PDF*/
         /* Estilos para evitar cortes de página */
         .page-break-avoid {
@@ -536,3 +535,18 @@ tbody .editColum {
             margin: 0px auto;
             width: 80%;
         }
+
+
+/*Fuente de datos modal ventas*/
+
+@media (min-width: 486px){
+    .textDescuentos {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 485px) {
+    .textDescuentos{
+        font-size: 4.5vw;
+    }
+}
