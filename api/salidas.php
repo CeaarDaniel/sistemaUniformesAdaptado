@@ -172,18 +172,18 @@ if($opcion == '3'){
    else 
         if($opcion== '5')
             {
-                // Crear objeto con la fecha actual
-                $hoy = new DateTime();
+                $veces = $_POST['numDescuentos'];
+                $tipoNomina = $_POST['tipoNomina'];
+                $respuesta = obtenerFechas($veces, $tipoNomina);
 
-                // Obtener el próximo viernes de la siguiente semana
-                $hoy->modify('next friday'); // Este viernes
+                echo json_encode($respuesta[0]);
+                echo "\n";
+                echo json_encode($respuesta[1] ?? null);
+                echo "\n";
+                echo json_encode($respuesta[2] ?? null);
+                echo "\n";
+                echo json_encode($respuesta[3] ?? null); 
 
-                // Formatear la fecha en formato SQL o como necesites
-                $fechaViernes = $hoy->format('Y-m-d');
-
-                echo "El viernes de la próxima semana es: " .$fechaViernes;
-                echo "Los proximos dias cercanos al 15 y 30 son: ";
-                echo json_encode(obtenerFechas15y30(6));
             }
 
 //Funcion para el proceso adicional del registro de la salida cunado es una salida por venta
@@ -202,8 +202,6 @@ if($opcion == '3'){
 
             /*
                 pago_total
-                pago_efectivo null
-                pago_nomina null
                 id_usuario
                 id_salida
                 firma
@@ -311,44 +309,62 @@ if($opcion == '3'){
     */
 
 
-    function obtenerFechas15y30($veces) {
+    function obtenerFechas($veces, $tipoNomina) {
         $fechas = [];
-        $actual = new DateTime();
-        $actual->modify('next monday'); // Empezar desde la próxima semana
 
-        while (count($fechas) < $veces) {
-            $anio = (int)$actual->format('Y');
-            $mes = (int)$actual->format('m');
+        if( $tipoNomina == 'Q'){
+            $actual = new DateTime();
+            $actual->modify('next monday'); // Empezar desde la próxima semana
 
-            foreach ([15, 30] as $dia) {
-                // Intentar crear la fecha
-                //$fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
-                $fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', 2025, 8, $dia));
+            while (count($fechas) < $veces) {
+                $anio = (int)$actual->format('Y');
+                $mes = (int)$actual->format('m');
+
+                foreach ([15, 30] as $dia) {
+                    // Intentar crear la fecha
+                    $fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
+                    //$fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', 2025, 8, $dia));
 
 
-                if (!$fecha) continue; // Fecha inválida (ej. 30 de febrero)
+                    if (!$fecha) continue; // Fecha inválida (ej. 30 de febrero)
 
-                // Saltar fechas pasadas
-                if ($fecha < $actual) continue;
+                    // Saltar fechas pasadas
+                    if ($fecha < $actual) continue;
 
-                // Ajustar si cae en fin de semana
-                $diaSemana = $fecha->format('N'); // 6 = sábado, 7 = domingo
-                if ($diaSemana == 6) {
-                    $fecha->modify('-1 day'); // sábado → viernes
-                } elseif ($diaSemana == 7) {
-                    $fecha->modify('-2 days'); // domingo → viernes
+                    // Ajustar si cae en fin de semana
+                    $diaSemana = $fecha->format('N'); // 6 = sábado, 7 = domingo
+                    if ($diaSemana == 6) {
+                        $fecha->modify('-1 day'); // sábado → viernes
+                    } elseif ($diaSemana == 7) {
+                        $fecha->modify('-2 days'); // domingo → viernes
+                    }
+
+                    // Añadir si aún no tenemos suficientes fechas
+                    if (count($fechas) < $veces) {
+                        $fechas[] = $fecha->format('Y-m-d');
+                    } else {
+                        break 2; // Salir de ambos bucles si ya tenemos suficientes
+                    }
                 }
 
-                // Añadir si aún no tenemos suficientes fechas
-                if (count($fechas) < $veces) {
-                    $fechas[] = $fecha->format('Y-m-d');
-                } else {
-                    break 2; // Salir de ambos bucles si ya tenemos suficientes
-                }
+                // Avanzar al siguiente mes
+                $actual->modify('first day of next month');
             }
+        }
 
-            // Avanzar al siguiente mes
-            $actual->modify('first day of next month');
+
+      else 
+        if($tipoNomina == 'S'){
+                    $hoy = new DateTime('2025-09-01');
+                    $hoy->modify('next monday');                
+            while(count($fechas) < $veces){
+                // Crear objeto con la fecha actual
+                    // Obtener el próximo viernes de la siguiente semana
+                    $hoy->modify('next friday'); // Este viernes
+
+                    // Formatear la fecha en formato SQL o como necesites
+                    $fechas[] = $hoy->format('Y-m-d');
+            } 
         }
 
     return $fechas;
