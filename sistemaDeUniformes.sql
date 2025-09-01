@@ -286,7 +286,7 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 		Declare @tipoTalla INT;
 			SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
 			SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-		where  TABLE_NAME = 'uni_articulos';
+		where  TABLE_NAME = 'uni_venta_articulo';
 
 		SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
                     FROM uni_salida as us 
@@ -409,6 +409,9 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 	select* from uni_venta_articulo
 
 
-	select* from uni_salida
-	select* from uni_salida_articulo
-	select* from empleado
+	select* from uni_salida order by fecha
+	select* from uni_salida_articulo order by id_salida
+	select* from uni_venta order by id_venta
+	select* from uni_venta_articulo
+
+	select  id_salida, id_articulo, cantidad, precio, costo from uni_venta_articulo

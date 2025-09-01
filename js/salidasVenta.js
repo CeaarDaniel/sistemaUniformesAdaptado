@@ -6,7 +6,7 @@
         let total = 0;
         let tipoNomina= '';
         var isEmpleado = false;
-        const valeModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
+        const descuentosModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
 
     
     // Fuente de datos inicial
@@ -81,7 +81,7 @@
         selectTalla.addEventListener('change', actualizarArticulo);
         selectGenero.addEventListener('change', actualizarArticulo);
         confirmarBtn.addEventListener('click', validarSalida);
-        btnModalDescuentos.addEventListener('clicl', registrarSalida)
+        btnModalDescuentos.addEventListener('click', registrarSalida)
     
 
     function actualizarVista() {
@@ -310,12 +310,17 @@
                 alert('El número de nómina no es valido');
         
          else
-                valeModal.show(); 
+                descuentosModal.show(); 
         
     }
 
 
     function registrarSalida(){
+
+        if(!(document.getElementById('cantidadDescuentos')).checkValidity())
+                document.getElementById('cantidadDescuentos').reportValidity();
+
+        else {
          //console.log(JSON.stringify(datos));
                 //console.log(empleado.value);
                 let formDataArt = new FormData;
@@ -325,31 +330,33 @@
                 formDataArt.append('idEmpleado', empleado.value);
                 formDataArt.append('articulosSalida',JSON.stringify(datos))
                 formDataArt.append('pagoTotal', total)
-                //formDataArt.append('numDescuentos', $('#cantidadDescuentos').val())
+                formDataArt.append('numDescuentos', Number($('#cantidadDescuentos').val()))
+                formDataArt.append('tipoNomina', tipoNomina)
 
-                numDescuentos = $('#cantidadDescuentos').val();
-                tipoNomina
-                total
+                console.log('total:'+total+' Numero de descuentos'+Number($('#cantidadDescuentos').val())+'Tipo de nomina'+tipoNomina)
 
-
+                //numDescuentos = $('#cantidadDescuentos').val();
                 fetch("./api/salidas.php", {
                     method: "POST",
                     body: formDataArt,
                 })
-                    .then((response) => response.json())
+                    .then((response) => response.text())
                     .then((data) => {
-                        alert(data.response)
-                        datos= [];
-                        empleado.value= '';
-                        nombreEmpleado.textContent ="";
-                        isEmpleado = false;
-                        actualizarVista();
-                        ocultarMostrarTabla();
+                        //alert(data.response)
+                        //datos= [];
+                        //empleado.value= '';
+                        //nombreEmpleado.textContent ="";
+                        //isEmpleado = false;
+                        //actualizarVista();
+                        //ocultarMostrarTabla();
+
+                         descuentosModal.hide();
                         console.log(data)
                     })
                     .catch((error) => {
                         console.log(error);
                     })
+        }
     }
 actualizarVista();
 /*

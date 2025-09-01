@@ -143,7 +143,7 @@ if($opcion == '3'){
 
                                 if($uArticulos->execute()) {
                                     if($tipoSalida== 2)
-                                        $respuesta = registroVenta($fecha);
+                                        $respuesta = registroVenta($fecha, $lastID, $conn);
 
                                     else
                                         $respuesta = array('response' => 'Salida registrada');
@@ -186,86 +186,125 @@ if($opcion == '3'){
 
             }
 
-//Funcion para el proceso adicional del registro de la salida cunado es una salida por venta
-    function registroVenta($fecha, $idSalida){
+    //Funcion para el proceso adicional del registro de la salida cunado es una salida por venta
+    function registroVenta($fechaV, $idSalida, $conn){
         $idUsuario = (isset($_POST['idUsuario']) && !$_POST['idUsuario']=='') ? $_POST['idUsuario'] : NULL;
-        $fecha;
         $idEmpleado = (isset($_POST['idEmpleado']) && !$_POST['idEmpleado']=='') ? $_POST['idEmpleado'] : NULL;
-        $pagoTotal = (isset($_POST['pagoTotal']) && !$_POST['pagoTotal']) ? $_POST['pagoTotal'] : NULL;
+        $pagoTotal = (isset($_POST['pagoTotal'])) ? $_POST['pagoTotal'] : NULL;
         $articulosPedido = (isset($_POST['articulosSalida']) && !empty($_POST['articulosSalida']) ) ? $_POST['articulosSalida'] : '';
-        $idSalida;
         $firma = (isset($_POST['firma']) && !$_POST['firma']) ? $_POST['firma'] : NULL;
-        $tipoNomina = (isset($_POST['tipoNomina']) && !$_POST['tipoNomina']) ? $_POST['tipoNomina'] : NULL;
-        $numDescuentos = (isset($_POST['numDescuentos']) && !$_POST['numDescuentos']) ? $_POST['numDescuentos'] : NULL;
-        $fechaDescuento;
-        $cantidadDescuento;
+        $tipoNomina = (isset($_POST['tipoNomina'])) ? $_POST['tipoNomina'] : NULL;
+        $numDescuentos = (isset($_POST['numDescuentos'])) ? $_POST['numDescuentos'] : NULL;
+        $fechas = [];
+        $descuentoAplicado =round((float)$pagoTotal / (float) $numDescuentos, 2);
 
-            /*
-                pago_total
-                id_usuario
-                id_salida
-                firma
-                tipo_nomina
-                num_descuentos
-                check_1
-                check_2
-                check_3
-                check_4
-                fecha_1
-                fecha_2
-                fecha_3
-                fecha_4
-                descuento_1
-                descuento_2
-                descuento_3
-                descuento_4 
-            */
+        if(strtoupper($tipoNomina) == 'Q' ){
+            $actual = new DateTime();
+            $actual->modify('next monday'); // Empezar desde la próxima semana
 
-        $sqlre="INSERT INTO uni_salida(fecha, tipo_salida, id_usuario, id_empleado, nota, vale)
-                    VALUES(format(GETDATE(), 'yyyy-MM-dd HH:mm:ss'), :tipoSalida, :idUsuario, :idEmpleado, :nota, :vale)";
+            while (count($fechas) < $numDescuentos) {
+                $anio = (int)$actual->format('Y');
+                $mes = (int)$actual->format('m');
 
-        $entrada = $conn->prepare($sqlre);
-        $entrada->bindparam(':tipoSalida', $tipoSalida);
-        $entrada->bindparam(':idUsuario', $idUsuario);
-        $entrada->bindparam(':idEmpleado', $idEmpleado);
-        $entrada->bindparam(':nota', $nota);
-        $entrada->bindparam(':vale', $vale);
+                foreach ([15, 30] as $dia) {
+                    // Intentar crear la fecha
+                    $fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
+                    //$fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', 2025, 8, $dia));
 
-            // Ejecuta la consulta
-            if ($entrada->execute()) {
-                 $lastID = $conn->lastInsertId();
-                //Se revisa que la estructura de los datos sea un arreglo para poder generar la consulta 
-                if (is_array(json_decode($articulosPedido, true))) {
-                        $articulosPedido = json_decode($articulosPedido, true);
 
-                        //INSERTAR MULTIPLES REGISTROS USANDO INSERT
-                        try {
-                            $conn->beginTransaction();
+                    if (!$fecha) continue; // Fecha inválida (ej. 30 de febrero)
 
-                            $stmt = $conn->prepare("INSERT INTO uni_salida_articulo(id_salida, id_articulo, cantidad, precio) VALUES (?, ?, ?, ?)");
+                    // Saltar fechas pasadas
+                    if ($fecha < $actual) continue;
 
-                            foreach ($articulosPedido as $item) {
-                                $stmt->execute([
-                                    $lastID,
-                                    (int)$item['id'],
-                                    (int)$item['cantidad'],
-                                    ($tipoSalida != 2) ? null : (float)$item['precio'],
-                                ]);
-                            }
+                    // Ajustar si cae en fin de semana
+                    $diaSemana = $fecha->format('N'); // 6 = sábado, 7 = domingo
+                    if ($diaSemana == 6) {
+                        $fecha->modify('-1 day'); // sábado → viernes
+                    } elseif ($diaSemana == 7) {
+                        $fecha->modify('-2 days'); // domingo → viernes
+                    }
 
-                            $conn->commit();
-                        } catch (Exception $e) {
-                            $conn->rollBack(); 
-                            $respuesta = array("response" => "error: ".$e->getMessage());
-                        }
+                    // Añadir si aún no tenemos suficientes fechas
+                    if (count($fechas) < $numDescuentos) {
+                        $fechas[] = $fecha->format('Y-m-d');
+                    } else {
+                        break 2; // Salir de ambos bucles si ya tenemos suficientes
+                    }
                 }
 
-                else 
-                    $respuesta = array("response" => "Datos invalidos");
+                // Avanzar al siguiente mes
+                $actual->modify('first day of next month');
+            }
+        }
+
+        else 
+            if(strtoupper($tipoNomina) == 'S'){
+                $hoy = new DateTime();
+                $hoy->modify('next monday');                
+                while(count($fechas) < $numDescuentos){
+                    // Crear objeto con la fecha actual
+                        // Obtener el próximo viernes de la siguiente semana
+                        $hoy->modify('next friday'); // Este viernes
+
+                        // Formatear la fecha en formato SQL o como necesites
+                        $fechas[] = $hoy->format('Y-m-d');
+                } 
             }
 
+        $sqlrv = "INSERT INTO uni_venta(id_empleado, fecha, pago_total, id_usuario, id_salida, firma, tipo_nomina,
+                                        num_descuentos, check_1, check_2, check_3, check_4, fecha_1, fecha_2,
+                                        fecha_3, fecha_4, descuento_1, descuento_2, descuento_3, descuento_4)
+                    VALUES(:id_empleado, :fecha, :pago_total, :id_usuario, :id_salida, :firma, :tipo_nomina,
+                                        :num_descuentos, :check_1, :check_2, :check_3, :check_4, :fecha_1, :fecha_2,
+                                        :fecha_3, :fecha_4, :descuento_1, :descuento_2, :descuento_3, :descuento_4)";
+
+        $venta = $conn->prepare($sqlrv);
+
+        $venta->bindparam(':id_empleado', $idEmpleado);
+        $venta->bindparam(':fecha', $fechaV);
+        $venta->bindparam(':pago_total', $pagoTotal);
+        $venta->bindparam(':id_usuario', $idUsuario);
+        $venta->bindparam(':id_salida', $idSalida);
+        $venta->bindparam(':firma', $firma);
+        $venta->bindparam(':tipo_nomina', $tipoNomina);
+        $venta->bindparam(':num_descuentos', $numDescuentos);
+        $venta->bindValue(':check_1', 0);
+        $venta->bindValue(':check_2', isset($fechas[1]) ? 0 : null);
+        $venta->bindValue(':check_3', isset($fechas[2]) ? 0 : null);
+        $venta->bindValue(':check_4', isset($fechas[3]) ? 0 : null);
+        $venta->bindValue(':fecha_1', $fechas[0]);
+        $venta->bindValue(':fecha_2', isset($fechas[1]) ? $fechas[1] : null);
+        $venta->bindValue(':fecha_3', isset($fechas[2]) ? $fechas[2] : null);
+        $venta->bindValue(':fecha_4', isset($fechas[3]) ? $fechas[3] : null);
+        $venta->bindValue(':descuento_1',  isset($fechas[0]) ? $descuentoAplicado : null);
+        $venta->bindValue(':descuento_2',  isset($fechas[1]) ? $descuentoAplicado : null);
+        $venta->bindValue(':descuento_3',  isset($fechas[2]) ? $descuentoAplicado : null);
+        $venta->bindValue(':descuento_4',  isset($fechas[3]) ? $descuentoAplicado : null);
+        
+            // Ejecuta la consulta
+            if ($venta->execute()) {
+                 $idVenta = $conn->lastInsertId();
+                
+                        //INSERTAR MULTIPLES REGISTROS USANDO INSERT
+                                $ventaArt = $conn->prepare("INSERT INTO uni_venta_articulo(id_venta, id_articulo, cantidad, precio, costo) 
+                                                             SELECT :idVenta, a.id_articulo, sa.cantidad, sa.precio, a.costo 
+                                                                    FROM uni_salida_articulo sa LEFT JOIN uni_articulos a ON sa.id_articulo = a.id_articulo
+                                                                        WHERE id_salida = :idSalida");
+
+                                 $ventaArt->bindparam(':idVenta', $idVenta);
+                                 $ventaArt->bindparam(':idSalida', $idSalida);
+                     
+                                 if($ventaArt->execute())
+                                     $respuesta = array('response' => 'Venta registrada');
+
+                                 else 
+                                    $respuesta = array("response" => $ventaArt->errorInfo()[2]);
+                        }
+            
+
             else 
-                $respuesta = array('response' => $stmt->errorInfo()[2]);
+                $respuesta = array('response' => $venta->errorInfo()[2]);
 
      return $respuesta;
     }
@@ -307,67 +346,5 @@ if($opcion == '3'){
             return $fechas;
         }
     */
-
-
-    function obtenerFechas($veces, $tipoNomina) {
-        $fechas = [];
-
-        if( $tipoNomina == 'Q'){
-            $actual = new DateTime();
-            $actual->modify('next monday'); // Empezar desde la próxima semana
-
-            while (count($fechas) < $veces) {
-                $anio = (int)$actual->format('Y');
-                $mes = (int)$actual->format('m');
-
-                foreach ([15, 30] as $dia) {
-                    // Intentar crear la fecha
-                    $fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
-                    //$fecha = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', 2025, 8, $dia));
-
-
-                    if (!$fecha) continue; // Fecha inválida (ej. 30 de febrero)
-
-                    // Saltar fechas pasadas
-                    if ($fecha < $actual) continue;
-
-                    // Ajustar si cae en fin de semana
-                    $diaSemana = $fecha->format('N'); // 6 = sábado, 7 = domingo
-                    if ($diaSemana == 6) {
-                        $fecha->modify('-1 day'); // sábado → viernes
-                    } elseif ($diaSemana == 7) {
-                        $fecha->modify('-2 days'); // domingo → viernes
-                    }
-
-                    // Añadir si aún no tenemos suficientes fechas
-                    if (count($fechas) < $veces) {
-                        $fechas[] = $fecha->format('Y-m-d');
-                    } else {
-                        break 2; // Salir de ambos bucles si ya tenemos suficientes
-                    }
-                }
-
-                // Avanzar al siguiente mes
-                $actual->modify('first day of next month');
-            }
-        }
-
-
-      else 
-        if($tipoNomina == 'S'){
-                    $hoy = new DateTime('2025-09-01');
-                    $hoy->modify('next monday');                
-            while(count($fechas) < $veces){
-                // Crear objeto con la fecha actual
-                    // Obtener el próximo viernes de la siguiente semana
-                    $hoy->modify('next friday'); // Este viernes
-
-                    // Formatear la fecha en formato SQL o como necesites
-                    $fechas[] = $hoy->format('Y-m-d');
-            } 
-        }
-
-    return $fechas;
-}
 
 ?>

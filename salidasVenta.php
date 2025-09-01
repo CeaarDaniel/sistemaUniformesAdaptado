@@ -195,7 +195,7 @@ include('./api/conexion.php');
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 mx-0 px-0">
-                                        <input type="number" id="cantidadDescuentos" class="form-control textDescuentos" placeholder="Cantidad" required>
+                                        <input type="number" id="cantidadDescuentos" min= "1" max="4" class="form-control textDescuentos" placeholder="Cantidad" required>
                                     </div>
                                     <div class="col-12">
                                         <button id="btnModalDescuentos" class="btn btn-custom textDescuentos" type="button">
