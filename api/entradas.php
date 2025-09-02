@@ -110,12 +110,12 @@ else
             $categoria = (isset($_POST['categoria']) && !empty($_POST['categoria'])) ? $_POST['categoria'] : 0;
             $consultaGenero = "SELECT ug.id_genero, ug.genero from uni_articulos as ua 
                                     left join uni_genero as ug on ua.genero = ug.id_genero 
-                                where id_categoria= :categoria
+                                where id_categoria= :categoria and eliminado = 0
                             group by id_categoria, ug.genero, ug.id_genero";
 
             $consultaTalla = "SELECT ua.id_talla, ut.talla from uni_articulos ua
                                     inner join uni_talla as ut on ua.id_talla = ut.id_talla  
-                                where id_categoria= :categoria
+                                where id_categoria= :categoria and eliminado = 0
                             group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla";
 
             $consultaCategoria = "SELECT id_categoria, abrev FROM uni_categoria WHERE  id_categoria = :categoria";
@@ -393,4 +393,35 @@ else
                     //    VALUES(@fecha, @tipo_entrada, @id_usuario); 
                     //SELECT SCOPE_IDENTITY() AS lastInsertedID;"
     }
+
+//REGISTRO DE ENTRADA POR CAMBIO
+else 
+    if($opcion == '8'){
+      $articulosPedido = (isset($_POST['articulosPedido']) && !empty($_POST['articulosPedido']) ) ? $_POST['articulosPedido'] : '';
+      $idEntrada = (isset($_POST['idEntrada']) && !empty($_POST['idEntrada']) ) ? $_POST['idEntrada'] : '';
+      $fecha = (isset($_POST['fecha']) && !empty($_POST['fecha']) ) ? $_POST['fecha'] : '';
+      $tipoEntrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada']) ) ? $_POST['tipoEntrada'] : '';
+      $idUsuario = (isset($_POST['idUsuario']) && !empty($_POST['idUsuario']) ) ? $_POST['idUsuario'] : '';
+
+        $registrarPedido = "INSERT INTO uni_pedido(fecha_creacion, status, num_pedido, id_usuario) 
+                            VALUES (:fecha_creacion, :status, :num_pedido, :id_usuario)";
+
+        $stmt = $conn->prepare($registrarPedido);
+
+        $stmt->bindParam(':fecha_creacion',$fecha_creacion);
+        $stmt->bindParam(':status',$status);
+        $stmt->bindParam(':num_pedido',$num_pedido);
+        $stmt->bindParam(':id_usuario',$id_usuario);
+
+            // Ejecuta la consulta
+            if ($stmt->execute()) { 
+                 $respuesta = array('response' => 'Entrada registrada');
+            }
+
+            else 
+                $respuesta = array('response' => $stmt->errorInfo()[2]);
+            
+
+          echo json_encode($respuesta);
+}
 ?>

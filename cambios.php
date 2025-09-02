@@ -100,7 +100,7 @@
                                                 <i class="bi bi-grid-fill bi-icon"></i>
                                                 Categoría
                                             </label>
-                                            <select class="form-select" name="tipo" id="tipo" required>
+                                            <select class="form-select" name="tipo" id="tipo" disabled>
                                                 <option value="">Seleccione una categoría</option>
                                                 <?php 
                                                     while($articulo = $articulos->fetch(PDO::FETCH_ASSOC))

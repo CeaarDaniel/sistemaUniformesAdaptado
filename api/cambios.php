@@ -12,7 +12,7 @@ $opcion = $_POST['opcion'];
     if($opcion == '1'){
         $id_salida= (isset($_POST['id_salida']) && !$_POST['id_salida']=='') ? $_POST['id_salida'] : NULL;
 
-        $detalleSalida= "SELECT usa.id_articulo, usa.cantidad, ua.nombre, ut.talla, usa.precio, (usa.cantidad * usa.precio) as total  
+        $detalleSalida= "SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.precio, (usa.cantidad * usa.precio) as total  
                             from uni_salida as us 
                                 left join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
                                 left join uni_articulos as ua on usa.id_articulo = ua.id_articulo

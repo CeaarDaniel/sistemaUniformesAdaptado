@@ -59,7 +59,8 @@
                             <button class='btn btn-success btn-action btnEscoger' 
                                     data-id = '${art.id_articulo}' 
                                     data-nombre = '${art.nombre}' 
-                                    data-cantidad = '${art.cantidad}'>
+                                    data-cantidad = '${art.cantidad}'
+                                    data-categoria = ${art.id_categoria}>
                                 <i class="fas fa-exchange-alt"></i>
                             </button>
                         ` : ''}
@@ -106,11 +107,25 @@
             var id = boton.getAttribute('data-id');
             var nombre = boton.getAttribute('data-nombre');
             var cantidad = boton.getAttribute ('data-cantidad')
+            let categoriaVal = boton.getAttribute ('data-categoria')
+
 
             //Se agrega un data-id con dataset.id, igual al valor del data del boton que disparo el boton
             document.getElementById('escogerArtModal').dataset.id = id;
             $("#cantidadArt").val(cantidad);
             document.getElementById('escogerArtModalLabel').textContent = `Seleccionar Artículo para ${nombre}`;
+             
+          $('#tipo').val(categoriaVal);
+
+            // Verificar si el valor fue asignado correctamente
+            if ($('#tipo').val()) {
+                $('#tipo').prop('disabled', true);
+            } else {
+                $('#tipo').prop('disabled', false);
+                $('#tipo').val("");
+            }
+
+             actualizarFormulario()
             new bootstrap.Modal(document.getElementById('escogerArtModal')).show();
         }
 
@@ -201,8 +216,28 @@
                     alert("No se ha seleccionado ningún artículo para realizar el cambio")
 
             else {
-                alert("Se a realizado el cambio");
+                    var formDataGet = new FormData;
+                    formDataGet.append('opcion', 8);
+                  
+                    fetch("./api/entradas.php", {
+                        method: "POST",
+                        body: formDataGet,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
             }
+
+
+            console.log("Salida articulos",salida_articulos)
+            console.log("Articulos regreso",articulos_regreso)
+            console.log ("Ids articulos", ids_articulos)
+            console.log("Articulos cambio", articulos_cambio)
+            console.log("Ids articulos cambio",ids_articulos_cambio)
+
         }
 
 

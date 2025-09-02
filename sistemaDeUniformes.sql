@@ -286,7 +286,7 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 		Declare @tipoTalla INT;
 			SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
 			SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-		where  TABLE_NAME = 'uni_venta_articulo';
+		where  TABLE_NAME = 'uni_entrada';
 
 		SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
                     FROM uni_salida as us 
@@ -392,26 +392,47 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
 	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
 
-
-	select id_salida, id_tipo_salida, ts.tipo_salida, fecha, id_empleado, id_usuario, nota, vale 
-				from uni_tipo_salida ts 
-		inner join uni_salida  as us on ts.id_tipo_salida = us.tipo_salida
-
-
-	select* from uni_venta
-	select* from uni_salida  where tipo_salida = '2' order by id_salida
-	select sa.* from uni_salida_articulo sa inner join uni_salida us on sa.id_salida = us.id_salida where us.tipo_salida = 2 order by us.id_salida
-	select* from uni_articulos where id_articulo = 1 or id_articulo = 55 or id_articulo = 239
-	select* from uni_tipo_salida
-
-	select s.fecha as fs, v.fecha as fv from uni_salida s inner join uni_venta v on s.id_salida = v.id_salida
-	select* from uni_venta order by pago_total
-	select* from uni_venta_articulo
+select* from uni_salida order by id_salida
+select* from uni_salida_articulo order by id_salida
+select* from uni_venta order by id_venta
+select* from uni_venta_articulo order by id_venta
+select* from uni_articulos where id_articulo = 2
 
 
-	select* from uni_salida order by fecha
-	select* from uni_salida_articulo order by id_salida
-	select* from uni_venta order by id_venta
-	select* from uni_venta_articulo
+select* from uni_salida_articulo order by id_articulo
 
-	select  id_salida, id_articulo, cantidad, precio, costo from uni_venta_articulo
+select* from uni_categoria
+select* from uni_talla
+
+
+SELECT ug.id_genero, ug.genero from uni_articulos as ua 
+                                    left join uni_genero as ug on ua.genero = ug.id_genero 
+                                where id_categoria= 55 and eliminado = 0
+                            group by id_categoria, ug.genero, ug.id_genero 
+
+	SELECT ua.id_talla, ut.talla from uni_articulos ua
+                                    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
+                                where id_categoria= 55 and eliminado = 0
+                            group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla
+
+select* from uni_articulos where id_categoria = '55' and genero = '2' and id_talla = '90'
+
+
+select* from uni_talla where id_talla = '90'
+select* from uni_categoria where id_categoria = 55
+select* from uni_genero where id_genero = 2
+
+delete from uni_categoria where id_categoria = 55
+
+
+
+SELECT id_articulo, nombre, cantidad, costo, precio from uni_articulos 
+                                    where id_talla = '90' and genero= '2' and id_categoria= 55 
+                                            and eliminado = 0 
+
+delete from uni_articulos where id_articulo = '245'
+
+
+select* from uni_categoria
+
+

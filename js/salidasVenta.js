@@ -311,7 +311,6 @@
         
          else
                 descuentosModal.show(); 
-        
     }
 
 
@@ -333,23 +332,25 @@
                 formDataArt.append('numDescuentos', Number($('#cantidadDescuentos').val()))
                 formDataArt.append('tipoNomina', tipoNomina)
 
-                console.log('total:'+total+' Numero de descuentos'+Number($('#cantidadDescuentos').val())+'Tipo de nomina'+tipoNomina)
+                //console.log('total:'+total+' Numero de descuentos'+Number($('#cantidadDescuentos').val())+'Tipo de nomina'+tipoNomina)
 
                 //numDescuentos = $('#cantidadDescuentos').val();
                 fetch("./api/salidas.php", {
                     method: "POST",
                     body: formDataArt,
                 })
-                    .then((response) => response.text())
+                    .then((response) => response.json())
                     .then((data) => {
-                        //alert(data.response)
-                        //datos= [];
-                        //empleado.value= '';
-                        //nombreEmpleado.textContent ="";
-                        //isEmpleado = false;
-                        //actualizarVista();
-                        //ocultarMostrarTabla();
-
+                        alert(data.response)
+                        datos= [];
+                        empleado.value= '';
+                        nombreEmpleado.textContent ="";
+                        isEmpleado = false;
+                        total = 0;
+                        $('#costoTotalVenta').text(total);
+                        actualizarVista();
+                        ocultarMostrarTabla();
+                        $('#cantidadDescuentos').val('')
                          descuentosModal.hide();
                         console.log(data)
                     })
@@ -460,4 +461,4 @@ actualizarVista();
             document.body.appendChild(alerta);
             setTimeout(() => alerta.remove(), 3000);
         } 
-    */
+*/
