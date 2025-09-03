@@ -286,7 +286,7 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 		Declare @tipoTalla INT;
 			SELECT @tipoTalla = ISNULL(MAX(tipo_talla), 0) + 1 FROM uni_talla WITH (TABLOCKX);
 			SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-		where  TABLE_NAME = 'uni_entrada';
+		where  TABLE_NAME = 'uni_salida';
 
 		SELECT us.id_salida, us.vale, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') AS fecha, ts.id_tipo_salida, ts.tipo_salida,  d.Nombre as realizado_por, e.id_usuario as NN, e.usuario as empleado, tv.nombre
                     FROM uni_salida as us 
@@ -392,47 +392,195 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
 	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
 
+select* from uni_entrada order by id_entrada
 select* from uni_salida order by id_salida
+select* from uni_venta order by 
+
 select* from uni_salida_articulo order by id_salida
-select* from uni_venta order by id_venta
-select* from uni_venta_articulo order by id_venta
-select* from uni_articulos where id_articulo = 2
+select* from uni_entrada_articulo order by id_entrada
 
 
-select* from uni_salida_articulo order by id_articulo
+SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.precio, (usa.cantidad * usa.precio) as total  
+                            from uni_salida as us 
+                                left join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
+                                left join uni_articulos as ua on usa.id_articulo = ua.id_articulo
+                                left join uni_talla as ut on ua.id_talla = ut.id_talla
+                            where us.id_salida = 8586
 
-select* from uni_categoria
-select* from uni_talla
-
-
-SELECT ug.id_genero, ug.genero from uni_articulos as ua 
-                                    left join uni_genero as ug on ua.genero = ug.id_genero 
-                                where id_categoria= 55 and eliminado = 0
-                            group by id_categoria, ug.genero, ug.id_genero 
-
-	SELECT ua.id_talla, ut.talla from uni_articulos ua
-                                    inner join uni_talla as ut on ua.id_talla = ut.id_talla  
-                                where id_categoria= 55 and eliminado = 0
-                            group by id_categoria, ua.id_talla, ut.tipo_talla, ut.talla
-
-select* from uni_articulos where id_categoria = '55' and genero = '2' and id_talla = '90'
+	delete from uni_salida where id_salida > 8586
+	delete from uni_salida_articulo where id_salida > 8586
 
 
-select* from uni_talla where id_talla = '90'
-select* from uni_categoria where id_categoria = 55
-select* from uni_genero where id_genero = 2
+UPDATE ua
+    SET ua.cantidad = ua.cantidad + upa.cantidad
+        FROM uni_articulos ua
+            INNER JOIN uni_pedido_articulo upa ON ua.id_articulo = upa.id_articulo
+                WHERE upa.id_pedido =  :idPedido
 
-delete from uni_categoria where id_categoria = 55
+select ea.id_articulo, ea.cantidad from uni_entrada_articulo ea inner join uni_entrada e on ea.id_entrada = e.id_entrada
+		where e.id_entrada = 141;
 
+select sa.* from uni_salida_articulo sa inner join uni_salida s on sa.id_salida = s.id_salida
+		where s.id_salida = 8597;
 
+UPDATE ua SET ua.cantidad = ua.cantidad + ea.cantidad 
+        from uni_articulos ua inner join uni_entrada_articulo ea on ua.id_articulo = ea.id_articulo
+            WHERE ea.id_entrada = 141
 
-SELECT id_articulo, nombre, cantidad, costo, precio from uni_articulos 
-                                    where id_talla = '90' and genero= '2' and id_categoria= 55 
-                                            and eliminado = 0 
+UPDATE ua SET ua.cantidad = ua.cantidad - sa.cantidad 
+        from uni_articulos ua inner join uni_salida_articulo sa on ua.id_articulo = sa.id_articulo
+            WHERE sa.id_salida = 8597;
 
-delete from uni_articulos where id_articulo = '245'
+	select* from uni_articulos
 
-
-select* from uni_categoria
-
-
+15
+28
+33
+24
+35
+32
+24
+36
+33
+34
+31
+36
+18
+34
+1667
+34
+30
+30
+24
+34
+39
+34
+31
+39
+22
+23
+29
+37
+34
+22
+22
+22
+37
+29
+27
+23
+26
+36
+24
+34
+40
+22
+22
+25
+26
+27
+21
+23
+14
+16
+15
+14
+23
+21
+16
+32
+38
+24
+32
+36
+23
+23
+24
+23
+26
+38
+33
+33
+35
+27
+25
+14
+18
+16
+14
+24
+14
+19
+14
+26
+14
+30
+14
+15
+14
+21
+14
+27
+15
+21
+17
+60
+64
+39
+15
+25
+72
+32
+46
+314
+45
+81
+82
+190
+26
+26
+26
+26
+26
+27
+105
+33
+25
+26
+26
+26
+26
+214
+154
+121
+93
+214
+131
+362
+140
+776
+1014
+14
+14
+17
+14
+15
+14
+14
+45
+32
+33
+24
+14
+14
+14
+14
+17
+25
+33
+14
+14
+23
+15
+15
+137

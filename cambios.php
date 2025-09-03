@@ -13,12 +13,13 @@
 
     $id = '';
     $fecha = '';
+    $NN = '';
     $tipoSalida = '';
     $empleado = '';
     $usuario = ''; 
     
     //Consulta para traer el registro del id de salida
-    $sql= "SELECT us.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') as fecha, uts.tipo_salida, e.usuario as empleado, d.Nombre as usuario from uni_salida as us 
+    $sql= "SELECT us.id_salida, FORMAT(us.fecha, 'yyyy-MM-dd HH:mm') as fecha, uts.tipo_salida, us.id_empleado, e.usuario as empleado, d.Nombre as usuario from uni_salida as us 
 				inner join uni_tipo_salida as uts on us.tipo_salida = uts.id_tipo_salida
 				inner join empleado as e on us.id_empleado = e.id_usuario
 				inner join DIRECTORIO_0 as d on us.id_usuario = d.ID 
@@ -33,6 +34,7 @@
           if($registro) {
                 $id = $registro['id_salida'];
                 $fecha = $registro['fecha'];
+                $NN = $registro['id_empleado'];
                 $tipoSalida = $registro['tipo_salida'];
                 $empleado = $registro['empleado'];
                 $usuario = $registro['usuario']; // Nombre de quien realiza la operacion
@@ -77,6 +79,8 @@
                         </div>
                     </div>
                 </div>
+
+                <input id="NN" name="NN" value="<?php echo $NN?>" type="text">
             </div>
         </div>
 

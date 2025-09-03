@@ -215,29 +215,30 @@
             if(ids_articulos_cambio == null || ids_articulos_cambio == '') 
                     alert("No se ha seleccionado ningún artículo para realizar el cambio")
 
+            
             else {
-                    var formDataGet = new FormData;
-                    formDataGet.append('opcion', 8);
+                    var formDataCambios = new FormData;
+                    formDataCambios.append('opcion', 2);
+                    formDataCambios.append('tipoEntrada', 5);
+                    formDataCambios.append('idEmpleado', $('#NN').val());
+                    formDataCambios.append('articulosSalida', JSON.stringify(articulos_cambio));
+                    formDataCambios.append('articulosEntrada',JSON.stringify(ids_articulos));
                   
-                    fetch("./api/entradas.php", {
+                    fetch("./api/cambios.php", {
                         method: "POST",
-                        body: formDataGet,
+                        body: formDataCambios,
                     })
-                        .then((response) => response.json())
+                        .then((response) => response.text())
                         .then((data) => {
+                            console.log(data);
                         })
                         .catch((error) => {
                             console.log(error);
                         })
-            }
+            } 
 
-
-            console.log("Salida articulos",salida_articulos)
-            console.log("Articulos regreso",articulos_regreso)
-            console.log ("Ids articulos", ids_articulos)
-            console.log("Articulos cambio", articulos_cambio)
-            console.log("Ids articulos cambio",ids_articulos_cambio)
-
+            console.log ("Ids articulos regreso", ids_articulos)
+            console.log("Articulos cambio salida", articulos_cambio)
         }
 
 

@@ -7,7 +7,6 @@ include('./conexion.php');
 
 $opcion = $_POST['opcion'];
 
-
     //FUNCION PARA OBTENER LOS DETALLES DE LA SALIDA PARA HACER EL CAMBIO
     if($opcion == '1'){
         $id_salida= (isset($_POST['id_salida']) && !$_POST['id_salida']=='') ? $_POST['id_salida'] : NULL;
@@ -35,5 +34,102 @@ $opcion = $_POST['opcion'];
 
         echo json_encode($response);
     }
+    
+//REGISTRO DE ENTRADA POR CAMBIO
+else 
+    if($opcion == '2'){
+        $articulosEntrada = (isset($_POST['articulosEntrada']) && !empty($_POST['articulosEntrada']) ) ? $_POST['articulosEntrada'] : '';
+        $articulosSalida = (isset($_POST['articulosSalida']) && !empty($_POST['articulosSalida']) ) ? $_POST['articulosSalida'] : '';
+        $idUsuario = 96;
+        $tipoEntrada = (isset($_POST['tipoEntrada']) && !empty($_POST['tipoEntrada']) ) ? $_POST['tipoEntrada'] : '';
+        $idEmpleado = (isset($_POST['idEmpleado']) && !empty($_POST['idEmpleado']) ) ? $_POST['idEmpleado'] : '';
+        $fecha = date("Y-m-d H:i:s");
 
+         if (is_array(json_decode($articulosSalida, true)) && is_array(json_decode($articulosEntrada, true))) {
+                $articulosSalida = json_decode($articulosSalida, true);
+                $articulosEntrada = json_decode($articulosEntrada, true);
+
+                try {
+                        $conn->beginTransaction();
+
+                            $stmt1 = $conn->prepare("INSERT INTO uni_entrada(fecha, tipo_entrada, id_usuario) 
+                                                    VALUES (:fecha, :tipoEntrada, :idUsuario)");
+                            $stmt1->execute([
+                                ':fecha' => $fecha,
+                                ':tipoEntrada' => $tipoEntrada,
+                                ':idUsuario' => $idUsuario
+                            ]);
+
+                             $idEntrada = $conn->lastInsertId();
+
+                            $stmt2 = $conn->prepare("INSERT INTO uni_entrada_articulo(id_entrada, id_articulo, cantidad) 
+                                                        VALUES (?, ?, ?)");
+
+                            $i=0;
+                            foreach ($articulosEntrada as $item) {
+                                 
+                                $detalle = $articulosSalida[$i];
+                                $stmt2->execute([
+                                    $idEntrada,
+                                    $item,
+                                    $detalle['cantidad']
+                                ]);
+                                $i++;
+                            }
+
+                            $stmt3 = $conn->prepare("INSERT INTO uni_salida(fecha, tipo_salida, id_usuario, id_empleado) 
+                                                    VALUES(:fecha, :tipoEntrada, :idUsuario, :idEmpleado)");
+                            $stmt3->execute([
+                                ':fecha' => $fecha,
+                                ':tipoEntrada' => $tipoEntrada,
+                                ':idUsuario' => $idUsuario,
+                                ':idEmpleado' => $idEmpleado
+                            ]);
+
+                             $idSalida = $conn->lastInsertId();
+
+                            $stmt4 = $conn->prepare("INSERT INTO uni_salida_articulo(id_salida, id_articulo, cantidad, precio) 
+                                                        VALUES (?, ?, ?, ?)");
+
+                            foreach ($articulosSalida as $item) {
+                                $stmt4->execute([
+                                    $idSalida,
+                                    $item['id_articulo'],
+                                    $item['cantidad'],
+                                    $item['precio'],
+                                ]);
+                            }
+
+                             $stmt5 = $conn->prepare("UPDATE uni_articulos SET cantidad = uni_articulos.cantidad + ea.cantidad 
+                                                        from uni_entrada_articulo ea
+                                                            WHERE ea.id_entrada = :idEntrada");
+                        
+                                $stmt5->execute([
+                                    ':idEntrada' => $idEntrada,
+                                ]);
+
+                             $stmt6 = $conn->prepare("UPDATE uni_articulos SET cantidad = uni_articulos.cantidad - sa.cantidad 
+                                                        from uni_salida_articulo sa
+                                                            WHERE sa.id_salida = :idSalida");
+                        
+                                $stmt6->execute([
+                                    ':idSalida' => $idSalida,
+                                ]);
+                            
+
+                        $conn->commit();
+                        $respuesta = array('response' => 'Se ha echo el cambio');
+
+                    } catch (Exception $e) {
+                        $conn->rollBack();
+                        $respuesta = array('response' => $e->getMessage());
+                    }
+            }
+
+        else 
+            $respuesta = array('response' => 'Datos invalidos');
+        
+
+        echo json_encode($respuesta);
+    }
 ?>
