@@ -80,7 +80,7 @@
                     </div>
                 </div>
 
-                <input id="NN" name="NN" value="<?php echo $NN?>" type="text">
+                <input id="NN" name="NN" value="<?php echo $NN?>" type="hidden">
             </div>
         </div>
 

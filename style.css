@@ -1,6 +1,6 @@
 .navbar-font {
     font-size:
-     16px;
+        16px;
 }
 
 .img-logo {
@@ -24,6 +24,7 @@
     padding-left: 30px;
     padding-right: 30px;
 }
+
 .card-shortcut {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -34,13 +35,15 @@
     padding-left: 16px;
     padding-right: 16px;
 }
+
 .card-shortcut:hover {
     transform: scale(1.1);
 }
+
 .title-dash {
     font-size: 1.5rem;
     text-transform: uppercase;
-    color: #204191; 
+    color: #204191;
     font-weight: bold;
 }
 
@@ -62,6 +65,7 @@
     background-color: #f8f9fa;
     font-weight: bold;
 }
+
 .q-avatar {
     display: inline-flex;
     align-items: center;
@@ -71,6 +75,7 @@
     height: 50px;
     font-size: 30px;
 }
+
 .bg-blue-10 {
     background: rgb(13, 71, 161);
 }
@@ -85,16 +90,16 @@
     width: 100%;
 }
 
-.nav-link{
+.nav-link {
     color: black;
-    font-size:16px;
+    font-size: 16px;
     font-weight: 500;
     transition: ease .3s;
 }
 
-.nav-link:hover{
-        color: #1e3d90;
-        background-color:rgb(30, 61, 144, 0.1);
+.nav-link:hover {
+    color: #1e3d90;
+    background-color: rgb(30, 61, 144, 0.1);
 }
 
 /*ESTILO DE altasArticulos*/
@@ -106,19 +111,23 @@
     border-radius: 8px;
     background-color: #f9f9f9;
 }
+
 .form-container h2 {
     margin-bottom: 20px;
     font-size: 1.75rem;
     color: #333;
 }
+
 .form-container .form-label {
     font-weight: bold;
 }
+
 .form-container .btn-submit {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
 }
+
 .nombre-input {
     border-color: red;
 }
@@ -137,6 +146,7 @@
     gap: 8px;
     margin-top: 10px;
 }
+
 .chip {
     background-color: #007bff;
     color: white;
@@ -144,6 +154,7 @@
     border-radius: 20px;
     font-size: 14px;
 }
+
 .chip .remove-icon {
     margin-left: 8px;
     cursor: pointer;
@@ -155,11 +166,12 @@
     top: 0;
     background-color: #f8f9fa;
     z-index: 1;
-} 
+}
 
 .btn-action {
     margin: 0 2px;
 }
+
 .btn-action i {
     font-size: 1rem;
 }
@@ -176,7 +188,8 @@
     overflow-x: auto;
 }
 
-th, td {
+th,
+td {
     text-align: center;
     vertical-align: middle;
     padding: 8px;
@@ -286,7 +299,7 @@ tbody .editColum {
 }
 
 /*Estilos de consultas de ventas*/
-    /*
+/*
         .padding-header {
             padding-top: 80px;
             padding-left: 30px;
@@ -347,17 +360,33 @@ tbody .editColum {
     */
 
 /*Estilos para entradasManuales*/
-.remarcado-font { font-weight: 600; }
-.fixed-alert { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+.remarcado-font {
+    font-weight: 600;
+}
+
+.fixed-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
 
 /*Estilos para entradasdSalidas*/
-.padding-side { padding: 0 40px; }
+.padding-side {
+    padding: 0 40px;
+}
+
 /*.table-hover tbody tr:hover { background-color: #f8f9fa; } */
 
 
 /*ESTILOS DE reportesExistencias*/
-.table-wrapper { overflow-x: auto; }
-.table-wrapper table { white-space: nowrap; }
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.table-wrapper table {
+    white-space: nowrap;
+}
 
 
 .row-reporte td {
@@ -365,42 +394,82 @@ tbody .editColum {
     border-bottom: 1px solid #dee2e6;
 }
 
-.row-reporte:hover { background-color: #f5f4f7; }
+.row-reporte:hover {
+    background-color: #f5f4f7;
+}
 
 .filter-transition {
     transition: all 0.3s;
     overflow: hidden;
     max-height: 0;
 }
-.filter-transition.visible { max-height: 500px; }
 
-.empty-state { color: #8F98A0; font-size: 20px; }
+.filter-transition.visible {
+    max-height: 500px;
+}
+
+.empty-state {
+    color: #8F98A0;
+    font-size: 20px;
+}
 
 
 /*ESTILOS DE reportesSalidas*/
-.row-venta-articulos { background-color: #e6e6e6; }
+.row-venta-articulos {
+    background-color: #e6e6e6;
+}
 
 
 /**/
-.report-header { padding: 20px; background: #f8f9fa; }
-.filter-section { transition: all 0.3s ease; }
+.report-header {
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.filter-section {
+    transition: all 0.3s ease;
+}
+
 /*.table-container { max-height: 65vh; overflow-y: auto; }*/
-.sticky-header { position: sticky; top: 0; background: #0d6efd; color: white; z-index: 1; }
-.hover-row:hover { background-color: #f1f1f1 !important; }
-.sub-row { background-color: #f8f9fa; }
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: #0d6efd;
+    color: white;
+    z-index: 1;
+}
+
+.hover-row:hover {
+    background-color: #f1f1f1 !important;
+}
+
+.sub-row {
+    background-color: #f8f9fa;
+}
 
 
 /*Estilos de salidasReposicion*/
-.cursor-pointer { cursor: pointer; }
-.border-red { border: 1px solid #dc3545 !important; }
-.border-green { border: 1px solid #28a745 !important; }
-.article-img { height: 70px; }
+.cursor-pointer {
+    cursor: pointer;
+}
 
-.unset{
+.border-red {
+    border: 1px solid #dc3545 !important;
+}
+
+.border-green {
+    border: 1px solid #28a745 !important;
+}
+
+.article-img {
+    height: 70px;
+}
+
+.unset {
     all: unset
-  }
+}
 
-  /*
+/*
     @keyframes fadeIn {
         0% {
         opacity: 0;
@@ -415,7 +484,9 @@ tbody .editColum {
     }
 */
 
-.btnVer:hover, .btnConcretar:hover, .btnCancelar:hover {
+.btnVer:hover,
+.btnConcretar:hover,
+.btnCancelar:hover {
     background: #d1d1d1;
 }
 
@@ -423,22 +494,23 @@ tbody .editColum {
 
 .cursor-mano {
     cursor: pointer;
-  }
+}
 
 
-  .animacion{
+.animacion {
     transition: transform 0.4s ease-in-out;
-  }
+}
 
-    /*Transicion al cambiar de pagina con ajax*/
-    .ocultar-mostrar{
-      transform: scale(0);
-      transition: transform 0.4s ease-in-out;
-    }
-  /*fin efecto para la transicion*/ 
+/*Transicion al cambiar de pagina con ajax*/
+.ocultar-mostrar {
+    transform: scale(0);
+    transition: transform 0.4s ease-in-out;
+}
+
+/*fin efecto para la transicion*/
 
 
-  :root {
+:root {
     --dark-purple: #1e3d90;
     --pastel-blue: #a7c5eb;
     --soft-purple: #c8a2c8;
@@ -492,61 +564,78 @@ tbody .editColum {
 }
 
 
-.form-check-input{
+.form-check-input {
     border: 2px solid var(--pastel-blue);
 }
 
 
 /*ESTILOS PARA LA GENERACION DE ARCHIVOS PDF*/
-        /* Estilos para evitar cortes de página */
-        .page-break-avoid {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-        
-        .page-break-before {
-            page-break-before: always;
-            break-before: page;
-        }
-        
-        .keep-together {
-            display: block;
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
+/* Estilos para evitar cortes de página */
+.page-break-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
 
-        /*Estilos de la pagina*/
-        .hojaImpresion {
-            box-sizing: border-box;
-            max-width: 816px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            font-family:  sans-serif;
-            color:rgb(0, 0, 0);
-        }
-                      
-        .signature-area {
-            margin-top: 30px;
-        }
-        .signature-line {
-            border-top: 1px solid #000;
-            margin: 0px auto;
-            width: 80%;
-        }
+.page-break-before {
+    page-break-before: always;
+    break-before: page;
+}
+
+.keep-together {
+    display: block;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/*Estilos de la pagina*/
+.hojaImpresion {
+    box-sizing: border-box;
+    max-width: 816px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    color: rgb(0, 0, 0);
+}
+
+.signature-area {
+    margin-top: 30px;
+}
+
+.signature-line {
+    border-top: 1px solid #000;
+    margin: 0px auto;
+    width: 80%;
+}
 
 
-/*Fuente de datos modal ventas*/
+/*Fuente de estilos datos modal ventas*/
 
-@media (min-width: 486px){
+@media (min-width: 486px) {
     .textDescuentos {
         font-size: 17px;
     }
 }
 
 @media (max-width: 485px) {
-    .textDescuentos{
+    .textDescuentos {
         font-size: 4.5vw;
     }
 }
+
+/*Fuen de estilos CANVAS*/
+    @media (max-width: 700px) {
+        canvas {
+            width: 80%;
+            max-height: 280px;
+        }
+    }
+
+    @media (min-width: 701px) {
+        canvas {
+            width: 650px;
+            height: 280px;
+        }
+    }
+/*FIN ESTILOS CANVAS*/

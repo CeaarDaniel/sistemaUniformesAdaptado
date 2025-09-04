@@ -207,6 +207,39 @@ include('./api/conexion.php');
                 </div>
             </div>
         </div>
+
+        <!--MODAL CANVAS/FIRMA-->
+            <div class="modal fade" id="firmaModal">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="text-center textDescuentos">REGISTRO DE FIRMA DE ACEPTACION DE DESCUENTOS</h5>
+                            <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="wrapper" style="px-1">
+                                <form class="formulario" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
+                                        <div class="card-body text-center">
+                                            <canvas id='canvas' style='border: 1px solid #CCC;'>
+                                                <p>Tu navegador no soporta canvas</p>
+                                            </canvas>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <img id="preview" alt="Vista previa de la firma" />
+                                        </div>
+
+                                        <div class="text-center p-2" style="width:100%">
+                                            <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
+                                            <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--FIN MODAL CANVAS/FIRMA-->
         
 <!-- 
     <div id="salidasVenta">

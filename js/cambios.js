@@ -228,17 +228,18 @@
                         method: "POST",
                         body: formDataCambios,
                     })
-                        .then((response) => response.text())
+                        .then((response) => response.json())
                         .then((data) => {
-                            console.log(data);
+                            alert(data.response)
+                            location.reload();
                         })
                         .catch((error) => {
                             console.log(error);
                         })
             } 
 
-            console.log ("Ids articulos regreso", ids_articulos)
-            console.log("Articulos cambio salida", articulos_cambio)
+            //console.log ("Ids articulos regreso", ids_articulos)
+            //console.log("Articulos cambio salida", articulos_cambio)
         }
 
 

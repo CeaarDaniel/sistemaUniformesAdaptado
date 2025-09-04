@@ -100,21 +100,36 @@ else
                                 ]);
                             }
 
-                             $stmt5 = $conn->prepare("UPDATE uni_articulos SET cantidad = uni_articulos.cantidad + ea.cantidad 
-                                                        from uni_entrada_articulo ea
-                                                            WHERE ea.id_entrada = :idEntrada");
+                             $stmt5 = $conn->prepare("UPDATE ua SET ua.cantidad = ua.cantidad + ea.cantidad 
+                                                            from uni_articulos ua inner join uni_entrada_articulo ea on ua.id_articulo = ea.id_articulo
+                                                                WHERE ea.id_entrada = :idEntrada");
                         
                                 $stmt5->execute([
                                     ':idEntrada' => $idEntrada,
                                 ]);
 
-                             $stmt6 = $conn->prepare("UPDATE uni_articulos SET cantidad = uni_articulos.cantidad - sa.cantidad 
-                                                        from uni_salida_articulo sa
+                             $stmt6 = $conn->prepare("UPDATE ua SET ua.cantidad = ua.cantidad - sa.cantidad 
+                                                        from uni_articulos ua inner join uni_salida_articulo sa on ua.id_articulo = sa.id_articulo
                                                             WHERE sa.id_salida = :idSalida");
                         
                                 $stmt6->execute([
                                     ':idSalida' => $idSalida,
                                 ]);
+
+
+                            //ACTUALIZAR LOS IDs DE LOS ARTICULOS DE LA SALIDA INICAL POR LOS IDs DE LOS ARTICULOS CAMBIADOS 
+                            //  PARA QUE NO PUEDA VOLVER A REGISTRAR UN CAMBIO DE UN ARTICULO DEL QUE YA SE HA ECHO EL CAMBIO
+                                $stmt7 = $conn->prepare("UPDATE uni_salida_articulo SET id_articulo = :artCambio 
+                                                            WHERE id_articulo = :idArticulo");
+                                
+                                $i=0;
+                                foreach ($articulosSalida as $item) {
+                                    $stmt7->execute([
+                                        ':artCambio' => $item['id_articulo'],
+                                        ':idArticulo' => $articulosEntrada[$i],
+                                    ]);
+                                    $i++;
+                                }
                             
 
                         $conn->commit();
