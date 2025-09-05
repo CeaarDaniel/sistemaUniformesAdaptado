@@ -23,7 +23,7 @@ include('./api/conexion.php');
                     <label id="nombreEmpleado" class="ms-2 my-0 fw-bold" for="empleadoInput"></label>
                 </div>
                 <div class="col-4 col-md-auto mb-4">
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#firmaModal">
                         <i class="bi bi-plus-lg"></i>
                     </button>
                 </div>
@@ -63,6 +63,27 @@ include('./api/conexion.php');
                 </table>
             </div>
         </div>
+
+<!--
+        <div class="wrapper" style="px-1">
+            <form class="formulario" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
+                    <div class="card-body text-center">
+                        <canvas id='canvas' style='border: 1px solid #CCC;'>
+                            <p>Tu navegador no soporta canvas</p>
+                        </canvas>
+                    </div>
+
+                    <div class="text-center">
+                        <img id="preview" alt="Vista previa de la firma" />
+                    </div>
+
+                    <div class="text-center p-2" style="width:100%">
+                        <button id="btnLimpiarTrazo" type='button' class="btn btn-danger"><i class='fa fa-trash'></i> Borrar</button>
+                        <button id="btnGuardarTrazo" type='button' class="btn btn-success"><i class='fas fa-file-signature'></i> Firmar</button>
+                    </div>
+            </form>
+        </div> 
+    -->
         
         <!-- Modal para selección de artículos -->
         <div class="modal fade" id="seleccionarArticuloModal">
@@ -212,28 +233,22 @@ include('./api/conexion.php');
             <div class="modal fade" id="firmaModal">
                 <div class="modal-dialog modal-fullscreen">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="text-center textDescuentos">REGISTRO DE FIRMA DE ACEPTACION DE DESCUENTOS</h5>
-                            <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
-                        </div>
                         <div class="modal-body">
-                            <div class="wrapper" style="px-1">
-                                <form class="formulario" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
-                                        <div class="card-body text-center">
-                                            <canvas id='canvas' style='border: 1px solid #CCC;'>
-                                                <p>Tu navegador no soporta canvas</p>
-                                            </canvas>
-                                        </div>
+                            <div class="padreCanvas p-0">
+                                <div class="text-center p-0">
+                                    <canvas id='canvas' class="p-0" style='border: 1px solid #CCC;'>
+                                        <p>Tu navegador no soporta canvas</p>
+                                    </canvas>
+                                </div>
 
-                                        <div class="text-center">
-                                            <img id="preview" alt="Vista previa de la firma" />
-                                        </div>
+                                <div class="text-center">
+                                    <img id="preview" alt="Vista previa de la firma" />
+                                </div>
 
-                                        <div class="text-center p-2" style="width:100%">
-                                            <button type='button' class="btn btn-danger" onclick='LimpiarTrazado()'><i class='fa fa-trash'></i> Borrar</button>
-                                            <button type='button' class="btn btn-success" onclick='GuardarTrazado()'><i class='fas fa-file-signature'></i> Firmar</button>
-                                        </div>
-                                </form>
+                                <div class="text-center p-2" style="width:100%">
+                                    <button id="btnLimpiarTrazo" type='button' class="btn btn-danger"><i class='fa fa-trash'></i> Borrar</button>
+                                    <button id="btnGuardarTrazo" type='button' class="btn btn-success"><i class='fas fa-file-signature'></i> Firmar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -15,7 +15,7 @@
             @media (max-width: 700px) {
                 canvas{
                     width:80%; 
-                    max-height:280px;
+                    height:40vw;
                 }
             }
 

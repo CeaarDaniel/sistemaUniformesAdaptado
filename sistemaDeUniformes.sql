@@ -392,12 +392,6 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
 	--LA SALIDA POR RENOVACION DE UNIFORME EN ALGUNOS SI ESTA EL REGISTRO Y EN OTROS NO TAL VEZ SEA UNA FALLA  Y EN EL REPORTE NO SE MUESTRA (6)
 	--revisar la firma para la impresión de documento con id 109-7.png del SCUniformes
 
-select* from uni_entrada order by id_entrada
-select* from uni_salida order by id_salida
-select* from uni_venta order by 
-
-select* from uni_salida_articulo order by id_salida
-select* from uni_entrada_articulo order by id_entrada
 
 
 SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.precio, (usa.cantidad * usa.precio) as total  
@@ -405,30 +399,22 @@ SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.
                                 left join uni_salida_articulo as usa on us.id_salida = usa.id_salida 
                                 left join uni_articulos as ua on usa.id_articulo = ua.id_articulo
                                 left join uni_talla as ut on ua.id_talla = ut.id_talla
-                            where us.id_salida = 8586
-
-	delete from uni_salida where id_salida > 8586
-	delete from uni_salida_articulo where id_salida > 8586
+                            where us.id_salida = 7491
 
 
-UPDATE ua
-    SET ua.cantidad = ua.cantidad + upa.cantidad
-        FROM uni_articulos ua
-            INNER JOIN uni_pedido_articulo upa ON ua.id_articulo = upa.id_articulo
-                WHERE upa.id_pedido =  :idPedido
 
-select ea.id_articulo, ea.cantidad from uni_entrada_articulo ea inner join uni_entrada e on ea.id_entrada = e.id_entrada
-		where e.id_entrada = 141;
+	select ue.id_entrada, ue.fecha, ea.id_articulo, ea.cantidad from uni_entrada ue inner join uni_entrada_articulo ea on ue.id_entrada = ea.id_entrada where tipo_entrada = 5 ORDER BY id_entrada
 
-select sa.* from uni_salida_articulo sa inner join uni_salida s on sa.id_salida = s.id_salida
-		where s.id_salida = 8597;
+	--SALIDA ORIGINAz
+	select us.id_salida, us.fecha, us.id_empleado, sa.id_articulo, sa.cantidad, us.tipo_salida from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where us.id_salida < 26 and id_empleado = 1158 order by id_salida
 
-UPDATE ua SET ua.cantidad = ua.cantidad + ea.cantidad 
-        from uni_articulos ua inner join uni_entrada_articulo ea on ua.id_articulo = ea.id_articulo
-            WHERE ea.id_entrada = 141
+	--SALIDA DE CAMBIO
+	select us.id_salida, us.fecha, us.id_empleado, sa.id_articulo, sa.cantidad from uni_salida us inner join uni_salida_articulo sa on us.id_salida = sa.id_salida where tipo_salida = 5 order by id_salida
 
-UPDATE ua SET ua.cantidad = ua.cantidad - sa.cantidad 
-        from uni_articulos ua inner join uni_salida_articulo sa on ua.id_articulo = sa.id_articulo
-            WHERE sa.id_salida = 8597;
+	--ENTRADA DE CAMBIO
+	select ue.id_entrada, ue.fecha, ea.id_articulo, ea.cantidad from uni_entrada ue inner join uni_entrada_articulo ea on ue.id_entrada = ea.id_entrada where fecha = '2021-05-18 10:55:33.000'
 
-	select* from uni_articulos
+
+
+select* from uni_venta where id_salida = '149'
+select* from uni_venta_articulo where id_venta = '33'

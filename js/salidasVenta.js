@@ -7,7 +7,11 @@
         let tipoNomina= '';
         var isEmpleado = false;
         const descuentosModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
+        const firmaModal = new bootstrap.Modal(document.getElementById("firmaModal"));
 
+
+        var btnLimpiarTrazo = document.getElementById('btnLimpiarTrazo');
+        var btnGuardarTrazo = document.getElementById('btnGuardarTrazo');
     
     // Fuente de datos inicial
         var  btnAgregarArticulo = document.getElementById('btnAgregarArticulo');
@@ -82,6 +86,9 @@
         selectGenero.addEventListener('change', actualizarArticulo);
         confirmarBtn.addEventListener('click', validarSalida);
         btnModalDescuentos.addEventListener('click', registrarSalida)
+
+        btnLimpiarTrazo.addEventListener('click', LimpiarTrazado);
+        btnGuardarTrazo.addEventListener('click', GuardarTrazado);
     
 
     function actualizarVista() {
@@ -363,7 +370,7 @@ actualizarVista();
 
 
 /*FUNCIONES PARA LA VALIDACION Y CREACION DE LAS FIRMAS */
-  /* Variables de Configuracion */
+    /* Variables de Configuracion */
         var idCanvas = 'canvas';
         var idForm = 'formCanvas';
         var inputImagen = 'imagen';
@@ -384,11 +391,11 @@ actualizarVista();
         IniciarDibujo();
         ajustarCanvas();
 
-        /* Esperamos el evento load */
-        window.addEventListener('load', IniciarDibujo, false);
+        
+        //window.addEventListener('load', IniciarDibujo, false);
 
         window.addEventListener('resize', () => {
-            ajustarCanvas(pizarraCanvas);
+            ajustarCanvas();
         });
 
 
@@ -569,6 +576,18 @@ actualizarVista();
             // Establece el tamaño interno en píxeles reales
             canvas.width = ancho;
             canvas.height = alto;
+
+
+            console.log("Ancho canvas: ",canvas.width)
+            console.log("Ancho visual: ",estilo.width )
+
+            console.log("Alto canvas: ",canvas.height)
+            console.log("Alto visual:",estilo.height)
         }
+
+        $('#firmaModal').on('shown.bs.modal', function () {
+            IniciarDibujo();
+            ajustarCanvas();
+        });
 
 /*FIN DE LAS FUNCIONES PARA LA VALIDACION Y CREACION DE LAS FIRMAS*/

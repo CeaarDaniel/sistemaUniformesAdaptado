@@ -625,14 +625,14 @@ tbody .editColum {
 }
 
 /*Fuen de estilos CANVAS*/
-    @media (max-width: 700px) {
+    @media screen and (max-width: 700px) {
         canvas {
             width: 80%;
-            max-height: 280px;
+            height: 40vw;
         }
     }
 
-    @media (min-width: 701px) {
+    @media screen and (min-width: 701px) {
         canvas {
             width: 650px;
             height: 280px;

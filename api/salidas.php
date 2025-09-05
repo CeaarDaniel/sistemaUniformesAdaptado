@@ -11,7 +11,7 @@ $opcion= $_POST['opcion'];
 //GUARDAR EL REGISTRO DE LA FIRMA COMO IMAGEN
 if($opcion == '1'){
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../imagenes/';
+        $uploadDir = '../imagenes/firmas/';
         $uploadFile = $uploadDir . basename($_FILES['image']['name']);
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) 
