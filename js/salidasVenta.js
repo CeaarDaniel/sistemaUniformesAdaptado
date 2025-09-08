@@ -5,10 +5,10 @@
         let datos = []
         let total = 0;
         let tipoNomina= '';
+        var idVenta = '';
         var isEmpleado = false;
         const descuentosModal = new bootstrap.Modal(document.getElementById("descuentosModal"));
         const firmaModal = new bootstrap.Modal(document.getElementById("firmaModal"));
-
 
         var btnLimpiarTrazo = document.getElementById('btnLimpiarTrazo');
         var btnGuardarTrazo = document.getElementById('btnGuardarTrazo');
@@ -37,6 +37,7 @@
             total=0;
             empleado.value= '';
             nombreEmpleado.textContent ="";
+            idVenta = '';
             $('#costoTotalVenta').text(total)
             actualizarVista();
             ocultarMostrarTabla();
@@ -348,18 +349,20 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        alert(data.response)
-                        datos= [];
-                        empleado.value= '';
-                        nombreEmpleado.textContent ="";
-                        isEmpleado = false;
-                        total = 0;
-                        $('#costoTotalVenta').text(total);
-                        actualizarVista();
-                        ocultarMostrarTabla();
-                        $('#cantidadDescuentos').val('')
-                         descuentosModal.hide();
-                        console.log(data)
+                        if(data.idVenta){
+                            idVenta = data.idVenta
+                            datos= [];
+                            nombreEmpleado.textContent ="";
+                            isEmpleado = false;
+                            total = 0;
+                            $('#costoTotalVenta').text(total);
+                            actualizarVista();
+                            ocultarMostrarTabla();
+                            $('#cantidadDescuentos').val('');
+                            descuentosModal.hide();
+                            firmaModal.show();
+                         }
+
                     })
                     .catch((error) => {
                         console.log(error);
@@ -376,8 +379,8 @@ actualizarVista();
         var inputImagen = 'imagen';
         var estiloDelCursor = 'crosshair';
         var colorDelTrazo = '#000000';
-        var colorDeFondo = '#ffffff';
-        var grosorDelTrazo = 2;
+        var colorDeFondo = '#ffffffff';
+        var grosorDelTrazo = 10;
 
         /* Variables necesarias */
         var contexto = null;
@@ -405,8 +408,8 @@ actualizarVista();
             contexto = pizarraCanvas.getContext('2d');
             //contexto.fillStyle = colorDeFondo;
             //contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
-            contexto.strokeStyle = colorDelTrazo;
-            contexto.lineWidth = grosorDelTrazo;
+            contexto.strokeStyle = 'red';
+            contexto.lineWidth = 5;
             contexto.lineJoin = 'round';
             contexto.lineCap = 'round';
             /* Capturamos los diferentes eventos */
@@ -418,6 +421,16 @@ actualizarVista();
             pizarraCanvas.addEventListener('touchmove', TouchMove, false); // arrastras pantalla tactil
             pizarraCanvas.addEventListener('touchend', TouchEnd, false); // fin tocar pantalla dentro de la pizarra
             pizarraCanvas.addEventListener('touchleave', TouchEnd, false); // fin tocar pantalla fuera de la pizarra
+
+             //const canvas = document.getElementById('canvas');
+             //const ctx = canvas.getContext('2d');
+
+             // Cambiar el grosor de la línea
+            // ctx.lineWidth = 5; // Por ejemplo, 5 píxeles
+
+             // Cambiar color de la línea
+             //ctx.strokeStyle = 'blue';
+
         }
 
         function MouseDown(e) {
@@ -488,7 +501,7 @@ actualizarVista();
             contexto = document.getElementById('canvas').getContext('2d');
             contexto.clearRect(0, 0, ancho, alto);
 
-            //contexto.fillStyle = colorDeFondo;
+            contexto.fillStyle = colorDeFondo;
             //contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
         }
 
@@ -496,22 +509,25 @@ actualizarVista();
         function GuardarTrazado() {
                 const canvas = document.getElementById('canvas');
 
-                 if (isCanvasEmpty(canvas)) {
-                        alert("El canvas está vacío");
-                    } 
+                 if (isCanvasEmpty(canvas))
+                    alert("Firma no valida");
+
+                else 
+                    if(!idVenta) console.log("Falta registro de ID de venta");
 
                 else {
-                        alert("El canvas tiene contenido");
-                    }
-
                 const image = canvas.toDataURL('imagenes/png'); // También puedes usar 'image/jpeg'
 
                 //SE TRANFORMA A BLOB LA IMAGEN GENERADA
                 const imageBlob = dataURLtoBlob(image);
                 
                 const formData = new FormData();
-                formData.append('image', imageBlob, 'firma.png'); // 'image' será la clave en PHP
+                formData.append('image', imageBlob, empleado.value+'-'+idVenta+'.png'); // 'image' será la clave en PHP
                 formData.append('opcion', 1);
+                formData.append('idVenta',idVenta);
+                formData.append('NN',empleado.value);
+
+
 
                 fetch('./api/salidas.php', { //CAMBIAR ESTA RUTA A LA CARPETA DE LAS FIRMAS
                     method: 'POST',
@@ -519,7 +535,10 @@ actualizarVista();
                 })
                 .then(response => response.text())
                 .then(result => {
-                    console.log('Respuesta del servidor:', result);
+                     console.log('Respuesta del servidor:', result);
+                     empleado.value= '';
+                     idVenta = '';
+                     firmaModal.hide();
                 })
                 .catch(error => {
                     console.error('Error al enviar la imagen:', error);
@@ -528,7 +547,8 @@ actualizarVista();
 
              
                 //Mostrar la imagen como vista previa
-                document.getElementById('preview').src = image;
+                document.getElementById('preview').src = image; 
+            }
 
                 // Opción: descargar la imagen automáticamente
                 //const link = document.createElement('a');
@@ -577,12 +597,17 @@ actualizarVista();
             canvas.width = ancho;
             canvas.height = alto;
 
+            let contexto = canvas.getContext('2d');
+            //contexto.fillStyle = colorDeFondo;
+            //contexto.fillRect(0, 0, anchoCanvas, altoCanvas);
+            contexto.lineWidth = 5;
 
-            console.log("Ancho canvas: ",canvas.width)
-            console.log("Ancho visual: ",estilo.width )
 
-            console.log("Alto canvas: ",canvas.height)
-            console.log("Alto visual:",estilo.height)
+            //console.log("Ancho canvas: ",canvas.width)
+            //console.log("Ancho visual: ",estilo.width )
+
+           //console.log("Alto canvas: ",canvas.height)
+            //console.log("Alto visual:",estilo.height)
         }
 
         $('#firmaModal').on('shown.bs.modal', function () {

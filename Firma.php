@@ -58,7 +58,7 @@
             var estiloDelCursor = 'crosshair';
             var colorDelTrazo = '#000000';
             var colorDeFondo = '#ffffff';
-            var grosorDelTrazo = 2;
+            var grosorDelTrazo = 10;
 
         /* Variables necesarias */
         var contexto = null;

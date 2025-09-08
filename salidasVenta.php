@@ -23,7 +23,7 @@ include('./api/conexion.php');
                     <label id="nombreEmpleado" class="ms-2 my-0 fw-bold" for="empleadoInput"></label>
                 </div>
                 <div class="col-4 col-md-auto mb-4">
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#firmaModal">
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#seleccionarArticuloModal">
                         <i class="bi bi-plus-lg"></i>
                     </button>
                 </div>
@@ -64,7 +64,7 @@ include('./api/conexion.php');
             </div>
         </div>
 
-<!--
+    <!--
         <div class="wrapper" style="px-1">
             <form class="formulario" method="post" autocomplete="off" enctype="multipart/form-data" id="formCanvas">
                     <div class="card-body text-center">
@@ -233,10 +233,14 @@ include('./api/conexion.php');
             <div class="modal fade" id="firmaModal">
                 <div class="modal-dialog modal-fullscreen">
                     <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="padreCanvas p-0">
-                                <div class="text-center p-0">
-                                    <canvas id='canvas' class="p-0" style='border: 1px solid #CCC;'>
+                        <div class="modal-header">
+                            <h5 class="text-center textDescuentos">FIRMA DE ACEPTACION DE DESCUENTO</h5>
+                            <button class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-close" style="background-color:none; color:white; font-size:18px;"></i></button>
+                        </div>
+                        <div class="modal-body px-0 mx-0">
+                            <div class="padreCanvas px-0 mx-0">
+                                <div class="text-center px-0 mx-0">
+                                    <canvas id='canvas' class="px-0" style='border: 1px solid #CCC;'>
                                         <p>Tu navegador no soporta canvas</p>
                                     </canvas>
                                 </div>

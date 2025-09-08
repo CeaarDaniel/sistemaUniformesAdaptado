@@ -9,22 +9,41 @@ include('./conexion.php');
 $opcion= $_POST['opcion'];
 
 //GUARDAR EL REGISTRO DE LA FIRMA COMO IMAGEN
-if($opcion == '1'){
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../imagenes/firmas/';
-        $uploadFile = $uploadDir . basename($_FILES['image']['name']);
+if($opcion == '1'){ 
+     $idVenta = (isset($_POST['idVenta']) && !empty($_POST['idVenta'])) ? $_POST['idVenta'] : null; 
+     $NN = (isset($_POST['NN']) && !empty($_POST['NN'])) ? $_POST['NN'] : null; 
+     $nombreFirma= $NN."-".$idVenta.".png";
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) 
-            $response = array('ok' => 'Se ha registrado la firma');
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = '../imagenes/firmas/';
+            $uploadFile = $uploadDir . basename($_FILES['image']['name']);
+
+            try {
+                $conn->beginTransaction();
+                    $stmt = $conn->prepare("UPDATE uni_venta SET firma= :firma WHERE id_venta = :idVenta");
+                    $stmt->execute([
+                            ':firma' => $nombreFirma,
+                            ':idVenta' => $idVenta
+                        ]);
+                $conn->commit();
+
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                    $response = array('response' => 'Se ha registrado la firma');
+                }
+
+                else 
+                     throw new Exception("Error al mover el archivo");
+
+            } catch (Exception $e) {
+                $conn->rollBack(); 
+                $respuesta = array("response" => "error: ".$e->getMessage());
+            } 
+        } 
 
         else 
-            $response = array('error' => 'Error al mover el archivo');
-         
-    } 
-    else 
-        $response = array('error' => 'No se recibió ninguna imagen');
+            $response = array('response' => 'No se recibió ninguna imagen');
 
-  echo json_encode($response);
+    echo json_encode($response);
 }
 
 //OBTENER GENEROS Y CATEGORIAS DEL BARCODE
@@ -169,23 +188,6 @@ if($opcion == '3'){
             echo json_encode($respuesta);
         }
 
-   else 
-        if($opcion== '5')
-            {
-                $veces = $_POST['numDescuentos'];
-                $tipoNomina = $_POST['tipoNomina'];
-                $respuesta = obtenerFechas($veces, $tipoNomina);
-
-                echo json_encode($respuesta[0]);
-                echo "\n";
-                echo json_encode($respuesta[1] ?? null);
-                echo "\n";
-                echo json_encode($respuesta[2] ?? null);
-                echo "\n";
-                echo json_encode($respuesta[3] ?? null); 
-
-            }
-
     //Funcion para el proceso adicional del registro de la salida cunado es una salida por venta
     function registroVenta($fechaV, $idSalida, $conn){
         $idUsuario = (isset($_POST['idUsuario']) && !$_POST['idUsuario']=='') ? $_POST['idUsuario'] : NULL;
@@ -296,7 +298,8 @@ if($opcion == '3'){
                                  $ventaArt->bindparam(':idSalida', $idSalida);
                      
                                  if($ventaArt->execute())
-                                     $respuesta = array('response' => 'Venta registrada');
+                                     $respuesta = array('response' => 'Venta registrada',
+                                                        'idVenta' => $idVenta);
 
                                  else 
                                     $respuesta = array("response" => $ventaArt->errorInfo()[2]);
