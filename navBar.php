@@ -72,9 +72,11 @@
                         <!-- Avatar y Cerrar sesión -->
                         <li class="nav-item">
                             <div class="text-white d-flex align-items-center justify-content-center p-0" 
-                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="MIGUEL ALEJANDRO GOMEZ ASPEITIA"
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                data-bs-title=<?php echo $_SESSION['nombreUsuario']?>
                                 style="background-color: #1976d2; border-radius:50%; width: 40px; height: 40px; display: inline-block;">
-                                <b style="font-size:18px;">M</b>
+                                <b style="font-size:18px;"><?php echo strtoupper($_SESSION['nombreUsuario'][0])?></b>
                             </div>
                         </li>
                         <li class="nav-item" onclick ="logOut()">

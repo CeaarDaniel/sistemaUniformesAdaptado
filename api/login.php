@@ -25,12 +25,12 @@ $opcion = $_POST['opcion'];
          $stmt->execute();
 
 
-        if($stmt->fetch(PDO::FETCH_ASSOC)){
+        if($fila = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $response = array('success' => true);
                 session_start();
                 $_SESSION['loggedin'] = true;
                 //$_SESSION['idUsuario'] = 
-                //$_SESSION['nombreUsuario'] = 
+                $_SESSION['nombreUsuario'] = $fila['Nombre'];
                 //$_SESSION['rolUsuario'] = 
         }
 
