@@ -77,7 +77,7 @@
                                 <b style="font-size:18px;">M</b>
                             </div>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" onclick ="logOut()">
                             <a class="nav-link p-0" style="font-size:25px;">
                                 <i class="fas fa-sign-out-alt"></i>
                             </a>

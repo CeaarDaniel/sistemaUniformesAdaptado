@@ -21,7 +21,7 @@ use beyonz;
 	select* from uni_entrada
 
 --Usuarios del sistema de uniformes
-select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
+select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
 
 --Obtener unicamente los tipos de tallas sin repetir los valores
 SELECT 
@@ -414,7 +414,6 @@ SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.
 	--ENTRADA DE CAMBIO
 	select ue.id_entrada, ue.fecha, ea.id_articulo, ea.cantidad from uni_entrada ue inner join uni_entrada_articulo ea on ue.id_entrada = ea.id_entrada where fecha = '2021-05-18 10:55:33.000'
 
+delete from uni_venta_articulo where id_venta >2426
 
-
-select* from uni_venta where id_salida = '149'
-select* from uni_venta_articulo where id_venta = '33'
+select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 

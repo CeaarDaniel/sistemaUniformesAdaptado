@@ -1,3 +1,30 @@
+<?php 
+session_start();
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+include('./api/conexion.php'); 
+
+
+if (!isset($_SESSION['loggedin'])) {
+    if (!headers_sent())
+    { 
+        header('Location: ./login.php');   
+    }
+
+   else
+       {  
+       echo '<script type="text/javascript">';
+       echo 'window.location.href="login.php";';
+       echo '</script>';
+       echo '<noscript>';
+       echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+       echo '</noscript>';
+   }
+}
+?>
+
 <!DOCTYPE html>
 <html dir="ltr" lang="es">
 <head>
@@ -132,71 +159,89 @@
                 xhttp.send('id=' + id);
         }
 
+        //Funcion para obtener la pagina actual
+        function obtenerSeccionActual() {
+            const hash = location.hash.split('/');
 
-    //Funcion para obtener la pagina actual
-    function obtenerSeccionActual() {
-      const hash = location.hash.split('/');
+                if(hash[hash.length - 1] == '' || hash[hash.length - 1] == null || hash[hash.length - 1]==' ')
+                    hash[hash.length - 1] ='dashboard';
 
-        if(hash[hash.length - 1] == '' || hash[hash.length - 1] == null || hash[hash.length - 1]==' ')
-            hash[hash.length - 1] ='dashboard';
+            return hash[hash.length - 1]; 
+        }
 
-      return hash[hash.length - 1]; 
-    }
+        // Función que carga contenido y cambia la URL
+        function cargarRuta(pagina, id) {
+                if (!id) id = 0;
+                
 
-    // Función que carga contenido y cambia la URL
-    function cargarRuta(pagina, id) {
+                const seccionActual = obtenerSeccionActual();
+                    if (seccionActual === pagina) 
+                        return;
+                    
 
-        if (!id) id = 0;
-        
+            // Cambiar la URL (sin recargar)
+            history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
 
-        const seccionActual = obtenerSeccionActual();
-            if (seccionActual === pagina) 
-                return;
-            
-
-      // Cambiar la URL (sin recargar)
-      history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
-
-      var animacion = document.querySelector("#mainContent");
-      animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-
-        setTimeout(function () {
-            navegar(pagina, id,'mainContent')
+            var animacion = document.querySelector("#mainContent");
             animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-        }.bind(this), 400);
-    }
 
-    // Detectar el botón "atrás" o "adelante" del navegador
-    window.addEventListener("popstate", (event) => {
-        const nuevaSeccion = obtenerSeccionActual();
-        var animacion = document.querySelector("#mainContent");
+                setTimeout(function () {
+                    navegar(pagina, id,'mainContent')
+                    animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+                }.bind(this), 400);
+        }
 
-        animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-        setTimeout(function () {
-            navegar(nuevaSeccion,'0','mainContent')
+        // Detectar el botón "atrás" o "adelante" del navegador
+        window.addEventListener("popstate", (event) => {
+            const nuevaSeccion = obtenerSeccionActual();
+            var animacion = document.querySelector("#mainContent");
+
             animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-        }.bind(this), 400);
+            setTimeout(function () {
+                navegar(nuevaSeccion,'0','mainContent')
+                animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+            }.bind(this), 400);
 
-        document.querySelectorAll('.modal.show').forEach(modalEl => {
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
+            document.querySelectorAll('.modal.show').forEach(modalEl => {
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
+
+            // Eliminar cualquier backdrop que quedó
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style = '';
+
         });
 
-        // Eliminar cualquier backdrop que quedó
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style = '';
+        // Cargar la página correcta al cargar la SPA
+        window.addEventListener("DOMContentLoaded", () => {
+            //const ruta = location.pathname.slice(1) || "inicio";
+            const seccion = obtenerSeccionActual();
+            navegar(seccion,'0','mainContent')
+        });
 
-    });
+        function logOut(){
+            let formDataArt = new FormData;
+            formDataArt.append('opcion', 2);
 
-    // Cargar la página correcta al cargar la SPA
-    window.addEventListener("DOMContentLoaded", () => {
-        //const ruta = location.pathname.slice(1) || "inicio";
-        const seccion = obtenerSeccionActual();
-        navegar(seccion,'0','mainContent')
-    });
+                //console.log('total:'+total+' Numero de descuentos'+Number($('#cantidadDescuentos').val())+'Tipo de nomina'+tipoNomina)
+
+                //numDescuentos = $('#cantidadDescuentos').val();
+                fetch("./api/login.php", {
+                    method: "POST",
+                    body: formDataArt,
+                })
+                    .then((response) => response.text())
+                    .then((data) => {
+                        window.location.href = "./login.php";
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        }
     </script>
 </body>
 </html>

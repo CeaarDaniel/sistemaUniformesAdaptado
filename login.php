@@ -1,3 +1,34 @@
+<?php 
+session_start();
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+include('./api/conexion.php'); 
+
+
+if (isset($_SESSION['loggedin'])) {
+  
+    if (!headers_sent())
+    { 
+        header('Location: ./');   
+    }
+
+   else
+       {  
+       echo '<script type="text/javascript">';
+       echo 'window.location.href="login.php";';
+       echo '</script>';
+       echo '<noscript>';
+       echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+       echo '</noscript>';
+   }
+} 
+
+$usuarios = $conn->prepare("select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID"); 
+$usuarios->execute();
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,13 +87,13 @@
                     <div class="mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="usuarioInput" 
-                                   placeholder="Usuario"
-                                   autocomplete="off"
-                                   aria-label="Usuario">
-                            <datalist id="empleadosList"></datalist>
+                            <select class="form-control" id="usuarioInput" placeholder="Usuario" autocomplete="off">
+                                <option class="text-left" value="" selected> --- USUARIO ---</option>
+                                    <?php 
+                                        while ($usuario = $usuarios->fetch(PDO::FETCH_ASSOC)) 
+                                            echo '<option value="'.$usuario['id_usuario'].'">'.$usuario['Nombre'].'</option>';
+                                    ?>
+                            </select>
                         </div>
                     </div>
 
@@ -100,54 +131,6 @@
 </div>
 
 <script>
-    let state = {
-        empleados: [],
-        selectedUser: null,
-        isLoading: false
-    };
-
-    // Configuración inicial
-    document.addEventListener('DOMContentLoaded', async () => {
-        await loadEmployees();
-        setupUserSearch();
-    });
-
-    async function loadEmployees() {
-        // Simular carga de empleados
-        state.empleados = [
-            { ID: 1, Nombre: "Juan Pérez" },
-            { ID: 2, Nombre: "María García" },
-            { ID: 3, Nombre: "Pedro López" }
-        ];
-        updateDatalist();
-    }
-
-    function setupUserSearch() {
-        const usuarioInput = document.getElementById('usuarioInput');
-        const datalist = document.getElementById('empleadosList');
-        
-        usuarioInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = state.empleados.filter(emp => 
-                emp.Nombre.toLowerCase().includes(searchTerm)
-            );
-            
-            datalist.innerHTML = filtered.map(emp => 
-                `<option value="${emp.Nombre}" data-id="${emp.ID}">`
-            ).join('');
-            
-            // Autocompletar si hay una coincidencia exacta
-            const exactMatch = filtered.find(emp => 
-                emp.Nombre.toLowerCase() === searchTerm
-            );
-            
-            if(exactMatch) {
-                state.selectedUser = exactMatch;
-                document.getElementById('passwordInput').focus();
-            }
-        });
-    }
-
     function togglePasswordVisibility() {
         const passwordInput = document.getElementById('passwordInput');
         const toggleIcon = document.getElementById('togglePassword');
@@ -161,50 +144,67 @@
         }
     }
 
-    async function login() {
+    function login() {
         const loginButton = document.getElementById('loginButton');
         const errorBanner = document.getElementById('errorBanner');
         const errorMessage = document.getElementById('errorMessage');
+        let password = document.getElementById('passwordInput')
+        let empleado = document.getElementById('usuarioInput')
+        let formDataArt = new FormData;
+        formDataArt.append('opcion', 1);
         
         // Validación básica
-        if(!state.selectedUser || !document.getElementById('passwordInput').value) {
+        if( !empleado.value || !password.value) {
             errorMessage.textContent = "Seleccione un usuario y escriba su contraseña";
             errorBanner.classList.remove('d-none');
             return;
         }
 
-        // Mostrar loading
-        loginButton.innerHTML = `
-            <span class="spinner-border spinner-border-sm" 
-                role="status" 
-                aria-hidden="true"></span>
-            Verificando...
-        `;
-        loginButton.disabled = true;
+        else {
+                //Ocultar mensaje de error
+                errorBanner.classList.add('d-none');
+                // Mostrar loading
+                loginButton.innerHTML = `
+                    <span class="spinner-border spinner-border-sm" 
+                        role="status" 
+                        aria-hidden="true"></span>
+                    Verificando...
+                `;
+                loginButton.disabled = true;  
+                formDataArt.append('empleado', empleado.value);
+                formDataArt.append('password', password.value);
+                    setTimeout(() => {
+                        fetch("./api/login.php", {
+                                method: "POST",
+                                body: formDataArt,
+                            })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                    if(data.success) {
+                                        location.href = './'; // Redirección
+                                        // Restaurar botón
+                                        loginButton.innerHTML = "Iniciar sesión";
+                                        loginButton.disabled = false;
+                                    } 
+                                    else {
+                                        errorMessage.textContent = "Credenciales incorrectas";
+                                        errorBanner.classList.remove('d-none');
+                                        // Restaurar botón
+                                        loginButton.innerHTML = "Iniciar sesión";
+                                        loginButton.disabled = false;
+                                    }
 
-        // Simular llamada API
-        setTimeout(async () => {
-            // Aquí iría la llamada real al servidor
-            const success = Math.random() > 0.5; // Simular éxito/fallo
-            
-            if(success) {
-                window.location.href = '/dashboard'; // Redirección
-            } else {
-                errorMessage.textContent = "Credenciales incorrectas";
-                errorBanner.classList.remove('d-none');
-            }
-            
-            // Restaurar botón
-            loginButton.innerHTML = "Iniciar sesión";
-            loginButton.disabled = false;
-        }, 700);
-    }
-
-    function updateDatalist() {
-        const datalist = document.getElementById('empleadosList');
-        datalist.innerHTML = state.empleados.map(emp => 
-            `<option value="${emp.Nombre}" data-id="${emp.ID}">`
-        ).join('');
+                                    //console.log(data);
+                                })
+                        .catch((error) => {
+                                //console.log(error);
+                                errorMessage.textContent = error;
+                                errorBanner.classList.remove('d-none');
+                                loginButton.innerHTML = "Iniciar sesión";
+                                loginButton.disabled = false;
+                        })
+                    }, 400);
+        }
     }
 </script>
 </body>
