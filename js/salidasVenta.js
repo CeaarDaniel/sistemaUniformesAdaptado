@@ -433,6 +433,22 @@ actualizarVista();
 
         }
 
+        function getRelativeCoords(event, canvas) {
+            const rect = canvas.getBoundingClientRect();
+
+            let x, y;
+            if (event.touches && event.touches.length > 0) {
+                x = event.touches[0].clientX - rect.left;
+                y = event.touches[0].clientY - rect.top;
+            } else {
+                x = event.clientX - rect.left;
+                y = event.clientY - rect.top;
+            }
+
+            return { x, y };
+        }
+
+/*
         function MouseDown(e) {
             flag = true;
             contexto.beginPath();
@@ -440,12 +456,28 @@ actualizarVista();
             valY = e.pageY - posicionY(pizarraCanvas);
             contexto.moveTo(valX, valY);
         }
+*/
+        function MouseDown(e) {
+            flag = true;
+            contexto.beginPath();
+
+            const { x, y } = getRelativeCoords(e, pizarraCanvas);
+
+            valX = x;
+            valY = y;
+
+            contexto.moveTo(valX, valY);
+
+            // Previene scroll en dispositivos móviles
+            if (e.cancelable) e.preventDefault();
+        }
 
         function MouseUp(e) {
             contexto.closePath();
             flag = false;
         }
 
+        /*
         function MouseMove(e) {
             if (flag) {
                 contexto.beginPath();
@@ -456,6 +488,16 @@ actualizarVista();
                 contexto.closePath();
                 contexto.stroke();
             }
+        }*/
+
+        function MouseMove(e) {
+            if (!flag) return;
+
+            const coords = getRelativeCoords(e, pizarraCanvas);
+            contexto.lineTo(coords.x, coords.y);
+            contexto.stroke();
+
+            e.preventDefault(); // Evita scroll en móviles
         }
 
         function TouchMove(e) {
