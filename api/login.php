@@ -14,7 +14,7 @@ $opcion = $_POST['opcion'];
         $password = isset($_POST['password']) ? $_POST['password'] : null;
                                 
 
-        $sql="SELECT rs.id_usuario, d.Nombre, d.passwrd FROM uni_roles_sesion AS rs 
+        $sql="SELECT rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol FROM uni_roles_sesion AS rs 
                         inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID
                     WHERE rs.id_usuario = :empleado and d.passwrd = :passw";
 
@@ -29,9 +29,9 @@ $opcion = $_POST['opcion'];
                 $response = array('success' => true);
                 session_start();
                 $_SESSION['loggedin'] = true;
-                //$_SESSION['idUsuario'] = 
+                $_SESSION['idUsuario'] = $fila['id_usuario']; 
                 $_SESSION['nombreUsuario'] = $fila['Nombre'];
-                //$_SESSION['rolUsuario'] = 
+                $_SESSION['rolUsuario'] = $fila['id_rol'];
         }
 
         else 

@@ -1,0 +1,56 @@
+http://mx-server04:8080/SistemaSG/#/uniformes/dashboard
+
+USUARIO 1 ADMINISTRADOR TODAS LAS RUTAS
+
+Rutas permitidas usuario 2: 
+Consultas ventas
+Consultas de reportes
+Almacén sin botón de editar almacen
+
+Rutas permitidas usuario 3:
+SALIDAS
+	 -Entrega de uniforme
+ 	 -venta de uniforme
+ 	 -Entrega de uniforme usado
+	 -Reposicion de uniforme
+	 -Renovación de uniforme
+CONSULTAS
+	-De salidas
+	-De ventas
+	-De reportes 
+	-Cambios
+ALMACEN sin botón de editar almacén
+
+Rutas permitidas para el usuario 4:
+ALTAS
+	-De artículos
+	-De categorías
+ENTRADAS
+	TODAS LAS RUTAS
+CONSULTAS
+	-De reportes
+ALMACEN sin botón de editar almacén
+PEDIDOS
+
+Rutas permitidas para el usuario 6
+ENTRADAS
+	-Entradas por pedido
+	-Entradas de uniforme usado
+SALIDAS
+	-Entrega de uniforme
+	-Venta de uniforme
+	-Entrega de uniforme usado
+	-Reposición de uniforme
+	-Renovación de uniforme
+
+CONSULTAS
+	-De salidas
+	-De ventas
+	-De reportes
+ALMACEN sin botón de editar almacén
+PEDIDOS
+ 
+
+ 
+
+

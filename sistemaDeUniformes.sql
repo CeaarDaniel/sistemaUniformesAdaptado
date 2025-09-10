@@ -21,7 +21,7 @@ use beyonz;
 	select* from uni_entrada
 
 --Usuarios del sistema de uniformes
-select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
+select rs.id_usuario, d.Nombre, d.passwrd, rs.id_rol from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID order by id_rol
 
 --Obtener unicamente los tipos de tallas sin repetir los valores
 SELECT 
@@ -350,7 +350,7 @@ select id_articulo, MIN(nombre) AS c2, MIN(clave_comercial) as c3 from uni_artic
                 WHERE p.status IN (1, 2) 
                 AND pa.id_articulo = a.id_articulo
             ) THEN 1
-            ELSE 0
+            ELSE 0 
         END AS en_pedido
             FROM uni_articulos AS a, uni_categoria AS c, uni_talla AS t, uni_genero AS g 
 	 WHERE a.id_estado = 1 AND a.cantidad < 10 AND a.id_categoria = c.id_categoria AND a.id_talla = t.id_talla AND a.genero = g.id_genero
@@ -417,3 +417,5 @@ SELECT usa.id_articulo, usa.cantidad, ua.nombre, ua.id_categoria, ut.talla, usa.
 delete from uni_venta_articulo where id_venta >2426
 
 select rs.id_usuario, d.Nombre from uni_roles_sesion AS rs inner join DIRECTORIO_0 as d ON rs.id_usuario = d.ID 
+
+select* from SPA_reservaciones WHERE id_r= '683'

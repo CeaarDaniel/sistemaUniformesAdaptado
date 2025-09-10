@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Beyonz Mexicana</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a3d62;
+            --secondary: #dfd003;
+             --tertiary : #0a5862;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --transition: all 0.3s ease;
+        }
+
+                /* Header con gradiente y animación */
+        #header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a5276 100%);
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .encabezado {
+            font-size: 3.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        /* Navbar moderno */
+        #navbar {
+            transition: var(--transition);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-brand img {
+            transition: var(--transition);
+            height: 50px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.8rem 1.2rem !important;
+            position: relative;
+            color: var(--primary) !important;
+            transition: var(--transition);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 70%;
+        }
+        
+        .btn-idioma {
+            background: var(--primary);
+            color: white !important;
+            border-radius: 30px;
+            padding: 8px 20px !important;
+            transition: var(--transition);
+        }
+        
+        .btn-idioma:hover {
+            background: var(--secondary);
+            color: var(--dark) !important;
+            transform: translateY(-3px);
+        }
+
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--dark);
+            background-color: #fafafa;
+        }
+        
+        h1, h2, h3, h4, h5, .btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        .contact-hero {
+            background: linear-gradient(135deg, rgba(10, 61, 98, 0.9) 0%, rgba(26, 82, 118, 0.9) 100%), url('https://images.unsplash.com/photo-1516387938699-a93567ec168e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920') center/cover no-repeat;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .contact-intro {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 40px auto;
+            max-width: 1200px;
+        }
+        
+        .contact-form-section {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary);
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(10, 61, 98, 0.15);
+        }
+        
+        textarea.form-control {
+            min-height: 180px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-info-section {
+            padding: 80px 0;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        }
+        
+        .contact-methods {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            transition: var(--transition);
+        }
+        
+        .contact-card:hover .contact-icon {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: scale(1.1);
+        }
+        
+        .contact-card h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .contact-card p {
+            margin-bottom: 5px;
+        }
+        
+        .contact-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .contact-link:hover {
+            color: var(--secondary);
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+          
+        /* Footer moderno */
+        #footer {
+            background: var(--primary);
+            color: white;
+            padding: 60px 0 0;
+            position: relative;
+        }
+        
+        #footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+        
+        .footer-contact p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .footer-contact i {
+            margin-right: 15px;
+            color: var(--secondary);
+            min-width: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .footer-bottom {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+        
+          /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(10, 61, 98, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(10, 61, 98, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(10, 61, 98, 0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding: 60px 0;
+            }
+            
+            .contact-form-section, .contact-info-section {
+                padding: 50px 0;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .contact-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+     <!-- Header con animación -->
+    <header id="header" class="container-fluid p-0">
+        <div class="d-flex text-center text-light justify-content-center p-5">
+            <div class="pt-5 header-content">
+                <h1 class="my-0 encabezado">Beyonz Mexicana S.A de C.V.</h1>
+                <h3 class="mt-3 encabezado" style="font-weight: 400;">Trabajamos siempre con calidad y disciplina</h3>
+                <div class="mt-4">
+                    <a href="#navbar" class="btn btn-lg btn-warning px-5 py-3 rounded-pill" style="font-weight: 600;">
+                        Conoce más <i class="fas fa-arrow-down ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar modernizado -->
+    <div class="sticky-top" id="navbar">
+        <nav class="navbar navbar-expand-lg navbar-light py-2">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="img/imagenes/logo.png" alt="Beyonz Logo">
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html">INICIO</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="nosotros" id="drop1">
+                                NOSOTROS
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="nosotros">¿QUIENES SOMOS?</a>
+                                <a class="dropdown-item" href="politica_de_calidad">NUESTRA CALIDAD</a>
+                                <a class="dropdown-item" href="nosotros#plantas">PLANTAS</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="procesos2" id="drop2">
+                                PROCESO
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="proceso_automotriz">PROCESO AUTOMOTRÍZ</a>
+                                <a class="dropdown-item" href="proceso_moldes">PROCESO MOLDES</a>
+                                <a class="dropdown-item" href="equipos">NUESTROS EQUIPOS</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="productos" id="drop3">
+                                PRODUCTOS
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="productos#">AUTOMOTRÍZ</a>
+                                <a class="dropdown-item" href="productos#contenedor-productos-moldes">MOLDES</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="noticias">NOTICIAS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="clientes">CLIENTES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="empleos">EMPLEOS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn nav-link" href="contacto">CONTACTO</a>
+                        </li>
+                        <li class="nav-item ms-lg-3 py-1">
+                            <a class="btn btn-idioma" href="#" onclick="cambiarIdioma()">
+                                INGLÉS
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sección de contacto -->
+    <section class="contact-hero animate-on-scroll">
+        <div class="container">
+            <h2 class="mb-4">CONTÁCTANOS</h2>
+            <div class="contact-intro">
+                <p>Déjanos saber tus necesidades y nos pondremos en contacto contigo. También puedes enviarnos un mensaje a nuestra dirección de correo, comunicarte a nuestro número de teléfono o por vía WhatsApp. Nuestro horario de atención es de 8:00 am a 5:36 pm.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="map-container animate-on-scroll">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14793.18428938518!2d-102.2839736!3d22.0382671!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8429e493820f0541%3A0x81fbbb95d74d80b9!2sBeyonz%20Mexicana%20Planta%20Transmisi%C3%B3nes%20y%20Suspensi%C3%B3nes!5e0!3m2!1ses!2smx!4v1693505308751!5m2!1ses!2smx" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="form-container animate-on-scroll">
+                        <h3 class="form-title">FORMULARIO DE CONTACTO</h3>
+                        <p class="mb-4">Déjanos tus comentarios y en breve un representante se comunicará contigo.</p>
+                        
+                        <form id="contactanos" method="post" role="form" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Correo</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="mensage" class="form-label">Mensaje</label>
+                                <textarea class="form-control" id="mensage" name="mensage" placeholder="Escribe tu mensaje aquí..." rows="6" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="numero" class="form-label">Número de teléfono</label>
+                                <input type="tel" class="form-control" id="numero" name="numero" placeholder="Número de teléfono" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="archivo" class="form-label">Agregar un archivo (opcional)</label>
+                                <input type="file" class="form-control" id="archivo" name="archivo">
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary px-5 py-3">
+                                    Enviar mensaje <i class="fas fa-paper-plane ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-info-section">
+        <div class="container text-center">
+            <h3 class="mb-5">Otras formas de contactarnos</h3>
+            
+            <div class="contact-methods">
+                <div class="contact-card animate-on-scroll">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4>Correo Electrónico</h4>
+                    <p>Escríbenos directamente a:</p>
+                    <a href="mailto:info@beyonz.com.mx" class="contact-link">info@beyonz.com.mx</a>
+                </div>
+                
+                <div class="contact-card animate-on-scroll">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h4>Teléfono</h4>
+                    <p>Llámanos de lunes a viernes</p>
+                    <a href="tel:+524494782500" class="contact-link">+52 (449) 478 2500</a>
+                </div>
+                
+                <div class="contact-card animate-on-scroll">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h4>Visítanos</h4>
+                    <p>Circuito Cerezos Sur #104</p>
+                    <p>Parque Industrial San Francisco</p>
+                    <p>San Francisco de los Romo, Ags.</p>
+                </div>
+            </div>
+            
+            <div class="mt-5 animate-on-scroll">
+                <h4 class="mb-4">¿Prefieres contactarnos por WhatsApp?</h4>
+                <a href="https://wa.me/524494782500" class="btn btn-success px-4 py-2" target="_blank">
+                    <i class="fab fa-whatsapp me-2"></i> Enviar mensaje por WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer modernizado -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-5 footer-section">
+                    <h5 class="footer-title">MENÚ</h5>
+                    <div class="footer-links">
+                        <a href="index">Inicio</a>
+                        <a href="nosotros">Nosotros</a>
+                        <a href="proceso_automotriz">Proceso automotriz</a>
+                        <a href="proceso_moldes">Proceso de moldes</a>
+                        <a href="noticias">Noticias</a>
+                        <a href="nosotros#plantas">Plantas</a>
+                        <a href="contacto">Contacto</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-5 footer-section">
+                    <h5 class="footer-title">PRODUCTOS</h5>
+                    <div class="footer-links">
+                        <a href="productos">Automotríz</a>
+                        <a href="productos#contenedor-productos-moldes">Moldes</a>
+                    </div>
+                    
+                    <h5 class="footer-title mt-4">INFORMACIÓN DE CONTACTO</h5>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-map-marker-alt"></i> Circuito Cerezos Sur #104, Parque Industrial San Francisco de los Romo C.P. 20355, San Francisco de los Romo, Ags., México</p>
+                        <p><i class="fas fa-phone"></i> +52 (449) 478 2500</p>
+                        <p><i class="fas fa-envelope"></i> info@beyonz.com.mx</p>
+                        <p><i class="fas fa-clock"></i> Lun - Vie 8:00 AM - 5:36 PM</p>
+                        <p><a href="./files/AvisoPrivacidad.pdf" target="_blank" style="color: rgba(255, 255, 255, 0.8);"><i class="fas fa-lock"></i> AVISO DE PRIVACIDAD</a></p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-5 footer-section">
+                    <div class="text-center mb-4">
+                        <img src="./img/imagenes/footer-logo.png" class="img-fluid" style="max-height: 80px;">
+                    </div>
+                    
+                    <div class="social-links d-flex justify-content-center mt-4">
+                        <a href="https://www.facebook.com/profile.php?id=100064107242688" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://mx.linkedin.com/company/beyonz-mexicana-sa-de-cv" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.cialdnb.com/es/numero-d-u-n-s" target="_blank">
+                            <img src="./img/imagenes/duns.png" alt="DUNS" style="height: 24px;">
+                        </a>
+                    </div>
+                    
+                    <div class="mt-5 text-center">
+                        <h5 class="footer-title">¿TIENES ALGUNA PREGUNTA?</h5>
+                        <p class="mt-3">
+                            <a href="contacto" class="btn btn-outline-warning px-4 py-2">
+                                Contáctanos
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container text-center">
+                <p class="mb-0">©2023 Beyonz. Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Animación al hacer scroll
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(element => {
+            const position = element.getBoundingClientRect();
+            if(position.top < window.innerHeight * 0.85) {
+                element.classList.add('visible');
+            }
+        });
+    }
+    
+    // Inicializar animaciones
+    window.addEventListener('load', animateOnScroll);
+    window.addEventListener('scroll', animateOnScroll);
+
+     // Cambiar navbar al hacer scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if(window.scrollY > 100) {
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                document.querySelector('.navbar-brand img').style.height = '45px';
+            } else {
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.1)';
+                document.querySelector('.navbar-brand img').style.height = '50px';
+            }
+        });
+        
+</script>
+
+</body>
+</html>

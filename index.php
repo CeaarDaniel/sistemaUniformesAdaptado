@@ -106,6 +106,15 @@ if (!isset($_SESSION['loggedin'])) {
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
 
     <script>
+        /*
+            FLUJO DE NAVEGACION
+             1.SE CAMBIA DE RUTA CON LOS ENLACES EN LOS ELEMENTOS <a></a>, 
+               CON LOS BOTONES ATRAS (popstate), ADELANTE, RECARGAR DEL NAVEGADOR 
+               O INGRESANDO DIRECTAMENTE LA RUTA
+             2.SE OBTIENE LA RUTA EN JS (obtenerSeccionActual)
+             3. SE CARGA O CAMBIA EL CONTENIDO DE ACUERTO A LA RUTA OBTENIDA (navegar)
+        */
+        var rolUsuarioSession = <?php echo $_SESSION['rolUsuario']?>;
 
         //Mostrar el tooltip
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -114,14 +123,17 @@ if (!isset($_SESSION['loggedin'])) {
 
         //Funcion para la navegacion entre ventanas
         function navegar(pagina, id, pagsus) {
-            
-            var contenido = document.getElementById(pagsus);
+
+            console.log("Seccion actual:", pagina);
+            console.log("Seccion anterior:", pagsus);
+
+            var contenido = document.getElementById(pagsus); //OBTENER EL CONTENEDOR DE LA PAGINA ACTUAL
             var xhttp = new XMLHttpRequest();
             
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         window.scroll(0, 0);
-                                    contenido.innerHTML = this.responseText;
+                        contenido.innerHTML = this.responseText;
                               
                         // Eliminar el script anterior si existe
                         var oldScript = document.getElementById('jsDinamico');
@@ -135,8 +147,8 @@ if (!isset($_SESSION['loggedin'])) {
                                     // Cargar el script envuelto en un IIFE
                                     return fetch(scriptUrl);
                                 } else {
-                                    //throw new Error('El archivo JS no existe');
-                                    console.log(`Script no encontrado: ${scriptUrl}`);
+                                    throw new Error('El archivo JS no existe');
+                                    //console.log(`Script no encontrado: ${scriptUrl}`);
                                 }
                             })
                             .then(response => response.text())
@@ -146,7 +158,7 @@ if (!isset($_SESSION['loggedin'])) {
                                 // Envolver el script en una función autoejecutable
                                 script.textContent = `(function() { ${scriptText} })();`;
                                 document.body.appendChild(script);
-                                renderTable();
+                                //renderTable();
                             })
                             .catch(error => {
                                 console.log(`Script no encontrado: ${scriptUrl}`);
@@ -154,17 +166,20 @@ if (!isset($_SESSION['loggedin'])) {
                        
                     }
                 };
-                xhttp.open('POST', pagina + '.php', true);
+                xhttp.open('POST', pagina + '.php', true); //SOLICITUD A LA PAGINA CON EL CONTENIDO NUEVO
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xhttp.send('id=' + id);
         }
 
-        //Funcion para obtener la pagina actual
+        //Funcion para obtener la rauta de la pagina actual
         function obtenerSeccionActual() {
             const hash = location.hash.split('/');
-
-                if(hash[hash.length - 1] == '' || hash[hash.length - 1] == null || hash[hash.length - 1]==' ')
+                if(hash[hash.length - 1] == '' || hash[hash.length - 1] == null || hash[hash.length - 1]==' ' || hash[hash.length - 1]=='')
                     hash[hash.length - 1] ='dashboard';
+
+                //if(hash[hash.length - 1]=='pedidos') console.log('no tiene permisos para estar aqui')
+
+                    //console.log(hash[hash.length - 1]);
 
             return hash[hash.length - 1]; 
         }
@@ -172,12 +187,11 @@ if (!isset($_SESSION['loggedin'])) {
         // Función que carga contenido y cambia la URL
         function cargarRuta(pagina, id) {
                 if (!id) id = 0;
-                
 
                 const seccionActual = obtenerSeccionActual();
                     if (seccionActual === pagina) 
                         return;
-                    
+                
 
             // Cambiar la URL (sin recargar)
             history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
@@ -202,6 +216,7 @@ if (!isset($_SESSION['loggedin'])) {
                 animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
             }.bind(this), 400);
 
+            //OCULTAR LOS MODALES ABIERTOS
             document.querySelectorAll('.modal.show').forEach(modalEl => {
                 const modalInstance = bootstrap.Modal.getInstance(modalEl);
                 if (modalInstance) {
@@ -216,20 +231,23 @@ if (!isset($_SESSION['loggedin'])) {
 
         });
 
-        // Cargar la página correcta al cargar la SPA
+        // Cargar la página correcta al recargar la SPA
         window.addEventListener("DOMContentLoaded", () => {
             //const ruta = location.pathname.slice(1) || "inicio";
             const seccion = obtenerSeccionActual();
-            navegar(seccion,'0','mainContent')
+
+             //var animacion = document.querySelector("#mainContent");
+            //animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+
+                //setTimeout(function () {
+                    navegar(seccion,'0','mainContent')
+                    //animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+                //}.bind(this), 400);
         });
 
         function logOut(){
             let formDataArt = new FormData;
             formDataArt.append('opcion', 2);
-
-                //console.log('total:'+total+' Numero de descuentos'+Number($('#cantidadDescuentos').val())+'Tipo de nomina'+tipoNomina)
-
-                //numDescuentos = $('#cantidadDescuentos').val();
                 fetch("./api/login.php", {
                     method: "POST",
                     body: formDataArt,
