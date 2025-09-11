@@ -89,6 +89,24 @@ if (!isset($_SESSION['loggedin'])) {
             <div id="mainContent" class="padding-header animacion"></div>
     </div>
 
+
+     <div class="modal fade" id="modalAccesoDenegado" tabindex="-1" aria-labelledby="modalAccesoDenegadoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalAccesoDenegadoLabel">🚫 Acceso Denegado</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    No tienes permisos para acceder a esta sección. Por favor, contacta al administrador del sistema si crees que esto es un error.
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS y dependencias -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -114,7 +132,33 @@ if (!isset($_SESSION['loggedin'])) {
              2.SE OBTIENE LA RUTA EN JS (obtenerSeccionActual)
              3. SE CARGA O CAMBIA EL CONTENIDO DE ACUERTO A LA RUTA OBTENIDA (navegar)
         */
+
+        const modal = new bootstrap.Modal(document.getElementById('modalAccesoDenegado'));
         var rolUsuarioSession = <?php echo $_SESSION['rolUsuario']?>;
+        const routes = {
+            //ADMIN
+            '1' : ['dashboard', 'almacen', 'altasArticulos', 'altasCategorias', 
+                 'entradas', 'entradasPedido', 'entradasSalidas', 'entradasManuales',
+                 'salidas', 'salidasPlanta', 'salidasVenta', 'salidasReposicion', 'salidasRenovacion',
+                 'consultaSalidas', 'consultaVentas', 'consultasReportes', 'cambios', 'editarAlmacen', 
+                 'pedidos', 'menuReportes', 'reporteVentas', 'reportesExistencias', 'reportesSalidas'
+                ],
+            //FINANZAS
+            '2' : ['dashboard','consultaVentas', 'consultasReportes','almacen'],
+            //ADMINISTRACION
+            '3' : ['dashboard', 'almacen', 'salidasPlanta', 'salidasVenta', 'salidasReposicion', 'salidasRenovacion', 'cambios'],
+            //COMPRAS
+            '4': ['dashboard', 'almacen', 'altasArticulos', 'altasCategorias', 
+                  'consultasReportes', 'pedidos', 'entradas', 'entradasPedido', 'entradasSalidas', 'entradasManuales'],
+            //VIEWER
+            '5' : ['dashboard', 'almacen'],
+            //ALMACENISTA
+            '6' : ['dashboard', 'almacen', 'entradas', 'entradasPedido', 'salidas', 'salidasPlanta', 
+                   'salidasVenta', 'salidasReposicion', 'salidasRenovacion', 'consultaSalidas',
+                   'consultaVentas', 'consultasReportes', 'pedidos', 'cambios',
+                ]
+        }
+
 
         //Mostrar el tooltip
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -125,8 +169,6 @@ if (!isset($_SESSION['loggedin'])) {
         function navegar(pagina, id, pagsus) {
 
             console.log("Seccion actual:", pagina);
-            console.log("Seccion anterior:", pagsus);
-
             var contenido = document.getElementById(pagsus); //OBTENER EL CONTENEDOR DE LA PAGINA ACTUAL
             var xhttp = new XMLHttpRequest();
             
@@ -186,49 +228,58 @@ if (!isset($_SESSION['loggedin'])) {
 
         // Función que carga contenido y cambia la URL
         function cargarRuta(pagina, id) {
+            if(!routes[rolUsuarioSession].includes(pagina))
+                 modal.show();
+
+            else {
                 if (!id) id = 0;
 
                 const seccionActual = obtenerSeccionActual();
                     if (seccionActual === pagina) 
                         return;
-                
 
-            // Cambiar la URL (sin recargar)
-            history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
+                // Cambiar la URL (sin recargar)
+                history.pushState({ seccionActual }, "", `/sistemaUniformesAdaptado/#/${pagina}`);
 
-            var animacion = document.querySelector("#mainContent");
-            animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+                var animacion = document.querySelector("#mainContent");
+                animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
 
                 setTimeout(function () {
                     navegar(pagina, id,'mainContent')
                     animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
                 }.bind(this), 400);
+            }
         }
 
         // Detectar el botón "atrás" o "adelante" del navegador
         window.addEventListener("popstate", (event) => {
             const nuevaSeccion = obtenerSeccionActual();
-            var animacion = document.querySelector("#mainContent");
 
-            animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-            setTimeout(function () {
-                navegar(nuevaSeccion,'0','mainContent')
+        if(!routes[rolUsuarioSession].includes(nuevaSeccion))
+            modal.show();
+
+            else {
+                var animacion = document.querySelector("#mainContent");
+
                 animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
-            }.bind(this), 400);
+                setTimeout(function () {
+                    navegar(nuevaSeccion,'0','mainContent')
+                    animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+                }.bind(this), 400);
 
-            //OCULTAR LOS MODALES ABIERTOS
-            document.querySelectorAll('.modal.show').forEach(modalEl => {
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            });
+                //OCULTAR LOS MODALES ABIERTOS
+                document.querySelectorAll('.modal.show').forEach(modalEl => {
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                });
 
-            // Eliminar cualquier backdrop que quedó
-            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-            document.body.classList.remove('modal-open');
-            document.body.style = '';
-
+                // Eliminar cualquier backdrop que quedó
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style = ''; 
+            }
         });
 
         // Cargar la página correcta al recargar la SPA
@@ -236,13 +287,19 @@ if (!isset($_SESSION['loggedin'])) {
             //const ruta = location.pathname.slice(1) || "inicio";
             const seccion = obtenerSeccionActual();
 
-             //var animacion = document.querySelector("#mainContent");
-            //animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
+             if(!routes[rolUsuarioSession].includes(seccion)){
+                modal.show();
+             }
+
+             else {
+                //var animacion = document.querySelector("#mainContent");
+                //animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
 
                 //setTimeout(function () {
                     navegar(seccion,'0','mainContent')
                     //animacion.classList.toggle("ocultar-mostrar"); //cambia la opacidad en 1  al cambiar de pagina
                 //}.bind(this), 400);
+            }
         });
 
         function logOut(){
